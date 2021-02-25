@@ -1,0 +1,86 @@
+@use '../../scss/config.scss' as *;
+
+.header {
+  background: $primary;
+  @include box-shadow;
+  position: relative;
+  transform: translateY(-100%);
+  transition: 400ms;
+}
+
+.headerAnimate {
+  transform: translateY(0);
+}
+
+.container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 90%;
+  margin: 0 auto;
+  height: 4rem;
+}
+
+.logo {
+  color: white;
+  font-weight: 800;
+  font-size: 1.5rem;
+  text-decoration: none;
+}
+
+.hamburger {
+  fill: white;
+  cursor: pointer;
+  padding: 0.5rem;
+}
+
+.menu {
+  position: absolute;
+  background: $primary;
+  @include box-shadow;
+  border-top: 1px solid white;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  padding: 1rem 5%; /* horizontal padding should be half the leftover width of .container */
+  transform: scale(1, 0);
+  transform-origin: top;
+  transition: $transitionSpeed;
+
+  & > div {
+    opacity: 0;
+    transition: $transitionSpeed;
+  }
+}
+
+.menuActive {
+  transform: scale(1);
+
+  & > div {
+    opacity: 100%;
+  }
+}
+
+.login {
+  display: grid;
+  justify-content: center;
+  gap: 1rem;
+}
+
+@media (min-width: 600px) {
+  .hamburger {
+    display: none;
+  }
+
+  .menu {
+    all: unset;
+
+    & > div {
+      all: unset;
+    }
+  }
+
+  .signUpBtn {
+    margin-left: 1rem;
+  }
+}

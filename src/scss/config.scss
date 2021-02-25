@@ -1,0 +1,9 @@
+$primary: #008aa6;
+$accent: #db9a00;
+$dark1: #1a1a1a;
+$dark2: #292929;
+$transitionSpeed: 200ms;
+
+@mixin box-shadow() {
+  box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.15);
+}

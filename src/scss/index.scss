@@ -1,0 +1,63 @@
+@use './config.scss' as *;
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Open Sans', sans-serif;
+}
+
+.container {
+  width: 90%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.btn {
+  display: inline-block;
+  text-decoration: none;
+  text-transform: uppercase;
+  white-space: nowrap;
+  border-width: 1px;
+  border-radius: 5000px;
+  border-style: solid;
+  padding: 0.5em 2em;
+  font-size: 0.9rem;
+  font-weight: 700;
+  transition: $transitionSpeed;
+
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+.btn-white {
+  background: white;
+  border-color: white;
+  color: black;
+
+  &:hover,
+  &:focus {
+    background: #eee;
+    border-color: #eee;
+  }
+}
+
+.btn-outline-white {
+  background: rgba(0, 0, 0, 0);
+  border-color: white;
+  color: white;
+
+  &:hover,
+  &:focus {
+    background: rgba(0, 0, 0, 0.1);
+  }
+}
+
+.btn-outline-blue:hover:not([disabled]) {
+  background: #006acc;
+  border-color: #006acc;
+  color: white;
+}
