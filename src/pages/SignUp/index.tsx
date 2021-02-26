@@ -2,13 +2,14 @@ import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { FirebaseError } from '../../firebase/client';
-import { signIn } from '../../store/auth/actions';
+import { signUp } from '../../store/auth/actions';
 import { AppState } from '../../store/rootReducer';
-import styles from './SignIn.module.scss';
+import styles from './SignUp.module.scss';
 
-const SignIn = () => {
+const SignUp = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
   const history = useHistory();
   const dispatch = useDispatch();
@@ -24,29 +25,18 @@ const SignIn = () => {
     if (password.length < 6) {
       return setError('Password must be at least 6 characters');
     }
+    if (!confirmPassword) return setError('Please confirm password');
+    if (password !== confirmPassword) return setError('Passwords must match');
 
     const onSuccess = () => history.push('/');
-    const onFailure = (err: FirebaseError) => {
-      if (err.code === 'auth/too-many-requests') {
-        return setError(
-          'Too many failed attempts. Try again later, or reset your password'
-        );
-      }
-      if (
-        err.code === 'auth/user-not-found' ||
-        err.code === 'auth/wrong password'
-      ) {
-        return setError('Incorrect email or password');
-      }
-      setError(err.message);
-    };
+    const onFailure = (err: FirebaseError) => setError(err.message);
 
-    dispatch(signIn(email, password, onSuccess, onFailure));
+    dispatch(signUp(email, password, onSuccess, onFailure));
   };
 
   return (
-    <div className={styles.signIn + ' container'}>
-      <h1 className={styles.heading}>Login</h1>
+    <div className={styles.signUp + ' container'}>
+      <h1 className={styles.heading}>Sign Up</h1>
       <form className={styles.form} onSubmit={handleSubmit}>
         <div className={styles.inputs}>
           <label className={styles.label}>
@@ -71,15 +61,26 @@ const SignIn = () => {
             />
           </label>
 
+          <label className={styles.label}>
+            Confirm Password:
+            <input
+              className={styles.input}
+              type='password'
+              name='password'
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+            />
+          </label>
+
           {error && <p className={styles.error}>{error}</p>}
         </div>
 
         <button disabled={loading} className={styles.btn + ' btn btn-primary'}>
-          Log In
+          Sign Up
         </button>
       </form>
     </div>
   );
 };
 
-export default SignIn;
+export default SignUp;

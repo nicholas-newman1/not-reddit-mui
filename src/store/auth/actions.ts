@@ -75,7 +75,12 @@ export const signUpFailure = (error: string): SignUpFailure => ({
   },
 });
 
-export const signUp = (email: string, password: string) => {
+export const signUp = (
+  email: string,
+  password: string,
+  onSuccess = () => {},
+  onFailure = (err: FirebaseError) => {}
+) => {
   return (dispatch: Dispatch<AppActions>) => {
     dispatch(signUpRequest());
 
@@ -83,8 +88,12 @@ export const signUp = (email: string, password: string) => {
       .createUserWithEmailAndPassword(email, password)
       .then((cred) => {
         dispatch(signUpSuccess(cred.user));
+        onSuccess();
       })
-      .catch((err: FirebaseError) => dispatch(signUpFailure(err.message)));
+      .catch((err: FirebaseError) => {
+        dispatch(signUpFailure(err.message));
+        onFailure(err);
+      });
   };
 };
 
