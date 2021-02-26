@@ -7,6 +7,7 @@ import { AppState } from '../../store/rootReducer';
 import styles from './SignUp.module.scss';
 
 const SignUp = () => {
+  const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -20,6 +21,7 @@ const SignUp = () => {
 
     setError('');
 
+    if (!username) return setError("Username can't be empty");
     if (!email) return setError("Email can't be empty");
     if (!password) return setError("Password can't be empty");
     if (password.length < 6) {
@@ -31,7 +33,7 @@ const SignUp = () => {
     const onSuccess = () => history.push('/');
     const onFailure = (err: FirebaseError) => setError(err.message);
 
-    dispatch(signUp(email, password, onSuccess, onFailure));
+    dispatch(signUp(username, email, password, onSuccess, onFailure));
   };
 
   return (
@@ -39,6 +41,17 @@ const SignUp = () => {
       <h1 className={styles.heading}>Sign Up</h1>
       <form className={styles.form} onSubmit={handleSubmit}>
         <div className={styles.inputs}>
+          <label className={styles.label}>
+            Display Name:
+            <input
+              className={styles.input}
+              type='text'
+              name='name'
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+            />
+          </label>
+
           <label className={styles.label}>
             Email:
             <input

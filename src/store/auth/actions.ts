@@ -1,5 +1,5 @@
 import { Dispatch } from 'redux';
-import { auth, FirebaseError, FirebaseUser } from '../../firebase/client';
+import { auth, db, FirebaseError, FirebaseUser } from '../../firebase/client';
 import { AppActions } from '../appActions';
 import {
   SignInRequest,
@@ -76,6 +76,7 @@ export const signUpFailure = (error: string): SignUpFailure => ({
 });
 
 export const signUp = (
+  username: string,
   email: string,
   password: string,
   onSuccess = () => {},
@@ -87,6 +88,10 @@ export const signUp = (
     auth
       .createUserWithEmailAndPassword(email, password)
       .then((cred) => {
+        if (cred.user)
+          db.collection('users').doc(cred.user.uid).set({
+            username,
+          });
         dispatch(signUpSuccess(cred.user));
         onSuccess();
       })
