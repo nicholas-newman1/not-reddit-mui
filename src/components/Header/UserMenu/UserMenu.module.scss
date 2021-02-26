@@ -1,0 +1,89 @@
+@use '../../../scss/config.scss' as *;
+
+.menu {
+  position: relative;
+}
+
+.userIcon {
+  @include icon;
+}
+
+.nav {
+  position: absolute;
+  background: $dark3;
+  @include box-shadow;
+  border-radius: $borderRadius;
+  top: 110%;
+  right: 0;
+  opacity: 0;
+  transform: scale(0);
+  transform-origin: top;
+  transition: $transitionSpeed;
+}
+
+.displayNav {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+}
+
+.link {
+  text-decoration: none;
+  display: block;
+}
+
+.btn {
+  border: none;
+  background: none;
+}
+
+.btn,
+.link {
+  white-space: nowrap;
+  font-size: 0.9rem;
+  padding: 0.5rem 1rem;
+  text-align: center;
+  cursor: pointer;
+  transition: $transitionSpeed;
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.1);
+  }
+}
+
+@media (min-width: 600px) {
+  .nav,
+  .link,
+  .btn {
+    all: unset;
+
+    &:hover {
+      all: unset;
+    }
+  }
+
+  .userIcon {
+    display: none;
+  }
+
+  .list {
+    flex-direction: row;
+  }
+
+  .btn,
+  .link {
+    &:hover {
+      cursor: pointer;
+      color: $light3;
+    }
+  }
+
+  .item:last-child {
+    margin-left: 1rem;
+  }
+}

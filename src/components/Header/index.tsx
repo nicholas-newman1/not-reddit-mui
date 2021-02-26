@@ -1,21 +1,16 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
+import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import Menu from '../../svg/Menu';
+import { AppState } from '../../store/rootReducer';
 import styles from './Header.module.scss';
+import LoginMenu from './LoginMenu';
+import UserMenu from './UserMenu';
 
 const Header = () => {
-  const [displayMenu, setDisplayMenu] = useState(false);
   const header = useRef<HTMLElement>(null);
-
-  const toggleDisplayMenu = () => {
-    setDisplayMenu((prev) => !prev);
-  };
+  const user = useSelector((state: AppState) => state.auth.user);
 
   useEffect(() => {
-    /* clicking on main closes the menu */
-    const main = document.querySelector('main')!;
-    main.addEventListener('click', () => setDisplayMenu(false));
-
     /* Header animates */
     header.current!.classList.add(styles.headerAnimate);
   }, []);
@@ -27,25 +22,7 @@ const Header = () => {
           Not Reddit
         </Link>
 
-        <div className={styles.hamburger} onClick={toggleDisplayMenu}>
-          <Menu />
-        </div>
-
-        <div
-          className={`${styles.menu} ${displayMenu ? styles.menuActive : ''}`}
-        >
-          <div className={styles.login}>
-            <Link
-              to='/login'
-              className={styles.loginBtn + ' btn btn-outline-white'}
-            >
-              Log In
-            </Link>
-            <Link to='/signup' className={styles.signUpBtn + ' btn btn-white'}>
-              Sign Up
-            </Link>
-          </div>
-        </div>
+        {user ? <UserMenu uid={user.uid} /> : <LoginMenu />}
       </div>
     </header>
   );

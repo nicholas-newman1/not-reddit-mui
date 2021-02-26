@@ -7,11 +7,11 @@
   padding: 0;
   box-sizing: border-box;
   font-family: 'Open Sans', sans-serif;
-  color: white;
+  color: $light2;
 }
 
 html {
-  background: $dark1;
+  background: $dark2;
 }
 
 .container {
@@ -26,6 +26,27 @@ input {
   -webkit-box-shadow: 0 0 0 30px $dark3 inset !important;
   box-shadow: 0 0 0 30px $dark3 inset !important;
   -webkit-text-fill-color: white !important;
+}
+
+.icon {
+  width: 2.5rem;
+  height: 2.5rem;
+  display: grid;
+  align-items: center;
+  justify-content: center;
+  background: rgba($light1, 0.1);
+  border-radius: 100%;
+  fill: $light3;
+  transition: $transitionSpeed;
+  cursor: pointer;
+
+  &:hover {
+    background: rgba($light3, 0.05);
+  }
+
+  svg {
+    width: 20px;
+  }
 }
 
 .btn {
