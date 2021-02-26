@@ -13,10 +13,13 @@ const initialState: AuthState = {
   error: '',
 };
 
-export const authReducer = (state = initialState, action: AuthActionTypes) => {
+export const authReducer = (
+  state = initialState,
+  action: AuthActionTypes
+): AuthState => {
   switch (action.type) {
     case 'SIGN_IN_REQUEST':
-      return { ...state, loading: true };
+      return { ...state, loading: true, user: null, error: '' };
     case 'SIGN_IN_SUCCESS':
       return { ...state, loading: false, user: action.payload.user, error: '' };
     case 'SIGN_IN_FAILURE':
@@ -27,7 +30,7 @@ export const authReducer = (state = initialState, action: AuthActionTypes) => {
         error: action.payload.error,
       };
     case 'SIGN_UP_REQUEST':
-      return { ...state, loading: true };
+      return { ...state, loading: true, user: null, error: '' };
     case 'SIGN_UP_SUCCESS':
       return { ...state, loading: false, user: action.payload.user, error: '' };
     case 'SIGN_UP_FAILURE':
@@ -38,7 +41,7 @@ export const authReducer = (state = initialState, action: AuthActionTypes) => {
         error: action.payload.error,
       };
     case 'SIGN_OUT_REQUEST':
-      return { ...state, loading: true };
+      return { ...state, loading: true, error: '' };
     case 'SIGN_OUT_SUCCESS':
       return { ...state, loading: false, user: null, error: '' };
     case 'SIGN_OUT_FAILURE':
@@ -47,7 +50,10 @@ export const authReducer = (state = initialState, action: AuthActionTypes) => {
         loading: false,
         error: action.payload.error,
       };
-
+    case 'VERIFY_REQUEST':
+      return { ...state, loading: true, error: '' };
+    case 'VERIFY_SUCCESS':
+      return { ...state, loading: false };
     default:
       return state;
   }

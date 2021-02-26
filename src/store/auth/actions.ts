@@ -11,6 +11,8 @@ import {
   SignOutFailure,
   SignOutRequest,
   SignOutSuccess,
+  VerifyRequest,
+  VerifySuccess,
 } from './types';
 
 // Sign In
@@ -32,7 +34,12 @@ export const signInFailure = (error: string): SignInFailure => ({
   },
 });
 
-export const signIn = (email: string, password: string) => {
+export const signIn = (
+  email: string,
+  password: string,
+  onSuccess = () => {},
+  onFailure = (err: FirebaseError) => {}
+) => {
   return (dispatch: Dispatch<AppActions>) => {
     dispatch(signUpRequest());
 
@@ -40,8 +47,12 @@ export const signIn = (email: string, password: string) => {
       .signInWithEmailAndPassword(email, password)
       .then((cred) => {
         dispatch(signInSuccess(cred.user));
+        onSuccess();
       })
-      .catch((err: FirebaseError) => dispatch(signInFailure(err.message)));
+      .catch((err: FirebaseError) => {
+        dispatch(signInFailure(err.code));
+        onFailure(err);
+      });
   };
 };
 
@@ -103,5 +114,25 @@ export const signOut = () => {
         dispatch(signOutSuccess());
       })
       .catch((err: FirebaseError) => dispatch(signOutFailure(err.message)));
+  };
+};
+
+// verify
+export const verifyRequest = (): VerifyRequest => ({
+  type: 'VERIFY_REQUEST',
+});
+
+export const verifySuccess = (): VerifySuccess => ({
+  type: 'VERIFY_SUCCESS',
+});
+
+export const verifyAuth = () => {
+  return (dispatch: Dispatch<AppActions>) => {
+    dispatch(verifyRequest());
+
+    auth.onAuthStateChanged((user) => {
+      if (user) dispatch(signInSuccess(user));
+      return dispatch(verifySuccess());
+    });
   };
 };

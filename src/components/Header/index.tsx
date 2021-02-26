@@ -35,12 +35,15 @@ const Header = () => {
           className={`${styles.menu} ${displayMenu ? styles.menuActive : ''}`}
         >
           <div className={styles.login}>
-            <button className={styles.loginBtn + ' btn btn-outline-white'}>
+            <Link
+              to='/login'
+              className={styles.loginBtn + ' btn btn-outline-white'}
+            >
               Log In
-            </button>
-            <button className={styles.signUpBtn + ' btn btn-white'}>
+            </Link>
+            <Link to='/signup' className={styles.signUpBtn + ' btn btn-white'}>
               Sign Up
-            </button>
+            </Link>
           </div>
         </div>
       </div>

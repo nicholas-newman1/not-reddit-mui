@@ -9,6 +9,8 @@ export const SIGN_UP_FAILURE = 'SIGN_UP_FAILURE';
 export const SIGN_OUT_REQUEST = 'SIGN_OUT_REQUEST';
 export const SIGN_OUT_SUCCESS = 'SIGN_OUT_SUCCESS';
 export const SIGN_OUT_FAILURE = 'SIGN_OUT_FAILURE';
+export const VERIFY_REQUEST = 'VERIFY_REQUEST';
+export const VERIFY_SUCCESS = 'VERIFY_SUCCESS';
 
 export interface SignInRequest {
   type: typeof SIGN_IN_REQUEST;
@@ -61,6 +63,14 @@ export interface SignOutFailure {
   };
 }
 
+export interface VerifyRequest {
+  type: typeof VERIFY_REQUEST;
+}
+
+export interface VerifySuccess {
+  type: typeof VERIFY_SUCCESS;
+}
+
 export type AuthActionTypes =
   | SignInRequest
   | SignInSuccess
@@ -70,4 +80,6 @@ export type AuthActionTypes =
   | SignUpFailure
   | SignOutRequest
   | SignOutSuccess
-  | SignOutFailure;
+  | SignOutFailure
+  | VerifyRequest
+  | VerifySuccess;

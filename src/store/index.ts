@@ -2,6 +2,7 @@ import { createStore, compose, applyMiddleware } from 'redux';
 import thunk, { ThunkMiddleware } from 'redux-thunk';
 import rootReducer, { AppState } from './rootReducer';
 import { AppActions } from './appActions';
+import { verifyAuth } from './auth/actions';
 
 const composeEnhancers =
   (process.env.NODE_ENV !== 'production' &&
@@ -10,7 +11,7 @@ const composeEnhancers =
     window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) ||
   compose;
 
-export default createStore(
+const store = createStore<AppState, AppActions, {}, {}>(
   rootReducer,
   composeEnhancers(
     applyMiddleware(
@@ -18,3 +19,8 @@ export default createStore(
     )
   )
 );
+
+//@ts-ignore
+store.dispatch(verifyAuth());
+
+export default store;
