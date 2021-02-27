@@ -3,38 +3,38 @@ import Rating from '.';
 
 describe('<Rating />', () => {
   it('renders without crashing', () => {
-    render(<Rating rating={1} onArrowUp={() => {}} onArrowDown={() => {}} />);
+    render(<Rating rating={1} onUpVote={() => {}} onDownVote={() => {}} />);
   });
 
   it('renders the correct rating', () => {
     const { getByText } = render(
-      <Rating rating={24} onArrowUp={() => {}} onArrowDown={() => {}} />
+      <Rating rating={24} onUpVote={() => {}} onDownVote={() => {}} />
     );
     getByText(/24/);
   });
 
-  it('does not call onArrowUp or onArrowDown until they are clicked', () => {
+  it('does not call onUpVote or onDownVote until they are clicked', () => {
     const fn1 = jest.fn();
     const fn2 = jest.fn();
-    render(<Rating rating={24} onArrowUp={fn1} onArrowDown={fn2} />);
+    render(<Rating rating={24} onUpVote={fn1} onDownVote={fn2} />);
     expect(fn1).not.toBeCalled();
     expect(fn2).not.toBeCalled();
   });
 
-  it('fires onArrowUp() upon clicking up arrow', () => {
+  it('fires onUpVote() upon clicking up arrow', () => {
     const fn = jest.fn();
     const { getByTestId } = render(
-      <Rating rating={24} onArrowUp={fn} onArrowDown={() => {}} />
+      <Rating rating={24} onUpVote={fn} onDownVote={() => {}} />
     );
     const upArrow = getByTestId('up-arrow');
     fireEvent.click(upArrow);
     expect(fn).toBeCalledTimes(1);
   });
 
-  it('fires onArrowDown() upon clicking down arrow', () => {
+  it('fires onDownVote() upon clicking down arrow', () => {
     const fn = jest.fn();
     const { getByTestId } = render(
-      <Rating rating={24} onArrowUp={() => {}} onArrowDown={fn} />
+      <Rating rating={24} onUpVote={() => {}} onDownVote={fn} />
     );
     const downArrow = getByTestId('down-arrow');
     fireEvent.click(downArrow);
@@ -43,7 +43,7 @@ describe('<Rating />', () => {
 
   it('neither arrow has an "arrowActive" class when status prop is undefined', () => {
     const { getByTestId } = render(
-      <Rating rating={24} onArrowUp={() => {}} onArrowDown={() => {}} />
+      <Rating rating={24} onUpVote={() => {}} onDownVote={() => {}} />
     );
     const upArrow = getByTestId('up-arrow');
     const downArrow = getByTestId('down-arrow');
@@ -55,8 +55,8 @@ describe('<Rating />', () => {
     const { getByTestId } = render(
       <Rating
         rating={24}
-        onArrowUp={() => {}}
-        onArrowDown={() => {}}
+        onUpVote={() => {}}
+        onDownVote={() => {}}
         status='down'
       />
     );
@@ -68,8 +68,8 @@ describe('<Rating />', () => {
     const { getByTestId } = render(
       <Rating
         rating={24}
-        onArrowUp={() => {}}
-        onArrowDown={() => {}}
+        onUpVote={() => {}}
+        onDownVote={() => {}}
         status='up'
       />
     );
@@ -81,8 +81,8 @@ describe('<Rating />', () => {
     const { getByTestId } = render(
       <Rating
         rating={24}
-        onArrowUp={() => {}}
-        onArrowDown={() => {}}
+        onUpVote={() => {}}
+        onDownVote={() => {}}
         className='test class names'
       />
     );

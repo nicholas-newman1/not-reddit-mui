@@ -4,8 +4,8 @@ import styles from './Rating.module.scss';
 
 interface Props {
   rating: number;
-  onArrowUp: () => void;
-  onArrowDown: () => void;
+  onUpVote: () => void;
+  onDownVote: () => void;
   status?: 'up' | 'down';
   className?: string;
 }
@@ -20,7 +20,7 @@ const Rating: React.FC<Props> = (props) => {
         className={
           styles.arrowUp + ` ${props.status === 'up' ? styles.arrowActive : ''}`
         }
-        onClick={() => props.onArrowUp()}
+        onClick={() => props.onUpVote()}
         aria-label='up vote'
         data-testid='up-arrow'
       >
@@ -34,7 +34,7 @@ const Rating: React.FC<Props> = (props) => {
           styles.arrowDown +
           ` ${props.status === 'down' ? styles.arrowActive : ''}`
         }
-        onClick={() => props.onArrowDown()}
+        onClick={() => props.onDownVote()}
         aria-label='down vote'
         data-testid='down-arrow'
       >
