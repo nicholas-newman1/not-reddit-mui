@@ -1,7 +1,11 @@
 @use '../../scss/config.scss' as *;
 
-.rating {
+.container {
   text-align: center;
+}
+
+.rating {
+  color: $light2;
 }
 
 .arrowUp,

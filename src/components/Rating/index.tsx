@@ -13,7 +13,9 @@ interface Props {
 const Rating: React.FC<Props> = (props) => {
   return (
     <div
-      className={styles.rating + ` ${props.className ? props.className : ''}`}
+      className={
+        styles.container + ` ${props.className ? props.className : ''}`
+      }
       data-testid='wrapper'
     >
       <button
@@ -27,7 +29,7 @@ const Rating: React.FC<Props> = (props) => {
         <ArrowIcon ariaHidden={true} />
       </button>
 
-      <div>{props.rating}</div>
+      <div className={styles.rating}>{props.rating}</div>
 
       <button
         className={

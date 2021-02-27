@@ -3,14 +3,37 @@
 .container {
   display: flex;
   font-size: 0.9rem;
+  flex-wrap: wrap;
+  margin: -0.5rem;
+}
+
+.timeString,
+.category,
+.username {
+  margin: 0.5rem;
 }
 
 .username {
   font-weight: 700;
+  color: $light2;
+  transition: $transitionSpeed;
+
+  &:hover {
+    color: $light2-hover;
+  }
 }
 
-.timeString,
-.category {
-  margin-left: 1rem;
+.timeString {
   color: $light3;
+}
+
+.category {
+  color: $light3;
+  transition: $transitionSpeed;
+}
+
+.category {
+  &:hover {
+    color: $light3-hover;
+  }
 }
