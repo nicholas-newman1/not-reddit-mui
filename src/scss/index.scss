@@ -8,7 +8,6 @@
   padding: 0;
   box-sizing: border-box;
   font-family: 'Open Sans', sans-serif;
-  color: $light2;
 }
 
 html {
@@ -19,6 +18,10 @@ html {
   width: 90%;
   max-width: 1200px;
   margin: 0 auto;
+}
+
+ul {
+  list-style: none;
 }
 
 input {
@@ -48,30 +51,6 @@ input {
   svg {
     width: 20px;
   }
-}
-
-.flex {
-  display: flex;
-}
-
-.flex-column {
-  flex-direction: column;
-}
-
-.grid {
-  display: grid;
-}
-
-.space-between {
-  justify-content: space-between;
-}
-
-.align-center {
-  align-items: center;
-}
-
-.justify-center {
-  justify-content: center;
 }
 
 .btn {

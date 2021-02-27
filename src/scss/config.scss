@@ -6,7 +6,16 @@ $dark2: #292929;
 $dark3: #373737;
 $light1: white;
 $light2: #eee;
-$light3: #ddd;
+$light3: #ccc;
+$primary-hover: darken($primary, 10);
+$accent-hover: darken($accent, 10);
+$accent2-hover: darken($accent2, 10);
+$dark1-hover: darken($dark1, 10);
+$dark2-hover: darken($dark2, 10);
+$dark3-hover: darken($dark3, 10);
+$light1-hover: darken($light1, 10);
+$light2-hover: darken($light2, 10);
+$light3-hover: darken($light3, 10);
 $transitionSpeed: 200ms;
 $borderRadius: 5px;
 
@@ -86,4 +95,14 @@ $borderRadius: 5px;
   &:focus {
     background: rgba(0, 0, 0, 0.1);
   }
+}
+
+@mixin h2 {
+  font-size: 1.5em;
+  font-weight: 700;
+}
+
+@mixin h3 {
+  font-weight: 400;
+  font-size: 1.125rem;
 }
