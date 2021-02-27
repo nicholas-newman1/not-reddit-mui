@@ -1,0 +1,7 @@
+@use '../../scss/config.scss' as *;
+
+.card {
+  background: $dark2;
+  border-radius: $borderRadius;
+  padding: 1rem;
+}
