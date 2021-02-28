@@ -10,6 +10,10 @@ $headerBackground: $dark1;
   transform: translateY(-100%);
   transition: 400ms;
   z-index: 1000;
+
+  * {
+    color: $light1;
+  }
 }
 
 .headerAnimate {

@@ -19,6 +19,10 @@
   transform: scale(0);
   transform-origin: top;
   transition: $transitionSpeed;
+
+  * {
+    color: $light1;
+  }
 }
 
 .displayNav {
