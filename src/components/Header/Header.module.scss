@@ -6,10 +6,12 @@ $headerBackground: $dark1;
   background: $headerBackground;
   border-bottom: 2px solid $primary;
   @include box-shadow;
-  position: relative;
+  position: fixed;
+  top: 0;
+  width: 100%;
   transform: translateY(-100%);
   transition: 400ms;
-  z-index: 1000;
+  z-index: map-get($z-index, nav);
 
   * {
     color: $light1;

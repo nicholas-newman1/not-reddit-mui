@@ -7,16 +7,22 @@ import LoginMenu from './LoginMenu';
 import UserMenu from './UserMenu';
 
 const Header = () => {
-  const header = useRef<HTMLElement>(null);
+  const headerRef = useRef<HTMLElement>(null);
   const user = useSelector((state: AppState) => state.auth.user);
 
   useEffect(() => {
     /* Header animates */
-    header.current!.classList.add(styles.headerAnimate);
+    const header = headerRef.current!;
+    header.classList.add(styles.headerAnimate);
+
+    /* Puts main into view from under header */
+    const main = document.querySelector('main')!;
+    const headerHeight = header.getBoundingClientRect().height + 'px';
+    main.style.paddingTop = headerHeight;
   }, []);
 
   return (
-    <header ref={header} className={styles.header}>
+    <header ref={headerRef} className={styles.header}>
       <div className={styles.container}>
         <Link to='/' className={styles.logo}>
           Not Reddit

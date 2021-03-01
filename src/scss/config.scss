@@ -19,6 +19,11 @@ $light3-hover: darken($light3, 10);
 $transitionSpeed: 200ms;
 $borderRadius: 5px;
 
+$z-index: (
+  modal: 200,
+  navigation: 100,
+);
+
 @mixin box-shadow() {
   box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.15);
 }

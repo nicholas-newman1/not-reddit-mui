@@ -15,7 +15,7 @@ const store = createStore<AppState, AppActions, {}, {}>(
   rootReducer,
   composeEnhancers(
     applyMiddleware(
-      thunk.withExtraArgument({}) as ThunkMiddleware<AppState, AppActions>
+      thunk as ThunkMiddleware<AppState, AppActions>
     )
   )
 );
