@@ -16,7 +16,7 @@ const Modal: React.FC<Props> = ({ children, open, onClose }) => {
           onClick={onClose}
           data-testid='background'
         />
-        <div>{children}</div>
+        <div className={styles.content}>{children}</div>
       </div>
     </Portal>
   ) : null;
