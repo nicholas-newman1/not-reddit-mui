@@ -1,17 +1,20 @@
 import React from 'react';
-import styles from './Card.module.scss';
+import styled from 'styled-components';
 
-interface Props extends React.HTMLProps<HTMLDivElement> {}
+const StyledCard = styled.div`
+  background: ${(props) => props.theme.colors.card};
+  color: ${(props) => props.theme.colors.text};
+  border-radius: ${(props) => props.theme.borderRadius};
+  padding: 1rem;
+`;
+
+type Props = React.ComponentProps<typeof StyledCard>;
 
 const Card: React.FC<Props> = (props) => {
   return (
-    <div
-      {...props}
-      className={`${styles.card} ${props.className ? props.className : ''}`}
-      data-testid='wrapper'
-    >
+    <StyledCard {...props} data-testid='wrapper'>
       {props.children}
-    </div>
+    </StyledCard>
   );
 };
 

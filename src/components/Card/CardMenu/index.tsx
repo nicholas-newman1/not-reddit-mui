@@ -1,10 +1,20 @@
 import React from 'react';
-import styles from './CardMenu.module.scss';
+import styled from 'styled-components';
+
+const List = styled.ul`
+  display: flex;
+  flex-wrap: wrap;
+  margin: -1rem;
+
+  & li {
+    margin: 1rem;
+  }
+`;
 
 const CardMenu: React.FC = ({ children }) => {
   return (
     <nav>
-      <ul className={styles.list}>{children}</ul>
+      <List>{children}</List>
     </nav>
   );
 };
