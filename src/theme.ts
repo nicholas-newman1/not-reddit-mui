@@ -1,7 +1,13 @@
 const theme = {
   colors: {
-    primary: '#008aa6',
-    secondary: '#db9a00',
+    primary: {
+      main: '#008aa6',
+      text: '#fff',
+    },
+    secondary: {
+      main: '#c28800',
+      text: '#fff',
+    },
   },
   transitions: {
     duration: {
@@ -14,7 +20,7 @@ const theme = {
     nav: 100,
   },
   shadow: '5px 5px 5px rgba(0, 0, 0, 0.15)',
-  hoverOpacity: 0.9,
+  hoverOpacity: 0.8,
 };
 
 export const light = {

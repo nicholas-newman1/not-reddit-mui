@@ -3,8 +3,14 @@ import 'styled-components';
 declare module 'styled-components' {
   export interface DefaultTheme {
     colors: {
-      primary: string;
-      secondary: string;
+      primary: {
+        main: string;
+        text: string;
+      };
+      secondary: {
+        main: string;
+        text: string;
+      };
       background: string;
       card: string;
       text: string;
