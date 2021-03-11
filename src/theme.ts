@@ -26,6 +26,9 @@ theme.props = {
   MuiCard: {
     elevation: 0,
   },
+  MuiPaper: {
+    elevation: 0,
+  },
   MuiIconButton: {
     size: 'small',
   },

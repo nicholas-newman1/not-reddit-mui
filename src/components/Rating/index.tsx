@@ -11,6 +11,9 @@ interface Props {
 }
 
 const useStyles = makeStyles({
+  root: {
+    textAlign: 'center',
+  },
   iconButton: {
     '&:hover': {
       background: 'none',
@@ -25,12 +28,7 @@ const Rating: React.FC<Props> = (props) => {
   const classes = useStyles();
 
   return (
-    <Grid
-      data-testid='wrapper'
-      container
-      direction='column'
-      alignItems='center'
-    >
+    <Grid data-testid='wrapper' className={classes.root}>
       <IconButton
         onClick={() => props.onUpVote()}
         aria-label='up vote'

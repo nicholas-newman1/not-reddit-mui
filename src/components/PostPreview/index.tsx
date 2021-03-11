@@ -1,11 +1,15 @@
+import {
+  Grid,
+  makeStyles,
+  Button,
+  Paper,
+  Typography,
+  Link as StyledLink,
+} from '@material-ui/core';
 import React from 'react';
 import { Link } from 'react-router-dom';
-import Card from '../Card';
-import CardMenu from '../Card/CardMenu';
-import CardMenuItem from '../Card/CardMenuItem';
 import PostMeta from '../PostMeta';
 import Rating from '../Rating';
-import styles from './PostPreview.module.scss';
 
 interface Props {
   onUpVote: () => void;
@@ -26,47 +30,90 @@ interface Props {
   ratingStatus?: 'up' | 'down';
 }
 
-const PostPreview: React.FC<Props> = (props) => {
-  return (
-    <Card className={styles.container}>
-      <div className={styles.flex}>
-        <Rating
-          rating={props.rating}
-          onUpVote={props.onUpVote}
-          onDownVote={props.onDownVote}
-          status={props.ratingStatus}
-        />
-        <div className={styles.grid}>
-          <PostMeta
-            category={props.category}
-            categoryHref={props.categoryHref}
-            timestamp={props.timestamp}
-            userProfileHref={props.userProfileHref}
-            username={props.username}
-          />
-          <h2 className={styles.title}>
-            <Link to={props.postHref}>{props.title}</Link>
-          </h2>
+const useStyles = makeStyles((theme) => {
+  const buttonSpacing = theme.spacing(1);
+  const layoutSpacing = theme.spacing(1.5);
 
-          <CardMenu>
-            <CardMenuItem>
-              <Link to={props.postHref + '#comments'}>
-                comments ({props.numOfComments})
-              </Link>
-            </CardMenuItem>
-            <CardMenuItem>
-              <button onClick={props.onSave}>Save</button>
-            </CardMenuItem>
-            <CardMenuItem>
-              <button onClick={props.onShare}>Share</button>
-            </CardMenuItem>
-            <CardMenuItem>
-              <button onClick={props.onReport}>Report</button>
-            </CardMenuItem>
-          </CardMenu>
-        </div>
-      </div>
-    </Card>
+  return {
+    root: {
+      padding: layoutSpacing,
+    },
+    gap: {
+      gap: layoutSpacing,
+      marginLeft: layoutSpacing,
+    },
+    buttonGroup: {
+      margin: `-${buttonSpacing}px`,
+    },
+    button: {
+      paddingLeft: buttonSpacing,
+      paddingRight: buttonSpacing,
+      minHeight: 0,
+      minWidth: 0,
+      fontSize: '0.75rem',
+      fontWeight: theme.typography.fontWeightBold,
+    },
+  };
+});
+
+const PostPreview: React.FC<Props> = (props) => {
+  const classes = useStyles();
+
+  return (
+    <Paper className={classes.root}>
+      <Grid container direction='row' alignItems='center' wrap='nowrap'>
+        <Grid item justify='center'>
+          <Rating
+            rating={props.rating}
+            onUpVote={props.onUpVote}
+            onDownVote={props.onDownVote}
+            status={props.ratingStatus}
+          />
+        </Grid>
+        <Grid item container direction='column' className={classes.gap}>
+          <Grid item>
+            <PostMeta
+              category={props.category}
+              categoryHref={props.categoryHref}
+              timestamp={props.timestamp}
+              userProfileHref={props.userProfileHref}
+              username={props.username}
+            />
+          </Grid>
+
+          <Grid item>
+            <Typography component='h2' variant='body1'>
+              <StyledLink
+                component={Link}
+                to={props.postHref}
+                color='textPrimary'
+              >
+                {props.title}
+              </StyledLink>
+            </Typography>
+          </Grid>
+
+          <Grid item container className={classes.buttonGroup}>
+            <Button
+              className={classes.button}
+              component={Link}
+              to={props.postHref + '#comments'}
+            >
+              comments ({props.numOfComments})
+            </Button>
+            <Button className={classes.button} onClick={props.onSave}>
+              Save
+            </Button>
+            <Button className={classes.button} onClick={props.onShare}>
+              Share
+            </Button>
+            <Button className={classes.button} onClick={props.onReport}>
+              Report
+            </Button>
+          </Grid>
+        </Grid>
+      </Grid>
+    </Paper>
   );
 };
 
