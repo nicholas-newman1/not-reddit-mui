@@ -1,9 +1,9 @@
-import { createMuiTheme } from '@material-ui/core';
+import { createMuiTheme, PaletteType } from '@material-ui/core';
 
-function getTheme(theme: { paletteType: string }) {
+function getTheme(theme: { paletteType: PaletteType }) {
   return createMuiTheme({
     palette: {
-      type: 'light',
+      type: theme.paletteType,
       primary: {
         main: '#008aa6',
       },
@@ -25,5 +25,19 @@ export const theme = getTheme({
 theme.props = {
   MuiCard: {
     elevation: 0,
+  },
+  MuiIconButton: {
+    size: 'small',
+  },
+  MuiSvgIcon: {
+    fontSize: 'large',
+  },
+};
+
+theme.overrides = {
+  MuiIconButton: {
+    root: {
+      color: theme.palette.text.primary,
+    },
   },
 };

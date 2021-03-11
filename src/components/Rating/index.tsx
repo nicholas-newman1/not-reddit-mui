@@ -1,6 +1,6 @@
+import { Grid, IconButton, makeStyles, Typography } from '@material-ui/core';
+import { ExpandLess, ExpandMore } from '@material-ui/icons';
 import React from 'react';
-import ArrowIcon from '../../svg/ArrowIcon';
-import styles from './Rating.module.scss';
 
 interface Props {
   rating: number;
@@ -10,39 +10,49 @@ interface Props {
   className?: string;
 }
 
+const useStyles = makeStyles({
+  iconButton: {
+    '&:hover': {
+      background: 'none',
+    },
+  },
+  svgIcon: {
+    fontSize: '30px',
+  },
+});
+
 const Rating: React.FC<Props> = (props) => {
+  const classes = useStyles();
+
   return (
-    <div
-      className={
-        styles.container + ` ${props.className ? props.className : ''}`
-      }
+    <Grid
       data-testid='wrapper'
+      container
+      direction='column'
+      alignItems='center'
     >
-      <button
-        className={
-          styles.arrowUp + ` ${props.status === 'up' ? styles.arrowActive : ''}`
-        }
+      <IconButton
         onClick={() => props.onUpVote()}
         aria-label='up vote'
         data-testid='up-arrow'
+        color={props.status === 'up' ? 'secondary' : 'inherit'}
+        className={classes.iconButton}
       >
-        <ArrowIcon ariaHidden={true} />
-      </button>
+        <ExpandLess className={classes.svgIcon} />
+      </IconButton>
 
-      <div className={styles.rating}>{props.rating}</div>
+      <Typography>{props.rating}</Typography>
 
-      <button
-        className={
-          styles.arrowDown +
-          ` ${props.status === 'down' ? styles.arrowActive : ''}`
-        }
+      <IconButton
         onClick={() => props.onDownVote()}
         aria-label='down vote'
         data-testid='down-arrow'
+        color={props.status === 'down' ? 'secondary' : 'inherit'}
+        className={classes.iconButton}
       >
-        <ArrowIcon ariaHidden={true} />
-      </button>
-    </div>
+        <ExpandMore className={classes.svgIcon} />
+      </IconButton>
+    </Grid>
   );
 };
 
