@@ -1,7 +1,8 @@
+import { Button, Grid, makeStyles, Typography } from '@material-ui/core';
+import clsx from 'clsx';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { getTimeAgoString } from '../../utils';
-import styles from './PostMeta.module.scss';
 
 interface Props {
   username: string;
@@ -11,21 +12,59 @@ interface Props {
   categoryHref: string;
 }
 
+const useStyles = makeStyles((theme) => {
+  const buttonSpacing = theme.spacing(1);
+
+  return {
+    root: {
+      margin: `0 -${buttonSpacing}px`,
+    },
+    item: {
+      paddingLeft: buttonSpacing,
+      paddingRight: buttonSpacing,
+      minHeight: 0,
+      minWidth: 0,
+      textTransform: 'lowercase',
+    },
+    username: {
+      fontWeight: theme.typography.fontWeightBold,
+    },
+    timeString: {
+      color: theme.palette.text.secondary,
+    },
+    category: {
+      color: theme.palette.text.secondary,
+    },
+  };
+});
+
 const PostMeta: React.FC<Props> = (props) => {
+  const classes = useStyles();
   return (
-    <div className={styles.container}>
-      <Link className={styles.username} to={props.userProfileHref}>
+    <Grid container alignItems='center' className={classes.root}>
+      <Button
+        component={Link}
+        className={clsx(classes.username, classes.item)}
+        to={props.userProfileHref}
+      >
         {props.username}
-      </Link>
+      </Button>
 
-      <div className={styles.timeString}>
+      <Typography
+        variant='button'
+        className={clsx(classes.timeString, classes.item)}
+      >
         {getTimeAgoString(props.timestamp)}
-      </div>
+      </Typography>
 
-      <Link className={styles.category} to={props.categoryHref}>
+      <Button
+        component={Link}
+        className={clsx(classes.category, classes.item)}
+        to={props.categoryHref}
+      >
         {props.category}
-      </Link>
-    </div>
+      </Button>
+    </Grid>
   );
 };
 

@@ -43,7 +43,7 @@ const useStyles = makeStyles((theme) => {
       marginLeft: layoutSpacing,
     },
     buttonGroup: {
-      margin: `-${buttonSpacing}px`,
+      margin: `0 -${buttonSpacing}px`,
     },
     button: {
       paddingLeft: buttonSpacing,
@@ -62,7 +62,7 @@ const PostPreview: React.FC<Props> = (props) => {
   return (
     <Paper className={classes.root}>
       <Grid container direction='row' alignItems='center' wrap='nowrap'>
-        <Grid item justify='center'>
+        <Grid justify='center'>
           <Rating
             rating={props.rating}
             onUpVote={props.onUpVote}
@@ -70,30 +70,26 @@ const PostPreview: React.FC<Props> = (props) => {
             status={props.ratingStatus}
           />
         </Grid>
-        <Grid item container direction='column' className={classes.gap}>
-          <Grid item>
-            <PostMeta
-              category={props.category}
-              categoryHref={props.categoryHref}
-              timestamp={props.timestamp}
-              userProfileHref={props.userProfileHref}
-              username={props.username}
-            />
-          </Grid>
+        <Grid container direction='column' className={classes.gap}>
+          <PostMeta
+            category={props.category}
+            categoryHref={props.categoryHref}
+            timestamp={props.timestamp}
+            userProfileHref={props.userProfileHref}
+            username={props.username}
+          />
 
-          <Grid item>
-            <Typography component='h2' variant='body1'>
-              <StyledLink
-                component={Link}
-                to={props.postHref}
-                color='textPrimary'
-              >
-                {props.title}
-              </StyledLink>
-            </Typography>
-          </Grid>
+          <Typography component='h2' variant='body1'>
+            <StyledLink
+              component={Link}
+              to={props.postHref}
+              color='textPrimary'
+            >
+              {props.title}
+            </StyledLink>
+          </Typography>
 
-          <Grid item container className={classes.buttonGroup}>
+          <Grid container className={classes.buttonGroup}>
             <Button
               className={classes.button}
               component={Link}
