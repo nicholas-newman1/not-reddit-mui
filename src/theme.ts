@@ -35,12 +35,20 @@ theme.props = {
   MuiSvgIcon: {
     fontSize: 'large',
   },
+  MuiButton: {
+    disableElevation: true,
+  },
 };
 
 theme.overrides = {
   MuiIconButton: {
     root: {
       color: theme.palette.text.primary,
+    },
+  },
+  MuiButton: {
+    root: {
+      fontWeight: theme.typography.fontWeightBold,
     },
   },
 };
