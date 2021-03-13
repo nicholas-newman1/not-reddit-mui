@@ -61,6 +61,16 @@ theme.props = {
 };
 
 theme.overrides = {
+  MuiCssBaseline: {
+    '@global': {
+      '*::-webkit-scrollbar': {
+        width: '0.6em',
+      },
+      '*::-webkit-scrollbar-thumb': {
+        backgroundColor: 'rgba(0,0,0,.3)',
+      },
+    },
+  },
   MuiIconButton: {
     root: {
       color: theme.palette.text.primary,

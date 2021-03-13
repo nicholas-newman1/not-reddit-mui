@@ -1,98 +1,192 @@
-import { useState } from 'react';
+import {
+  Button,
+  Card,
+  Grid,
+  Link,
+  makeStyles,
+  TextField,
+  Typography,
+} from '@material-ui/core';
+import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { FirebaseError } from '../../firebase/client';
-import { signUp } from '../../store/auth/actions';
+import {
+  displaySignInDialog,
+  hideSignUpDialog,
+  signUp,
+} from '../../store/auth/actions';
 import { AppState } from '../../store/rootReducer';
-import styles from './SignUp.module.scss';
+
+const useStyles = makeStyles((theme) => ({
+  card: {
+    width: '100%',
+    padding: theme.spacing(3),
+    margin: '0 auto',
+    overflow: 'auto',
+  },
+  form: {
+    width: '100%',
+    marginTop: '2rem',
+    marginBottom: '1rem',
+  },
+}));
+
+interface FormDetails {
+  username: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+}
 
 const SignUp = () => {
-  const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [error, setError] = useState('');
   const history = useHistory();
   const dispatch = useDispatch();
   const loading = useSelector((state: AppState) => state.auth.loading);
+  const { register, handleSubmit, errors, setError } = useForm();
+  const classes = useStyles();
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    setError('');
-
-    if (!username) return setError("Username can't be empty");
-    if (!email) return setError("Email can't be empty");
-    if (!password) return setError("Password can't be empty");
-    if (password.length < 6) {
-      return setError('Password must be at least 6 characters');
-    }
-    if (!confirmPassword) return setError('Please confirm password');
-    if (password !== confirmPassword) return setError('Passwords must match');
+  const handleSubmitCb = ({
+    username,
+    email,
+    password,
+    confirmPassword,
+  }: FormDetails) => {
+    if (password !== confirmPassword)
+      return setError('confirmPassword', {
+        message: 'Passwords must match',
+        shouldFocus: false,
+      });
 
     const onSuccess = () => history.push('/');
-    const onFailure = (err: FirebaseError) => setError(err.message);
+    const onFailure = (err: FirebaseError) =>
+      setError('confirmPassword', { message: err.message, shouldFocus: false });
 
     dispatch(signUp(username, email, password, onSuccess, onFailure));
   };
 
+  const switchDialog = () => {
+    dispatch(hideSignUpDialog());
+    dispatch(displaySignInDialog());
+  };
+
   return (
-    <div className={styles.signUp + ' container'}>
-      <h1 className={styles.heading}>Sign Up</h1>
-      <form className={styles.form} onSubmit={handleSubmit}>
-        <div className={styles.inputs}>
-          <label className={styles.label}>
-            Display Name:
-            <input
-              className={styles.input}
-              type='text'
-              name='name'
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-            />
-          </label>
+    <Card className={classes.card}>
+      <Typography component='h1' variant='h4' align='center'>
+        Sign Up
+      </Typography>
 
-          <label className={styles.label}>
-            Email:
-            <input
-              className={styles.input}
-              type='text'
+      <form className={classes.form} onSubmit={handleSubmit(handleSubmitCb)}>
+        <Grid container direction='column' spacing={3}>
+          <Grid item>
+            <TextField
+              inputRef={register({ required: 'Username is required' })}
+              id='username'
+              label='Username'
+              fullWidth
+              autoFocus
+              autoComplete='username'
+              name='username'
+              aria-invalid={errors.username ? 'true' : 'false'}
+            />
+          </Grid>
+
+          {errors.username && (
+            <Grid item>
+              <Typography role='alert' variant='subtitle2' color='error'>
+                {errors.username.message}
+              </Typography>
+            </Grid>
+          )}
+
+          <Grid item>
+            <TextField
+              inputRef={register({ required: 'Email is required' })}
+              id='email'
+              label='Email'
+              fullWidth
+              autoComplete='email'
               name='email'
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              aria-invalid={errors.email ? 'true' : 'false'}
             />
-          </label>
+          </Grid>
 
-          <label className={styles.label}>
-            Password:
-            <input
-              className={styles.input}
+          {errors.email && (
+            <Grid item>
+              <Typography role='alert' variant='subtitle2' color='error'>
+                {errors.email.message}
+              </Typography>
+            </Grid>
+          )}
+
+          <Grid item>
+            <TextField
+              inputRef={register({
+                required: 'Password is required',
+                minLength: {
+                  value: 6,
+                  message: 'Password must be at least 6 characters',
+                },
+              })}
+              id='password'
+              label='Password'
               type='password'
               name='password'
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              autoComplete='new-password'
+              fullWidth
+              aria-invalid={errors.password ? 'true' : 'false'}
             />
-          </label>
+          </Grid>
 
-          <label className={styles.label}>
-            Confirm Password:
-            <input
-              className={styles.input}
+          {errors.password && (
+            <Grid item>
+              <Typography role='alert' variant='subtitle2' color='error'>
+                {errors.password.message}
+              </Typography>
+            </Grid>
+          )}
+
+          <Grid item>
+            <TextField
+              inputRef={register({
+                required: 'Please confirm password',
+              })}
+              id='confirmPassword'
+              label='Confirm Password'
               type='password'
-              name='password'
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
+              name='confirmPassword'
+              autoComplete='new-password'
+              fullWidth
+              aria-invalid={errors.password ? 'true' : 'false'}
             />
-          </label>
+          </Grid>
 
-          {error && <p className={styles.error}>{error}</p>}
-        </div>
+          {errors.confirmPassword && (
+            <Grid item>
+              <Typography role='alert' variant='subtitle2' color='error'>
+                {errors.confirmPassword.message}
+              </Typography>
+            </Grid>
+          )}
 
-        <button disabled={loading} className={styles.btn + ' btn btn-primary'}>
-          Sign Up
-        </button>
+          <Grid item container justify='center'>
+            <Button
+              disabled={loading}
+              variant='contained'
+              color='primary'
+              type='submit'
+              fullWidth
+            >
+              Sign Up
+            </Button>
+          </Grid>
+        </Grid>
       </form>
-    </div>
+
+      <Link color='textPrimary' component='button' onClick={switchDialog}>
+        Already have an account?
+      </Link>
+    </Card>
   );
 };
 

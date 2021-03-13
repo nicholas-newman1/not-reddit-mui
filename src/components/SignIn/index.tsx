@@ -2,6 +2,7 @@ import {
   Button,
   Card,
   Grid,
+  Link,
   makeStyles,
   TextField,
   Typography,
@@ -10,7 +11,11 @@ import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { FirebaseError } from '../../firebase/client';
-import { signIn } from '../../store/auth/actions';
+import {
+  displaySignUpDialog,
+  hideSignInDialog,
+  signIn,
+} from '../../store/auth/actions';
 import { AppState } from '../../store/rootReducer';
 
 const useStyles = makeStyles((theme) => ({
@@ -22,6 +27,7 @@ const useStyles = makeStyles((theme) => ({
   form: {
     width: '100%',
     marginTop: '2rem',
+    marginBottom: '1rem',
   },
 }));
 
@@ -62,6 +68,11 @@ const SignIn = () => {
     dispatch(signIn(email, password, onSuccess, onFailure));
   };
 
+  const switchDialog = () => {
+    dispatch(hideSignInDialog());
+    dispatch(displaySignUpDialog());
+  };
+
   return (
     <Card className={classes.card}>
       <Typography component='h1' variant='h4' align='center'>
@@ -69,7 +80,7 @@ const SignIn = () => {
       </Typography>
 
       <form className={classes.form} onSubmit={handleSubmit(handleSubmitCb)}>
-        <Grid container direction='column' spacing={4}>
+        <Grid container direction='column' spacing={3}>
           <Grid item>
             <TextField
               inputRef={register({ required: 'Email is required' })}
@@ -131,6 +142,10 @@ const SignIn = () => {
           </Grid>
         </Grid>
       </form>
+
+      <Link color='textPrimary' component='button' onClick={switchDialog}>
+        Don't have an account?
+      </Link>
     </Card>
   );
 };
