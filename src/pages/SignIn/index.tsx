@@ -1,84 +1,143 @@
-import { useState } from 'react';
+import {
+  Button,
+  Card,
+  Container,
+  Grid,
+  makeStyles,
+  TextField,
+  Typography,
+} from '@material-ui/core';
+import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { FirebaseError } from '../../firebase/client';
 import { signIn } from '../../store/auth/actions';
 import { AppState } from '../../store/rootReducer';
-import styles from './SignIn.module.scss';
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    marginTop: '3rem',
+  },
+  card: {
+    maxWidth: '400px',
+    padding: theme.spacing(3),
+    margin: '0 auto',
+  },
+  form: {
+    width: '100%',
+    marginTop: '2rem',
+  },
+}));
+
+interface FormDetails {
+  email: string;
+  password: string;
+}
 
 const SignIn = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
   const history = useHistory();
   const dispatch = useDispatch();
+  const classes = useStyles();
   const loading = useSelector((state: AppState) => state.auth.loading);
+  const { register, handleSubmit, errors, setError } = useForm();
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    setError('');
-
-    if (!email) return setError("Email can't be empty");
-    if (!password) return setError("Password can't be empty");
-    if (password.length < 6) {
-      return setError('Password must be at least 6 characters');
-    }
-
+  const handleSubmitCb = ({ email, password }: FormDetails) => {
     const onSuccess = () => history.push('/');
     const onFailure = (err: FirebaseError) => {
+      console.log(err);
       if (err.code === 'auth/too-many-requests') {
-        return setError(
-          'Too many failed attempts. Try again later, or reset your password'
-        );
+        return setError('password', {
+          message:
+            'Too many failed attempts. Try again later, or reset your password',
+          shouldFocus: false,
+        });
       }
       if (
         err.code === 'auth/user-not-found' ||
-        err.code === 'auth/wrong password'
+        err.code === 'auth/wrong-password'
       ) {
-        return setError('Incorrect email or password');
+        return setError('password', {
+          message: 'Incorrect email or password',
+          shouldFocus: false,
+        });
       }
-      setError(err.message);
     };
 
     dispatch(signIn(email, password, onSuccess, onFailure));
   };
 
   return (
-    <div className={styles.signIn + ' container'}>
-      <h1 className={styles.heading}>Login</h1>
-      <form className={styles.form} onSubmit={handleSubmit}>
-        <div className={styles.inputs}>
-          <label className={styles.label}>
-            Email:
-            <input
-              className={styles.input}
-              type='text'
-              name='email'
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          </label>
+    <Container className={classes.root}>
+      <Card className={classes.card}>
+        <Typography component='h1' variant='h4' align='center'>
+          Login
+        </Typography>
 
-          <label className={styles.label}>
-            Password:
-            <input
-              className={styles.input}
-              type='password'
-              name='password'
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </label>
+        <form className={classes.form} onSubmit={handleSubmit(handleSubmitCb)}>
+          <Grid container direction='column' spacing={4}>
+            <Grid item>
+              <TextField
+                inputRef={register({ required: 'Email is required' })}
+                id='email'
+                label='Email'
+                fullWidth
+                autoFocus
+                autoComplete='email'
+                name='email'
+                aria-invalid={errors.email ? 'true' : 'false'}
+              />
+            </Grid>
 
-          {error && <p className={styles.error}>{error}</p>}
-        </div>
+            {errors.email && (
+              <Grid item>
+                <Typography role='alert' variant='subtitle2' color='error'>
+                  {errors.email.message}
+                </Typography>
+              </Grid>
+            )}
 
-        <button disabled={loading} className={styles.btn + ' btn btn-primary'}>
-          Log In
-        </button>
-      </form>
-    </div>
+            <Grid item>
+              <TextField
+                inputRef={register({
+                  required: 'Password is required',
+                  minLength: {
+                    value: 6,
+                    message: 'Password must be at least 6 characters',
+                  },
+                })}
+                id='password'
+                label='Password'
+                type='password'
+                name='password'
+                autoComplete='current-password'
+                fullWidth
+                aria-invalid={errors.password ? 'true' : 'false'}
+              />
+            </Grid>
+
+            {errors.password && (
+              <Grid item>
+                <Typography role='alert' variant='subtitle2' color='error'>
+                  {errors.password.message}
+                </Typography>
+              </Grid>
+            )}
+
+            <Grid item container justify='center'>
+              <Button
+                disabled={loading}
+                variant='contained'
+                color='primary'
+                type='submit'
+                fullWidth
+              >
+                Log In
+              </Button>
+            </Grid>
+          </Grid>
+        </form>
+      </Card>
+    </Container>
   );
 };
 
