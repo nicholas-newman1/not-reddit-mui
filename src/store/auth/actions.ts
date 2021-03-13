@@ -13,6 +13,10 @@ import {
   SignOutSuccess,
   VerifyRequest,
   VerifySuccess,
+  DisplaySignInDialog,
+  DisplaySignUpDialog,
+  HideSignInDialog,
+  HideSignUpDialog,
 } from './types';
 
 // Sign In
@@ -150,3 +154,20 @@ export const verifyAuth = () => {
     });
   };
 };
+
+// dialogs
+export const displaySignInDialog = (): DisplaySignInDialog => ({
+  type: 'DISPLAY_SIGN_IN_DIALOG',
+});
+
+export const hideSignInDialog = (): HideSignInDialog => ({
+  type: 'HIDE_SIGN_IN_DIALOG',
+});
+
+export const displaySignUpDialog = (): DisplaySignUpDialog => ({
+  type: 'DISPLAY_SIGN_UP_DIALOG',
+});
+
+export const hideSignUpDialog = (): HideSignUpDialog => ({
+  type: 'HIDE_SIGN_UP_DIALOG',
+});

@@ -11,6 +11,10 @@ export const SIGN_OUT_SUCCESS = 'SIGN_OUT_SUCCESS';
 export const SIGN_OUT_FAILURE = 'SIGN_OUT_FAILURE';
 export const VERIFY_REQUEST = 'VERIFY_REQUEST';
 export const VERIFY_SUCCESS = 'VERIFY_SUCCESS';
+export const DISPLAY_SIGN_IN_DIALOG = 'DISPLAY_SIGN_IN_DIALOG';
+export const HIDE_SIGN_IN_DIALOG = 'HIDE_SIGN_IN_DIALOG';
+export const DISPLAY_SIGN_UP_DIALOG = 'DISPLAY_SIGN_UP_DIALOG';
+export const HIDE_SIGN_UP_DIALOG = 'HIDE_SIGN_UP_DIALOG';
 
 export interface SignInRequest {
   type: typeof SIGN_IN_REQUEST;
@@ -71,6 +75,22 @@ export interface VerifySuccess {
   type: typeof VERIFY_SUCCESS;
 }
 
+export interface DisplaySignInDialog {
+  type: typeof DISPLAY_SIGN_IN_DIALOG;
+}
+
+export interface HideSignInDialog {
+  type: typeof HIDE_SIGN_IN_DIALOG;
+}
+
+export interface DisplaySignUpDialog {
+  type: typeof DISPLAY_SIGN_UP_DIALOG;
+}
+
+export interface HideSignUpDialog {
+  type: typeof HIDE_SIGN_UP_DIALOG;
+}
+
 export type AuthActionTypes =
   | SignInRequest
   | SignInSuccess
@@ -82,4 +102,8 @@ export type AuthActionTypes =
   | SignOutSuccess
   | SignOutFailure
   | VerifyRequest
-  | VerifySuccess;
+  | VerifySuccess
+  | DisplaySignInDialog
+  | HideSignInDialog
+  | DisplaySignUpDialog
+  | HideSignUpDialog;

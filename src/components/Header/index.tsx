@@ -15,7 +15,11 @@ import clsx from 'clsx';
 import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { signOut } from '../../store/auth/actions';
+import {
+  displaySignInDialog,
+  displaySignUpDialog,
+  signOut,
+} from '../../store/auth/actions';
 import { AppState } from '../../store/rootReducer';
 
 const useStyles = makeStyles((theme) => ({
@@ -127,16 +131,14 @@ const Header = () => {
           ) : (
             <Box>
               <Button
-                component={Link}
-                to='/login'
+                onClick={() => dispatch(displaySignInDialog())}
                 variant='outlined'
                 className={classes.login}
               >
                 Login
               </Button>
               <Button
-                component={Link}
-                to='/signup'
+                onClick={() => dispatch(displaySignUpDialog())}
                 color='primary'
                 variant='contained'
               >
