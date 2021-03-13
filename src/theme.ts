@@ -71,4 +71,11 @@ theme.overrides = {
       fontWeight: theme.typography.fontWeightBold,
     },
   },
+  MuiInputBase: {
+    input: {
+      transition: 'background-color 5000s ease-in-out 0s',
+      WebkitTextFillColor: theme.palette.text.primary,
+      caretColor: theme.palette.text.primary,
+    },
+  },
 };
