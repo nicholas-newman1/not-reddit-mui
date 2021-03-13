@@ -9,14 +9,6 @@ import {
   Typography,
 } from '@material-ui/core';
 import { useForm } from 'react-hook-form';
-import { useDispatch, useSelector } from 'react-redux';
-import { FirebaseError } from '../../firebase/client';
-import {
-  displaySignInDialog,
-  hideSignUpDialog,
-  signUp,
-} from '../../store/auth/actions';
-import { AppState } from '../../store/rootReducer';
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -39,52 +31,42 @@ interface FormDetails {
   confirmPassword: string;
 }
 
-const SignUpDialog = () => {
-  const dispatch = useDispatch();
-  const loading = useSelector((state: AppState) => state.auth.loading);
+interface Props {
+  switchToSignInDialog: () => void;
+  loading: boolean;
+  isDialogOpen: boolean;
+  handleSignUp: (
+    data: FormDetails,
+    setError: (message: string) => void
+  ) => void;
+  hideDialog: () => void;
+}
+
+const SignUpDialog: React.FC<Props> = ({
+  switchToSignInDialog,
+  loading,
+  isDialogOpen,
+  handleSignUp,
+  hideDialog,
+}) => {
   const { register, handleSubmit, errors, setError } = useForm();
   const classes = useStyles();
-  const signUpDialog = useSelector(
-    (state: AppState) => state.auth.signUpDialog
-  );
-
-  const handleSubmitCb = ({
-    username,
-    email,
-    password,
-    confirmPassword,
-  }: FormDetails) => {
-    if (password !== confirmPassword)
-      return setError('confirmPassword', {
-        message: 'Passwords must match',
-        shouldFocus: false,
-      });
-
-    const onSuccess = () => dispatch(hideSignUpDialog());
-    const onFailure = (err: FirebaseError) =>
-      setError('confirmPassword', { message: err.message, shouldFocus: false });
-
-    dispatch(signUp(username, email, password, onSuccess, onFailure));
-  };
-
-  const switchDialog = () => {
-    dispatch(hideSignUpDialog());
-    dispatch(displaySignInDialog());
-  };
 
   return (
-    <Dialog
-      open={signUpDialog}
-      onClose={() => dispatch(hideSignUpDialog())}
-      fullWidth
-      maxWidth='xs'
-    >
+    <Dialog open={isDialogOpen} onClose={hideDialog} fullWidth maxWidth='xs'>
       <Card className={classes.card}>
         <Typography component='h1' variant='h4' align='center'>
           Sign Up
         </Typography>
 
-        <form className={classes.form} onSubmit={handleSubmit(handleSubmitCb)}>
+        <form
+          className={classes.form}
+          onSubmit={handleSubmit((data: FormDetails) =>
+            handleSignUp(data, (message: string) =>
+              setError('confirmPassword', { message, shouldFocus: false })
+            )
+          )}
+        >
           <Grid container direction='column' spacing={3}>
             <Grid item>
               <TextField
@@ -191,7 +173,11 @@ const SignUpDialog = () => {
           </Grid>
         </form>
 
-        <Link color='textPrimary' component='button' onClick={switchDialog}>
+        <Link
+          color='textPrimary'
+          component='button'
+          onClick={switchToSignInDialog}
+        >
           Already have an account?
         </Link>
       </Card>

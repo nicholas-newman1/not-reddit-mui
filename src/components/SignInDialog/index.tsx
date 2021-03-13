@@ -9,15 +9,6 @@ import {
   Typography,
 } from '@material-ui/core';
 import { useForm } from 'react-hook-form';
-import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
-import { FirebaseError } from '../../firebase/client';
-import {
-  displaySignUpDialog,
-  hideSignInDialog,
-  signIn,
-} from '../../store/auth/actions';
-import { AppState } from '../../store/rootReducer';
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -37,59 +28,46 @@ interface FormDetails {
   password: string;
 }
 
-const SignInDialog = () => {
-  const history = useHistory();
-  const dispatch = useDispatch();
+interface Props {
+  handleSignIn: (
+    data: FormDetails,
+    setError: (message: string) => void
+  ) => void;
+  switchToSignUpDialog: () => void;
+  isDialogOpen: boolean;
+  hideDialog: () => void;
+  loading: boolean;
+}
+
+const SignInDialog: React.FC<Props> = ({
+  handleSignIn,
+  switchToSignUpDialog,
+  isDialogOpen,
+  hideDialog,
+  loading,
+}) => {
   const classes = useStyles();
-  const loading = useSelector((state: AppState) => state.auth.loading);
+
   const { register, handleSubmit, errors, setError } = useForm();
-  const signInDialog = useSelector(
-    (state: AppState) => state.auth.signInDialog
-  );
-
-  const handleSubmitCb = ({ email, password }: FormDetails) => {
-    const onSuccess = () => history.push('/');
-    const onFailure = (err: FirebaseError) => {
-      console.log(err);
-      if (err.code === 'auth/too-many-requests') {
-        return setError('password', {
-          message:
-            'Too many failed attempts. Try again later, or reset your password',
-          shouldFocus: false,
-        });
-      }
-      if (
-        err.code === 'auth/user-not-found' ||
-        err.code === 'auth/wrong-password'
-      ) {
-        return setError('password', {
-          message: 'Incorrect email or password',
-          shouldFocus: false,
-        });
-      }
-    };
-
-    dispatch(signIn(email, password, onSuccess, onFailure));
-  };
-
-  const switchDialog = () => {
-    dispatch(hideSignInDialog());
-    dispatch(displaySignUpDialog());
-  };
 
   return (
-    <Dialog
-      open={signInDialog}
-      onClose={() => dispatch(hideSignInDialog())}
-      fullWidth
-      maxWidth='xs'
-    >
+    <Dialog open={isDialogOpen} onClose={hideDialog} fullWidth maxWidth='xs'>
       <Card className={classes.card}>
         <Typography component='h1' variant='h4' align='center'>
           Login
         </Typography>
 
-        <form className={classes.form} onSubmit={handleSubmit(handleSubmitCb)}>
+        <form
+          className={classes.form}
+          onSubmit={handleSubmit((data: FormDetails) =>
+            handleSignIn(data, (message: string) =>
+              setError('password', {
+                message,
+                shouldFocus: false,
+              })
+            )
+          )}
+        >
           <Grid container direction='column' spacing={3}>
             <Grid item>
               <TextField
@@ -153,7 +131,11 @@ const SignInDialog = () => {
           </Grid>
         </form>
 
-        <Link color='textPrimary' component='button' onClick={switchDialog}>
+        <Link
+          color='textPrimary'
+          component='button'
+          onClick={switchToSignUpDialog}
+        >
           Don't have an account?
         </Link>
       </Card>
