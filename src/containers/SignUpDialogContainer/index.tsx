@@ -5,6 +5,7 @@ import {
   hideSignUpDialog,
   displaySignInDialog,
   signUp,
+  displaySignUpSuccessToast,
 } from '../../store/auth/actions';
 import { AppState } from '../../store/rootReducer';
 
@@ -25,7 +26,7 @@ const SignUpDialogContainer = () => {
 
   const loading = useSelector((state: AppState) => state.auth.loading);
   const isDialogOpen = useSelector(
-    (state: AppState) => state.auth.signUpDialog
+    (state: AppState) => state.auth.isSignUpDialogOpen
   );
 
   const handleSignUp = (
@@ -34,7 +35,10 @@ const SignUpDialogContainer = () => {
   ) => {
     if (password !== confirmPassword) return setError('Passwords must match');
 
-    const onSuccess = () => dispatch(hideSignUpDialog());
+    const onSuccess = () => {
+      dispatch(hideSignUpDialog());
+      dispatch(displaySignUpSuccessToast());
+    };
     const onFailure = (err: FirebaseError) => setError(err.message);
 
     dispatch(signUp(username, email, password, onSuccess, onFailure));

@@ -23,7 +23,7 @@ const SignInDialogContainer = () => {
 
   const loading = useSelector((state: AppState) => state.auth.loading);
   const isDialogOpen = useSelector(
-    (state: AppState) => state.auth.signInDialog
+    (state: AppState) => state.auth.isSignInDialogOpen
   );
 
   const handleSignIn = (

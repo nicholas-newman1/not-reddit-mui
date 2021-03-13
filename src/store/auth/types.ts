@@ -15,6 +15,8 @@ export const DISPLAY_SIGN_IN_DIALOG = 'DISPLAY_SIGN_IN_DIALOG';
 export const HIDE_SIGN_IN_DIALOG = 'HIDE_SIGN_IN_DIALOG';
 export const DISPLAY_SIGN_UP_DIALOG = 'DISPLAY_SIGN_UP_DIALOG';
 export const HIDE_SIGN_UP_DIALOG = 'HIDE_SIGN_UP_DIALOG';
+export const DISPLAY_SIGN_UP_SUCCESS_TOAST = 'DISPLAY_SIGN_UP_SUCCESS_TOAST';
+export const HIDE_SIGN_UP_SUCCESS_TOAST = 'HIDE_SIGN_UP_SUCCESS_TOAST';
 
 export interface SignInRequest {
   type: typeof SIGN_IN_REQUEST;
@@ -91,6 +93,14 @@ export interface HideSignUpDialog {
   type: typeof HIDE_SIGN_UP_DIALOG;
 }
 
+export interface DisplaySignUpSuccessToast {
+  type: typeof DISPLAY_SIGN_UP_SUCCESS_TOAST;
+}
+
+export interface HideSignUpSuccessToast {
+  type: typeof HIDE_SIGN_UP_SUCCESS_TOAST;
+}
+
 export type AuthActionTypes =
   | SignInRequest
   | SignInSuccess
@@ -106,4 +116,6 @@ export type AuthActionTypes =
   | DisplaySignInDialog
   | HideSignInDialog
   | DisplaySignUpDialog
-  | HideSignUpDialog;
+  | HideSignUpDialog
+  | DisplaySignUpSuccessToast
+  | HideSignUpSuccessToast;

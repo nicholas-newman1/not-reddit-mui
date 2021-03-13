@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Header from './components/Header';
 import SignInDialogContainer from './containers/SignInDialogContainer';
 import SignUpDialogContainer from './containers/SignUpDialogContainer';
+import SignUpSuccessToastContainer from './containers/SignUpSuccessToastContainer';
 import Home from './pages/Home';
 import { theme } from './theme';
 
@@ -13,6 +14,7 @@ function App() {
       <CssBaseline />
       <SignInDialogContainer />
       <SignUpDialogContainer />
+      <SignUpSuccessToastContainer />
 
       <Router>
         <Header />

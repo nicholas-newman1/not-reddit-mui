@@ -17,6 +17,8 @@ import {
   DisplaySignUpDialog,
   HideSignInDialog,
   HideSignUpDialog,
+  DisplaySignUpSuccessToast,
+  HideSignUpSuccessToast,
 } from './types';
 
 // Sign In
@@ -170,4 +172,12 @@ export const displaySignUpDialog = (): DisplaySignUpDialog => ({
 
 export const hideSignUpDialog = (): HideSignUpDialog => ({
   type: 'HIDE_SIGN_UP_DIALOG',
+});
+
+export const displaySignUpSuccessToast = (): DisplaySignUpSuccessToast => ({
+  type: 'DISPLAY_SIGN_UP_SUCCESS_TOAST',
+});
+
+export const hideSignUpSuccessToast = (): HideSignUpSuccessToast => ({
+  type: 'HIDE_SIGN_UP_SUCCESS_TOAST',
 });

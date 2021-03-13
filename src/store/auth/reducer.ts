@@ -5,16 +5,18 @@ interface AuthState {
   user: FirebaseUser;
   loading: boolean;
   error: string;
-  signInDialog: boolean;
-  signUpDialog: boolean;
+  isSignInDialogOpen: boolean;
+  isSignUpDialogOpen: boolean;
+  isSignUpSuccessToastOpen: boolean;
 }
 
 const initialState: AuthState = {
   user: null,
   loading: false,
   error: '',
-  signInDialog: false,
-  signUpDialog: false,
+  isSignInDialogOpen: false,
+  isSignUpDialogOpen: false,
+  isSignUpSuccessToastOpen: false,
 };
 
 export const authReducer = (
@@ -59,13 +61,17 @@ export const authReducer = (
     case 'VERIFY_SUCCESS':
       return { ...state, loading: false };
     case 'DISPLAY_SIGN_IN_DIALOG':
-      return { ...state, signInDialog: true };
+      return { ...state, isSignInDialogOpen: true };
     case 'HIDE_SIGN_IN_DIALOG':
-      return { ...state, signInDialog: false };
+      return { ...state, isSignInDialogOpen: false };
     case 'DISPLAY_SIGN_UP_DIALOG':
-      return { ...state, signUpDialog: true };
+      return { ...state, isSignUpDialogOpen: true };
     case 'HIDE_SIGN_UP_DIALOG':
-      return { ...state, signUpDialog: false };
+      return { ...state, isSignUpDialogOpen: false };
+    case 'DISPLAY_SIGN_UP_SUCCESS_TOAST':
+      return { ...state, isSignUpSuccessToastOpen: true };
+    case 'HIDE_SIGN_UP_SUCCESS_TOAST':
+      return { ...state, isSignUpSuccessToastOpen: false };
     default:
       return state;
   }
