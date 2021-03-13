@@ -32,7 +32,7 @@ interface Props {
 
 const useStyles = makeStyles((theme) => {
   const buttonSpacing = theme.spacing(1);
-  const layoutSpacing = theme.spacing(1.5);
+  const layoutSpacing = theme.spacing(1);
 
   return {
     root: {
@@ -62,7 +62,7 @@ const PostPreview: React.FC<Props> = (props) => {
   return (
     <Paper className={classes.root}>
       <Grid container direction='row' alignItems='center' wrap='nowrap'>
-        <Grid justify='center'>
+        <Grid>
           <Rating
             rating={props.rating}
             onUpVote={props.onUpVote}
