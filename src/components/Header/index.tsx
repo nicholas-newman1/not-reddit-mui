@@ -9,18 +9,19 @@ import {
   IconButton,
   Menu,
   MenuItem,
+  Typography,
 } from '@material-ui/core';
 import { AccountCircle } from '@material-ui/icons';
 import clsx from 'clsx';
 import { useEffect, useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { useAppDispatch } from '../../hooks/useAppDispatch';
+import { useAppSelector } from '../../hooks/useAppSelector';
 import {
+  signOut,
   displaySignInDialog,
   displaySignUpDialog,
-  signOut,
-} from '../../store/auth/actions';
-import { AppState } from '../../store/rootReducer';
+} from '../../store/authSlice';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -28,6 +29,16 @@ const useStyles = makeStyles((theme) => ({
   },
   rootAnimate: {
     transform: 'translateY(-100%)',
+  },
+  info: {
+    background: theme.palette.info.main,
+    width: '100%',
+    padding: theme.spacing(0.5),
+    lineHeight: '1.15rem',
+    '& button': {
+      lineHeight: '1.15rem',
+      textDecoration: 'underline',
+    },
   },
   title: {
     fontWeight: 800,
@@ -41,9 +52,9 @@ const useStyles = makeStyles((theme) => ({
 
 const Header = () => {
   const classes = useStyles();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const headerRef = useRef<HTMLElement>(null);
-  const user = useSelector((state: AppState) => state.auth.user);
+  const user = useAppSelector((state) => state.auth.user);
   const [openMenu, setOpenMenu] = useState(false);
   const menuIconRef = useRef<HTMLButtonElement>(null);
 
@@ -74,6 +85,26 @@ const Header = () => {
       color='default'
       className={clsx(classes.root, classes.rootAnimate)}
     >
+      {user && !user.emailVerified && (
+        <Grid container>
+          <Typography
+            align='center'
+            variant='subtitle2'
+            className={classes.info}
+          >
+            Please verify your email address.{' '}
+            <StyledLink
+              component='button'
+              color='textPrimary'
+              // onClick={
+              //   resendVerificationEmail
+              // } /* and send + notify on sign up */
+            >
+              Resend
+            </StyledLink>
+          </Typography>
+        </Grid>
+      )}
       <Toolbar>
         <Grid container justify='space-between' alignItems='center'>
           <StyledLink

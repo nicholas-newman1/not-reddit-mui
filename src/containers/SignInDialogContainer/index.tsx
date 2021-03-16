@@ -1,30 +1,27 @@
-import { useDispatch, useSelector } from 'react-redux';
 import SignInDialog from '../../components/SignInDialog';
 import { FirebaseError } from '../../firebase/client';
+import { useAppDispatch } from '../../hooks/useAppDispatch';
+import { useAppSelector } from '../../hooks/useAppSelector';
 import {
-  displaySignUpDialog,
   hideSignInDialog,
+  displaySignUpDialog,
   signIn,
-} from '../../store/auth/actions';
-import { AppState } from '../../store/rootReducer';
-
+} from '../../store/authSlice';
 interface FormDetails {
   email: string;
   password: string;
 }
 
 const SignInDialogContainer = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const hideDialog = () => dispatch(hideSignInDialog());
   const switchToSignUpDialog = () => {
     dispatch(hideSignInDialog());
     dispatch(displaySignUpDialog());
   };
 
-  const loading = useSelector((state: AppState) => state.auth.loading);
-  const isDialogOpen = useSelector(
-    (state: AppState) => state.auth.isSignInDialogOpen
-  );
+  const loading = useAppSelector((state) => state.auth.loading);
+  const isDialogOpen = useAppSelector((state) => state.auth.isSignInDialogOpen);
 
   const handleSignIn = (
     { email, password }: FormDetails,
@@ -45,7 +42,7 @@ const SignInDialogContainer = () => {
       }
     };
 
-    dispatch(signIn(email, password, onSuccess, onFailure));
+    dispatch(signIn({ email, password, onSuccess, onFailure }));
   };
 
   return (

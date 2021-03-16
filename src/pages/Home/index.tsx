@@ -1,11 +1,7 @@
-import styles from './home.module.scss';
+import SignUpSuccessToast from '../../components/SignUpSuccessToast';
 
 const Home = () => {
-  return (
-    <div className={styles.home}>
-      <h1>Hello World</h1>
-    </div>
-  );
+  return <div></div>;
 };
 
 export default Home;

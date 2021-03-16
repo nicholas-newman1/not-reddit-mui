@@ -1,13 +1,11 @@
-import { useDispatch, useSelector } from 'react-redux';
 import SignUpSuccessToast from '../../components/SignUpSuccessToast';
-import { hideSignUpSuccessToast } from '../../store/auth/actions';
-import { AppState } from '../../store/rootReducer';
+import { useAppDispatch } from '../../hooks/useAppDispatch';
+import { useAppSelector } from '../../hooks/useAppSelector';
+import { hideSignUpSuccessToast } from '../../store/authSlice';
 
 const SignUpSuccessToastContainer = () => {
-  const dispatch = useDispatch();
-  const open = useSelector(
-    (state: AppState) => state.auth.isSignUpSuccessToastOpen
-  );
+  const dispatch = useAppDispatch();
+  const open = useAppSelector((state) => state.auth.isSignUpSuccessToastOpen);
 
   return (
     <SignUpSuccessToast

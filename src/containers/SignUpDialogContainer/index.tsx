@@ -1,13 +1,13 @@
-import { useDispatch, useSelector } from 'react-redux';
 import SignUpDialog from '../../components/SignUpDialog';
 import { FirebaseError } from '../../firebase/client';
+import { useAppDispatch } from '../../hooks/useAppDispatch';
+import { useAppSelector } from '../../hooks/useAppSelector';
 import {
   hideSignUpDialog,
   displaySignInDialog,
-  signUp,
   displaySignUpSuccessToast,
-} from '../../store/auth/actions';
-import { AppState } from '../../store/rootReducer';
+  signUp,
+} from '../../store/authSlice';
 
 interface FormDetails {
   username: string;
@@ -17,17 +17,15 @@ interface FormDetails {
 }
 
 const SignUpDialogContainer = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const hideDialog = () => dispatch(hideSignUpDialog());
   const switchToSignInDialog = () => {
     dispatch(hideSignUpDialog());
     dispatch(displaySignInDialog());
   };
 
-  const loading = useSelector((state: AppState) => state.auth.loading);
-  const isDialogOpen = useSelector(
-    (state: AppState) => state.auth.isSignUpDialogOpen
-  );
+  const loading = useAppSelector((state) => state.auth.loading);
+  const isDialogOpen = useAppSelector((state) => state.auth.isSignUpDialogOpen);
 
   const handleSignUp = (
     { username, email, password, confirmPassword }: FormDetails,
@@ -41,7 +39,7 @@ const SignUpDialogContainer = () => {
     };
     const onFailure = (err: FirebaseError) => setError(err.message);
 
-    dispatch(signUp(username, email, password, onSuccess, onFailure));
+    dispatch(signUp({ username, email, password, onSuccess, onFailure }));
   };
 
   return (

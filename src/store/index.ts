@@ -1,24 +1,14 @@
-import { createStore, compose, applyMiddleware } from 'redux';
-import thunk, { ThunkMiddleware } from 'redux-thunk';
-import rootReducer, { AppState } from './rootReducer';
-import { AppActions } from './appActions';
-import { verifyAuth } from './auth/actions';
+import { configureStore } from '@reduxjs/toolkit';
+import auth, { verifyAuth } from './authSlice';
 
-const composeEnhancers =
-  (process.env.NODE_ENV !== 'production' &&
-    typeof window !== 'undefined' &&
-    //@ts-ignore
-    window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) ||
-  compose;
+const store = configureStore({
+  reducer: {
+    auth,
+  },
+});
 
-const store = createStore<AppState, AppActions, {}, {}>(
-  rootReducer,
-  composeEnhancers(
-    applyMiddleware(
-      thunk as ThunkMiddleware<AppState, AppActions>
-    )
-  )
-);
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;
 
 //@ts-ignore
 store.dispatch(verifyAuth());
