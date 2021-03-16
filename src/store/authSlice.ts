@@ -147,7 +147,6 @@ export const resetPassword = createAsyncThunk(
 interface AuthState {
   user: User | null;
   loading: boolean;
-  error: string;
   isSignInDialogOpen: boolean;
   isSignUpDialogOpen: boolean;
   isResetPasswordDialogOpen: boolean;
@@ -158,7 +157,6 @@ interface AuthState {
 const initialState: AuthState = {
   user: null,
   loading: false,
-  error: '',
   isSignInDialogOpen: false,
   isSignUpDialogOpen: false,
   isResetPasswordDialogOpen: false,
@@ -211,13 +209,11 @@ export const authSlice = createSlice({
         ...state,
         loading: true,
         user: null,
-        error: '',
       }))
       .addCase(signIn.fulfilled, (state, action) => ({
         ...state,
         loading: false,
         user: action.payload,
-        error: '',
       }))
       .addCase(signIn.rejected, (state, action) => ({
         ...state,
@@ -228,34 +224,28 @@ export const authSlice = createSlice({
         ...state,
         loading: true,
         user: null,
-        error: '',
       }))
       .addCase(signUp.fulfilled, (state, action) => ({
         ...state,
         loading: false,
         user: action.payload,
-        error: '',
       }))
       .addCase(signUp.rejected, (state, action) => ({
         ...state,
         loading: false,
-        error: action.error.message || 'Unknown error',
       }))
       .addCase(signOut.pending, (state) => ({
         ...state,
         loading: true,
-        error: '',
       }))
       .addCase(signOut.fulfilled, (state) => ({
         ...state,
         loading: false,
         user: null,
-        error: '',
       }))
       .addCase(signOut.rejected, (state, action) => ({
         ...state,
         loading: false,
-        error: action.error.message || 'Unknown error',
       }))
       .addCase(verifyAuth.pending, (state) => {
         state.loading = true;
