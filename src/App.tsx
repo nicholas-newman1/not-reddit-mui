@@ -2,6 +2,8 @@ import { CssBaseline } from '@material-ui/core';
 import { ThemeProvider } from '@material-ui/styles';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Header from './components/Header';
+import ResetPasswordDialogContainer from './containers/ResetPasswordDialogContainer';
+import ResetPasswordSentToastContainer from './containers/ResetPasswordSentToastContainer';
 import SignInDialogContainer from './containers/SignInDialogContainer';
 import SignUpDialogContainer from './containers/SignUpDialogContainer';
 import SignUpSuccessToastContainer from './containers/SignUpSuccessToastContainer';
@@ -14,7 +16,9 @@ function App() {
       <CssBaseline />
       <SignInDialogContainer />
       <SignUpDialogContainer />
+      <ResetPasswordDialogContainer />
       <SignUpSuccessToastContainer />
+      <ResetPasswordSentToastContainer />
 
       <Router>
         <Header />

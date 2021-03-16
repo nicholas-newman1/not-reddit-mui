@@ -6,6 +6,7 @@ import {
   hideSignInDialog,
   displaySignUpDialog,
   signIn,
+  displayResetPasswordDialog,
 } from '../../store/authSlice';
 interface FormDetails {
   email: string;
@@ -18,6 +19,10 @@ const SignInDialogContainer = () => {
   const switchToSignUpDialog = () => {
     dispatch(hideSignInDialog());
     dispatch(displaySignUpDialog());
+  };
+  const switchToResetPasswordDialog = () => {
+    dispatch(hideSignInDialog());
+    dispatch(displayResetPasswordDialog());
   };
 
   const loading = useAppSelector((state) => state.auth.loading);
@@ -40,6 +45,7 @@ const SignInDialogContainer = () => {
       ) {
         return setError('Incorrect email or password');
       }
+      return setError(err.message);
     };
 
     dispatch(signIn({ email, password, onSuccess, onFailure }));
@@ -49,6 +55,7 @@ const SignInDialogContainer = () => {
     <SignInDialog
       handleSignIn={handleSignIn}
       switchToSignUpDialog={switchToSignUpDialog}
+      switchToResetPasswordDialog={switchToResetPasswordDialog}
       isDialogOpen={isDialogOpen}
       hideDialog={hideDialog}
       loading={loading}

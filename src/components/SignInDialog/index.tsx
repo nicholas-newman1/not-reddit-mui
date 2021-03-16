@@ -34,6 +34,7 @@ interface Props {
     setError: (message: string) => void
   ) => void;
   switchToSignUpDialog: () => void;
+  switchToResetPasswordDialog: () => void;
   isDialogOpen: boolean;
   hideDialog: () => void;
   loading: boolean;
@@ -42,6 +43,7 @@ interface Props {
 const SignInDialog: React.FC<Props> = ({
   handleSignIn,
   switchToSignUpDialog,
+  switchToResetPasswordDialog,
   isDialogOpen,
   hideDialog,
   loading,
@@ -131,13 +133,27 @@ const SignInDialog: React.FC<Props> = ({
           </Grid>
         </form>
 
-        <Link
-          color='textPrimary'
-          component='button'
-          onClick={switchToSignUpDialog}
-        >
-          Don't have an account?
-        </Link>
+        <Grid container justify='space-between' spacing={1}>
+          <Grid item>
+            <Link
+              color='textPrimary'
+              component='button'
+              onClick={switchToSignUpDialog}
+            >
+              Don't have an account?
+            </Link>
+          </Grid>
+
+          <Grid item>
+            <Link
+              color='textPrimary'
+              component='button'
+              onClick={switchToResetPasswordDialog}
+            >
+              Forgot your password?
+            </Link>
+          </Grid>
+        </Grid>
       </Card>
     </Dialog>
   );

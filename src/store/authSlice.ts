@@ -101,21 +101,48 @@ export const signOut = createAsyncThunk(
 
 export const verifyAuth = createAsyncThunk('auth/verifyAuth', (x, thunkAPI) => {
   auth.onAuthStateChanged((user) => {
-    if (user)
-      return thunkAPI.dispatch(
-        verifySuccess({
-          displayName: user.displayName,
-          email: user.email,
-          emailVerified: user.emailVerified,
-          creationTime: user.metadata.creationTime,
-          lastSignInTime: user.metadata.lastSignInTime,
-          phoneNumber: user.phoneNumber,
-          photoUrl: user.photoURL,
-          uid: user.uid,
-        })
-      );
+    thunkAPI.dispatch(
+      verifySuccess(
+        user
+          ? {
+              displayName: user.displayName,
+              email: user.email,
+              emailVerified: user.emailVerified,
+              creationTime: user.metadata.creationTime,
+              lastSignInTime: user.metadata.lastSignInTime,
+              phoneNumber: user.phoneNumber,
+              photoUrl: user.photoURL,
+              uid: user.uid,
+            }
+          : null
+      )
+    );
   });
 });
+
+interface ResetPasswordParams {
+  email: string;
+  onSuccess: () => void;
+  onFailure: (err: FirebaseError) => void;
+}
+
+export const resetPassword = createAsyncThunk(
+  'auth/resetPassword',
+  (
+    { email, onSuccess, onFailure }: ResetPasswordParams,
+    { rejectWithValue }
+  ) => {
+    return auth
+      .sendPasswordResetEmail(email)
+      .then(() => {
+        onSuccess();
+      })
+      .catch((err: FirebaseError) => {
+        onFailure(err);
+        rejectWithValue(err);
+      });
+  }
+);
 
 interface AuthState {
   user: User | null;
@@ -123,7 +150,9 @@ interface AuthState {
   error: string;
   isSignInDialogOpen: boolean;
   isSignUpDialogOpen: boolean;
+  isResetPasswordDialogOpen: boolean;
   isSignUpSuccessToastOpen: boolean;
+  isResetPasswordSentToastOpen: boolean;
 }
 
 const initialState: AuthState = {
@@ -132,7 +161,9 @@ const initialState: AuthState = {
   error: '',
   isSignInDialogOpen: false,
   isSignUpDialogOpen: false,
+  isResetPasswordDialogOpen: false,
   isSignUpSuccessToastOpen: false,
+  isResetPasswordSentToastOpen: false,
 };
 
 export const authSlice = createSlice({
@@ -155,11 +186,23 @@ export const authSlice = createSlice({
     hideSignUpDialog: (state) => {
       state.isSignUpDialogOpen = false;
     },
+    displayResetPasswordDialog: (state) => {
+      state.isResetPasswordDialogOpen = true;
+    },
+    hideResetPasswordDialog: (state) => {
+      state.isResetPasswordDialogOpen = false;
+    },
     displaySignUpSuccessToast: (state) => {
       state.isSignUpSuccessToastOpen = true;
     },
     hideSignUpSuccessToast: (state) => {
       state.isSignUpSuccessToastOpen = false;
+    },
+    displayResetPasswordSentToast: (state) => {
+      state.isResetPasswordSentToastOpen = true;
+    },
+    hideResetPasswordSentToast: (state) => {
+      state.isResetPasswordSentToastOpen = false;
     },
   },
   extraReducers: (builder) => {
@@ -178,6 +221,7 @@ export const authSlice = createSlice({
       }))
       .addCase(signIn.rejected, (state, action) => ({
         ...state,
+        loading: false,
         error: action.error.code || 'Unknown error',
       }))
       .addCase(signUp.pending, (state) => ({
@@ -194,6 +238,7 @@ export const authSlice = createSlice({
       }))
       .addCase(signUp.rejected, (state, action) => ({
         ...state,
+        loading: false,
         error: action.error.message || 'Unknown error',
       }))
       .addCase(signOut.pending, (state) => ({
@@ -224,8 +269,12 @@ export const {
   hideSignInDialog,
   displaySignUpDialog,
   hideSignUpDialog,
+  displayResetPasswordDialog,
+  hideResetPasswordDialog,
   displaySignUpSuccessToast,
   hideSignUpSuccessToast,
+  displayResetPasswordSentToast,
+  hideResetPasswordSentToast,
 } = authSlice.actions;
 
 export default authSlice.reducer;
