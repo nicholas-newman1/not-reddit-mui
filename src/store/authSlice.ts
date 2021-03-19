@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { auth, db, FirebaseError } from '../firebase/client';
+import { auth, FirebaseError } from '../firebase/client';
 
 interface SignInParams {
   email: string;
@@ -66,24 +66,28 @@ export const signUp = createAsyncThunk(
     return auth
       .createUserWithEmailAndPassword(email, password)
       .then((cred) => {
-        if (cred.user)
-          db.collection('users').doc(cred.user.uid).set({
-            username,
+        onSuccess();
+
+        if (cred.user) {
+          cred.user.updateProfile({
+            displayName: username,
           });
 
-        onSuccess();
-        return cred.user
-          ? {
-              displayName: cred.user.displayName,
-              email: cred.user.email,
-              emailVerified: cred.user.emailVerified,
-              creationTime: cred.user.metadata.creationTime,
-              lastSignInTime: cred.user.metadata.lastSignInTime,
-              phoneNumber: cred.user.phoneNumber,
-              photoUrl: cred.user.photoURL,
-              uid: cred.user.uid,
-            }
-          : null;
+          cred.user.sendEmailVerification();
+
+          return {
+            displayName: cred.user.displayName,
+            email: cred.user.email,
+            emailVerified: cred.user.emailVerified,
+            creationTime: cred.user.metadata.creationTime,
+            lastSignInTime: cred.user.metadata.lastSignInTime,
+            phoneNumber: cred.user.phoneNumber,
+            photoUrl: cred.user.photoURL,
+            uid: cred.user.uid,
+          };
+        }
+
+        return null;
       })
       .catch((err: FirebaseError) => {
         onFailure(err);

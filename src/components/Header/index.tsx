@@ -34,10 +34,9 @@ const useStyles = makeStyles((theme) => ({
     background: theme.palette.info.main,
     width: '100%',
     padding: theme.spacing(0.5),
-    lineHeight: '1.15rem',
-    '& button': {
-      lineHeight: '1.15rem',
+    '& span': {
       textDecoration: 'underline',
+      cursor: 'pointer',
     },
   },
   title: {
@@ -93,14 +92,17 @@ const Header = () => {
             className={classes.info}
           >
             Please verify your email address.{' '}
-            <StyledLink
-              component='button'
-              color='textPrimary'
-              // onClick={
-              //   resendVerificationEmail
-              // } /* and send + notify on sign up */
-            >
+            <StyledLink component='span' color='textPrimary' onClick={() => {}}>
               Resend
+            </StyledLink>{' '}
+            or{' '}
+            <StyledLink
+              component='span'
+              role='button'
+              color='textPrimary'
+              onClick={() => {}}
+            >
+              contact support.
             </StyledLink>
           </Typography>
         </Grid>
