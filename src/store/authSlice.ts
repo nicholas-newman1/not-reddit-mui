@@ -9,22 +9,24 @@ interface SignInParams {
 export const signIn = createAsyncThunk(
   'auth/signIn',
   ({ email, password }: SignInParams, { dispatch }) => {
-    return auth.signInWithEmailAndPassword(email, password).then((cred) => {
-      dispatch(hideSignInDialog());
+    return auth
+      .signInWithEmailAndPassword(email, password)
+      .then((cred): User | null => {
+        dispatch(hideSignInDialog());
 
-      return cred.user
-        ? {
-            displayName: cred.user.displayName,
-            email: cred.user.email,
-            emailVerified: cred.user.emailVerified,
-            creationTime: cred.user.metadata.creationTime,
-            lastSignInTime: cred.user.metadata.lastSignInTime,
-            phoneNumber: cred.user.phoneNumber,
-            photoUrl: cred.user.photoURL,
-            uid: cred.user.uid,
-          }
-        : null;
-    });
+        return cred.user
+          ? {
+              displayName: cred.user.displayName,
+              email: cred.user.email,
+              emailVerified: cred.user.emailVerified,
+              creationTime: cred.user.metadata.creationTime,
+              lastSignInTime: cred.user.metadata.lastSignInTime,
+              phoneNumber: cred.user.phoneNumber,
+              photoUrl: cred.user.photoURL,
+              uid: cred.user.uid,
+            }
+          : null;
+      });
   }
 );
 
@@ -37,31 +39,33 @@ interface SignUpData {
 export const signUp = createAsyncThunk(
   'auth/signUp',
   ({ username, email, password }: SignUpData, { dispatch }) => {
-    return auth.createUserWithEmailAndPassword(email, password).then((cred) => {
-      dispatch(hideSignUpDialog());
-      dispatch(displaySignUpSuccessToast());
+    return auth
+      .createUserWithEmailAndPassword(email, password)
+      .then((cred): User | null => {
+        dispatch(hideSignUpDialog());
+        dispatch(displaySignUpSuccessToast());
 
-      if (cred.user) {
-        cred.user.updateProfile({
-          displayName: username,
-        });
+        if (cred.user) {
+          cred.user.updateProfile({
+            displayName: username,
+          });
 
-        cred.user.sendEmailVerification();
+          dispatch(sendEmailVerification());
 
-        return {
-          displayName: cred.user.displayName,
-          email: cred.user.email,
-          emailVerified: cred.user.emailVerified,
-          creationTime: cred.user.metadata.creationTime,
-          lastSignInTime: cred.user.metadata.lastSignInTime,
-          phoneNumber: cred.user.phoneNumber,
-          photoUrl: cred.user.photoURL,
-          uid: cred.user.uid,
-        };
-      }
+          return {
+            displayName: cred.user.displayName,
+            email: cred.user.email,
+            emailVerified: cred.user.emailVerified,
+            creationTime: cred.user.metadata.creationTime,
+            lastSignInTime: cred.user.metadata.lastSignInTime,
+            phoneNumber: cred.user.phoneNumber,
+            photoUrl: cred.user.photoURL,
+            uid: cred.user.uid,
+          };
+        }
 
-      return null;
-    });
+        return null;
+      });
   }
 );
 
@@ -107,6 +111,15 @@ export const resetPassword = createAsyncThunk(
   }
 );
 
+export const sendEmailVerification = createAsyncThunk(
+  'auth/sendEmailVerification',
+  (x, { dispatch }) => {
+    return auth.currentUser?.sendEmailVerification().then(() => {
+      dispatch(displaySentEmailVerificationDialog());
+    });
+  }
+);
+
 interface AuthState {
   user: User | null;
   loading: boolean;
@@ -116,6 +129,7 @@ interface AuthState {
   isResetPasswordDialogOpen: boolean;
   isSignUpSuccessToastOpen: boolean;
   isResetPasswordSentToastOpen: boolean;
+  isSentEmailVerificationDialogOpen: boolean;
 }
 
 const initialState: AuthState = {
@@ -127,13 +141,14 @@ const initialState: AuthState = {
   isResetPasswordDialogOpen: false,
   isSignUpSuccessToastOpen: false,
   isResetPasswordSentToastOpen: false,
+  isSentEmailVerificationDialogOpen: false,
 };
 
 export const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    verifySuccess: (state, action) => {
+    verifySuccess: (state, action: { type: string; payload: User | null }) => {
       state.loading = false;
       state.user = action.payload;
       state.error = '';
@@ -170,6 +185,12 @@ export const authSlice = createSlice({
     },
     hideResetPasswordSentToast: (state) => {
       state.isResetPasswordSentToastOpen = false;
+    },
+    displaySentEmailVerificationDialog: (state) => {
+      state.isSentEmailVerificationDialogOpen = true;
+    },
+    hideSentEmailVerificationDialog: (state) => {
+      state.isSentEmailVerificationDialogOpen = false;
     },
   },
   extraReducers: (builder) => {
@@ -265,6 +286,8 @@ export const {
   hideSignUpSuccessToast,
   displayResetPasswordSentToast,
   hideResetPasswordSentToast,
+  displaySentEmailVerificationDialog,
+  hideSentEmailVerificationDialog,
 } = authSlice.actions;
 
 export default authSlice.reducer;

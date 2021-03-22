@@ -21,6 +21,7 @@ import {
   signOut,
   displaySignInDialog,
   displaySignUpDialog,
+  sendEmailVerification,
 } from '../../store/authSlice';
 
 const useStyles = makeStyles((theme) => ({
@@ -92,7 +93,12 @@ const Header = () => {
             className={classes.info}
           >
             Please verify your email address.{' '}
-            <StyledLink component='span' color='textPrimary' onClick={() => {}}>
+            <StyledLink
+              component='span'
+              role='button'
+              color='textPrimary'
+              onClick={() => dispatch(sendEmailVerification())}
+            >
               Resend
             </StyledLink>{' '}
             or{' '}

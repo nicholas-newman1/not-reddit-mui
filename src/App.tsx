@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Header from './components/Header';
 import ResetPasswordDialogContainer from './containers/ResetPasswordDialogContainer';
 import ResetPasswordSentToastContainer from './containers/ResetPasswordSentToastContainer';
+import SentEmailVerificationDialogContainer from './containers/SentEmailVerificationDialogContainer';
 import SignInDialogContainer from './containers/SignInDialogContainer';
 import SignUpDialogContainer from './containers/SignUpDialogContainer';
 import SignUpSuccessToastContainer from './containers/SignUpSuccessToastContainer';
@@ -19,6 +20,7 @@ function App() {
       <ResetPasswordDialogContainer />
       <SignUpSuccessToastContainer />
       <ResetPasswordSentToastContainer />
+      <SentEmailVerificationDialogContainer />
 
       <Router>
         <Header />
