@@ -1,7 +1,11 @@
-import { createMuiTheme, PaletteType } from '@material-ui/core';
+import {
+  PaletteType,
+  // solves findDOMNode deprecation warnings
+  unstable_createMuiStrictModeTheme,
+} from '@material-ui/core';
 
 function getTheme(theme: { paletteType: PaletteType }) {
-  return createMuiTheme({
+  return unstable_createMuiStrictModeTheme({
     palette: {
       type: theme.paletteType,
       primary: {
