@@ -101,7 +101,7 @@ const Header = () => {
             >
               Resend
             </StyledLink>{' '}
-            or{' '}
+            {/* or{' '}
             <StyledLink
               component='span'
               role='button'
@@ -109,7 +109,7 @@ const Header = () => {
               onClick={() => {}}
             >
               contact support.
-            </StyledLink>
+            </StyledLink> */}
           </Typography>
         </Grid>
       )}
@@ -150,13 +150,13 @@ const Header = () => {
                 open={openMenu}
                 onClose={handleCloseMenu}
               >
-                <MenuItem
+                {/* <MenuItem
                   component={Link}
                   to={`/profile/${user.uid}`}
                   onClick={handleCloseMenu}
                 >
                   Profile
-                </MenuItem>
+                </MenuItem> */}
                 <MenuItem
                   onClick={() => {
                     dispatch(signOut());
