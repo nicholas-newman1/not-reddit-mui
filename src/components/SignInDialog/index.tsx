@@ -8,6 +8,7 @@ import {
   TextField,
   Typography,
 } from '@material-ui/core';
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 
 const useStyles = makeStyles((theme) => ({
@@ -29,15 +30,13 @@ interface FormDetails {
 }
 
 interface Props {
-  handleSignIn: (
-    data: FormDetails,
-    setError: (message: string) => void
-  ) => void;
+  handleSignIn: (data: FormDetails) => void;
   switchToSignUpDialog: () => void;
   switchToResetPasswordDialog: () => void;
   isDialogOpen: boolean;
   hideDialog: () => void;
   loading: boolean;
+  error: string;
 }
 
 const SignInDialog: React.FC<Props> = ({
@@ -47,10 +46,15 @@ const SignInDialog: React.FC<Props> = ({
   isDialogOpen,
   hideDialog,
   loading,
+  error,
 }) => {
   const classes = useStyles();
 
   const { register, handleSubmit, errors, setError } = useForm();
+
+  useEffect(() => {
+    setError('password', { message: error, shouldFocus: false });
+  }, [error, setError]);
 
   return (
     <Dialog open={isDialogOpen} onClose={hideDialog} fullWidth maxWidth='xs'>
@@ -61,14 +65,7 @@ const SignInDialog: React.FC<Props> = ({
 
         <form
           className={classes.form}
-          onSubmit={handleSubmit((data: FormDetails) =>
-            handleSignIn(data, (message: string) =>
-              setError('password', {
-                message,
-                shouldFocus: false,
-              })
-            )
-          )}
+          onSubmit={handleSubmit((data: FormDetails) => handleSignIn(data))}
         >
           <Grid container direction='column' spacing={3}>
             <Grid item>

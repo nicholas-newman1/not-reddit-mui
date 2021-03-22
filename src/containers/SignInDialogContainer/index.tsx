@@ -1,5 +1,4 @@
 import SignInDialog from '../../components/SignInDialog';
-import { FirebaseError } from '../../firebase/client';
 import { useAppDispatch } from '../../hooks/useAppDispatch';
 import { useAppSelector } from '../../hooks/useAppSelector';
 import {
@@ -26,29 +25,11 @@ const SignInDialogContainer = () => {
   };
 
   const loading = useAppSelector((state) => state.auth.loading);
+  const error = useAppSelector((state) => state.auth.error);
   const isDialogOpen = useAppSelector((state) => state.auth.isSignInDialogOpen);
 
-  const handleSignIn = (
-    { email, password }: FormDetails,
-    setError: (message: string) => void
-  ) => {
-    const onSuccess = () => dispatch(hideSignInDialog());
-    const onFailure = (err: FirebaseError) => {
-      if (err.code === 'auth/too-many-requests') {
-        return setError(
-          'Too many failed attempts. Try again later, or reset your password'
-        );
-      }
-      if (
-        err.code === 'auth/user-not-found' ||
-        err.code === 'auth/wrong-password'
-      ) {
-        return setError('Incorrect email or password');
-      }
-      return setError(err.message);
-    };
-
-    dispatch(signIn({ email, password, onSuccess, onFailure }));
+  const handleSignIn = ({ email, password }: FormDetails) => {
+    dispatch(signIn({ email, password }));
   };
 
   return (
@@ -59,6 +40,7 @@ const SignInDialogContainer = () => {
       isDialogOpen={isDialogOpen}
       hideDialog={hideDialog}
       loading={loading}
+      error={error}
     />
   );
 };

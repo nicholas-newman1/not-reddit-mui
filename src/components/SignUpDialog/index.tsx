@@ -8,6 +8,7 @@ import {
   TextField,
   Typography,
 } from '@material-ui/core';
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 
 const useStyles = makeStyles((theme) => ({
@@ -40,6 +41,7 @@ interface Props {
     setError: (message: string) => void
   ) => void;
   hideDialog: () => void;
+  error: string;
 }
 
 const SignUpDialog: React.FC<Props> = ({
@@ -48,9 +50,14 @@ const SignUpDialog: React.FC<Props> = ({
   isDialogOpen,
   handleSignUp,
   hideDialog,
+  error,
 }) => {
   const { register, handleSubmit, errors, setError } = useForm();
   const classes = useStyles();
+
+  useEffect(() => {
+    setError('confirmPassword', { message: error, shouldFocus: false });
+  }, [error, setError]);
 
   return (
     <Dialog open={isDialogOpen} onClose={hideDialog} fullWidth maxWidth='xs'>

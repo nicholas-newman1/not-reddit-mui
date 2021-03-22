@@ -7,17 +7,15 @@ import {
   TextField,
   Typography,
 } from '@material-ui/core';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 
 interface Props {
-  handleResetPassword: (
-    email: string,
-    setError: (message: string) => void
-  ) => void;
+  handleResetPassword: (email: string) => void;
   isDialogOpen: boolean;
   hideDialog: () => void;
   loading: boolean;
+  error: string;
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -38,9 +36,14 @@ const ResetPasswordDialog: React.FC<Props> = ({
   isDialogOpen,
   hideDialog,
   loading,
+  error,
 }) => {
   const classes = useStyles();
   const { register, handleSubmit, errors, setError } = useForm();
+
+  useEffect(() => {
+    setError('email', { message: error });
+  }, [error, setError]);
 
   return (
     <Dialog open={isDialogOpen} onClose={hideDialog} fullWidth maxWidth='xs'>
@@ -51,14 +54,7 @@ const ResetPasswordDialog: React.FC<Props> = ({
 
         <form
           className={classes.form}
-          onSubmit={handleSubmit((data) =>
-            handleResetPassword(data.email, (message: string) =>
-              setError('email', {
-                message,
-                shouldFocus: true,
-              })
-            )
-          )}
+          onSubmit={handleSubmit((data) => handleResetPassword(data.email))}
         >
           <Grid container direction='column' spacing={3}>
             <Grid item>

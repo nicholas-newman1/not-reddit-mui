@@ -1,11 +1,9 @@
 import SignUpDialog from '../../components/SignUpDialog';
-import { FirebaseError } from '../../firebase/client';
 import { useAppDispatch } from '../../hooks/useAppDispatch';
 import { useAppSelector } from '../../hooks/useAppSelector';
 import {
   hideSignUpDialog,
   displaySignInDialog,
-  displaySignUpSuccessToast,
   signUp,
 } from '../../store/authSlice';
 
@@ -25,6 +23,7 @@ const SignUpDialogContainer = () => {
   };
 
   const loading = useAppSelector((state) => state.auth.loading);
+  const error = useAppSelector((state) => state.auth.error);
   const isDialogOpen = useAppSelector((state) => state.auth.isSignUpDialogOpen);
 
   const handleSignUp = (
@@ -33,13 +32,7 @@ const SignUpDialogContainer = () => {
   ) => {
     if (password !== confirmPassword) return setError('Passwords must match');
 
-    const onSuccess = () => {
-      dispatch(hideSignUpDialog());
-      dispatch(displaySignUpSuccessToast());
-    };
-    const onFailure = (err: FirebaseError) => setError(err.message);
-
-    dispatch(signUp({ username, email, password, onSuccess, onFailure }));
+    dispatch(signUp({ username, email, password }));
   };
 
   return (
@@ -49,6 +42,7 @@ const SignUpDialogContainer = () => {
       isDialogOpen={isDialogOpen}
       handleSignUp={handleSignUp}
       hideDialog={hideDialog}
+      error={error}
     />
   );
 };
