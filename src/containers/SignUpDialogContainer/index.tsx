@@ -11,7 +11,6 @@ interface FormDetails {
   username: string;
   email: string;
   password: string;
-  confirmPassword: string;
 }
 
 const SignUpDialogContainer = () => {
@@ -26,12 +25,7 @@ const SignUpDialogContainer = () => {
   const error = useAppSelector((state) => state.auth.error);
   const isDialogOpen = useAppSelector((state) => state.auth.isSignUpDialogOpen);
 
-  const handleSignUp = (
-    { username, email, password, confirmPassword }: FormDetails,
-    setError: (message: string) => void
-  ) => {
-    if (password !== confirmPassword) return setError('Passwords must match');
-
+  const handleSignUp = ({ username, email, password }: FormDetails) => {
     dispatch(signUp({ username, email, password }));
   };
 

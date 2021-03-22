@@ -29,17 +29,13 @@ interface FormDetails {
   username: string;
   email: string;
   password: string;
-  confirmPassword: string;
 }
 
 interface Props {
   switchToSignInDialog: () => void;
   loading: boolean;
   isDialogOpen: boolean;
-  handleSignUp: (
-    data: FormDetails,
-    setError: (message: string) => void
-  ) => void;
+  handleSignUp: (data: FormDetails) => void;
   hideDialog: () => void;
   error: string;
 }
@@ -52,7 +48,7 @@ const SignUpDialog: React.FC<Props> = ({
   hideDialog,
   error,
 }) => {
-  const { register, handleSubmit, errors, setError } = useForm();
+  const { register, handleSubmit, errors, setError, watch } = useForm();
   const classes = useStyles();
 
   useEffect(() => {
@@ -68,11 +64,7 @@ const SignUpDialog: React.FC<Props> = ({
 
         <form
           className={classes.form}
-          onSubmit={handleSubmit((data: FormDetails) =>
-            handleSignUp(data, (message: string) =>
-              setError('confirmPassword', { message, shouldFocus: false })
-            )
-          )}
+          onSubmit={handleSubmit((data: FormDetails) => handleSignUp(data))}
         >
           <Grid container direction='column' spacing={3}>
             <Grid item>
@@ -147,6 +139,8 @@ const SignUpDialog: React.FC<Props> = ({
               <TextField
                 inputRef={register({
                   required: 'Please confirm password',
+                  validate: (value) =>
+                    value === watch('password') || 'Passwords must match',
                 })}
                 id='confirmPassword'
                 label='Confirm Password'
