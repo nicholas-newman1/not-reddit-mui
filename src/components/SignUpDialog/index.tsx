@@ -34,7 +34,7 @@ interface FormDetails {
 interface Props {
   switchToSignInDialog: () => void;
   loading: boolean;
-  isDialogOpen: boolean;
+  open: boolean;
   handleSignUp: (data: FormDetails) => void;
   hideDialog: () => void;
   error: string;
@@ -43,7 +43,7 @@ interface Props {
 const SignUpDialog: React.FC<Props> = ({
   switchToSignInDialog,
   loading,
-  isDialogOpen,
+  open,
   handleSignUp,
   hideDialog,
   error,
@@ -56,15 +56,18 @@ const SignUpDialog: React.FC<Props> = ({
   }, [error, setError]);
 
   return (
-    <Dialog open={isDialogOpen} onClose={hideDialog} fullWidth maxWidth='xs'>
+    <Dialog open={open} onClose={hideDialog} fullWidth maxWidth='xs'>
       <Card className={classes.card}>
         <Typography component='h1' variant='h4' align='center'>
           Sign Up
         </Typography>
 
         <form
+          aria-label='sign up form'
           className={classes.form}
-          onSubmit={handleSubmit((data: FormDetails) => handleSignUp(data))}
+          onSubmit={handleSubmit(({ email, password, username }: FormDetails) =>
+            handleSignUp({ email, password, username })
+          )}
         >
           <Grid container direction='column' spacing={3}>
             <Grid item>

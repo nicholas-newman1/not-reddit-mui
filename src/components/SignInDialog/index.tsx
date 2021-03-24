@@ -33,7 +33,7 @@ interface Props {
   handleSignIn: (data: FormDetails) => void;
   switchToSignUpDialog: () => void;
   switchToResetPasswordDialog: () => void;
-  isDialogOpen: boolean;
+  open: boolean;
   hideDialog: () => void;
   loading: boolean;
   error: string;
@@ -43,7 +43,7 @@ const SignInDialog: React.FC<Props> = ({
   handleSignIn,
   switchToSignUpDialog,
   switchToResetPasswordDialog,
-  isDialogOpen,
+  open,
   hideDialog,
   loading,
   error,
@@ -57,13 +57,14 @@ const SignInDialog: React.FC<Props> = ({
   }, [error, setError]);
 
   return (
-    <Dialog open={isDialogOpen} onClose={hideDialog} fullWidth maxWidth='xs'>
+    <Dialog open={open} onClose={hideDialog} fullWidth maxWidth='xs'>
       <Card className={classes.card}>
         <Typography component='h1' variant='h4' align='center'>
           Login
         </Typography>
 
         <form
+          aria-label='log in form'
           className={classes.form}
           onSubmit={handleSubmit((data: FormDetails) => handleSignIn(data))}
         >

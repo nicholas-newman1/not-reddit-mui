@@ -21,18 +21,18 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 interface Props {
-  isDialogOpen: boolean;
-  hideDialog: () => void;
+  open: boolean;
+  handleClose: () => void;
 }
 
 const SentEmailVerificationDialog: React.FC<Props> = ({
-  isDialogOpen,
-  hideDialog,
+  open,
+  handleClose,
 }) => {
   const classes = useStyles();
 
   return (
-    <Dialog open={isDialogOpen} onClose={hideDialog} fullWidth maxWidth='xs'>
+    <Dialog open={open} onClose={handleClose} fullWidth maxWidth='xs'>
       <Card className={classes.card}>
         <Grid container spacing={3} direction='column'>
           <Grid item>
@@ -46,7 +46,7 @@ const SentEmailVerificationDialog: React.FC<Props> = ({
               variant='contained'
               color='primary'
               fullWidth
-              onClick={hideDialog}
+              onClick={handleClose}
             >
               Close
             </Button>

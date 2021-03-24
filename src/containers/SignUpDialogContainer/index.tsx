@@ -23,7 +23,7 @@ const SignUpDialogContainer = () => {
 
   const loading = useAppSelector((state) => state.auth.loading);
   const error = useAppSelector((state) => state.auth.error);
-  const isDialogOpen = useAppSelector((state) => state.auth.isSignUpDialogOpen);
+  const open = useAppSelector((state) => state.auth.isSignUpDialogOpen);
 
   const handleSignUp = ({ username, email, password }: FormDetails) => {
     dispatch(signUp({ username, email, password }));
@@ -33,7 +33,7 @@ const SignUpDialogContainer = () => {
     <SignUpDialog
       switchToSignInDialog={switchToSignInDialog}
       loading={loading}
-      isDialogOpen={isDialogOpen}
+      open={open}
       handleSignUp={handleSignUp}
       hideDialog={hideDialog}
       error={error}

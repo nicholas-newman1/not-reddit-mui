@@ -15,7 +15,7 @@ const ResetPasswordDialogContainer = () => {
   return (
     <ResetPasswordDialog
       handleResetPassword={handleResetPassword}
-      isDialogOpen={open}
+      open={open}
       hideDialog={() => dispatch(hideResetPasswordDialog())}
       loading={false}
       error={error}

@@ -12,7 +12,7 @@ import { useForm } from 'react-hook-form';
 
 interface Props {
   handleResetPassword: (email: string) => void;
-  isDialogOpen: boolean;
+  open: boolean;
   hideDialog: () => void;
   loading: boolean;
   error: string;
@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
 
 const ResetPasswordDialog: React.FC<Props> = ({
   handleResetPassword,
-  isDialogOpen,
+  open,
   hideDialog,
   loading,
   error,
@@ -43,16 +43,18 @@ const ResetPasswordDialog: React.FC<Props> = ({
 
   useEffect(() => {
     setError('email', { message: error });
+    window.addEventListener('keypress', console.log);
   }, [error, setError]);
 
   return (
-    <Dialog open={isDialogOpen} onClose={hideDialog} fullWidth maxWidth='xs'>
+    <Dialog open={open} onClose={hideDialog} fullWidth maxWidth='xs'>
       <Card className={classes.card}>
         <Typography component='h1' variant='h4' align='center'>
           Reset Password
         </Typography>
 
         <form
+          aria-label='reset password form'
           className={classes.form}
           onSubmit={handleSubmit((data) => handleResetPassword(data.email))}
         >

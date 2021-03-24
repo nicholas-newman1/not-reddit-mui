@@ -11,8 +11,8 @@ const SentEmailVerificationDialogContainer = () => {
 
   return (
     <SentEmailVerificationDialog
-      isDialogOpen={open}
-      hideDialog={() => dispatch(hideSentEmailVerificationDialog())}
+      open={open}
+      handleClose={() => dispatch(hideSentEmailVerificationDialog())}
     />
   );
 };
