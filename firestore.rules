@@ -1,25 +1,29 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /users/{userId} {
-    	allow create: if isSignedIn();
-      allow write: if isOwner(userId)
-      allow read: if true;
+    // match /users/{userId} {
+    // 	allow create: if isSignedIn();
+    //   allow write: if isOwner(userId)
+    //   allow read: if true;
+    // }
+
+    match /{document=**} {
+      allow read, write: if true;
     }
     
     /// Functions ///
     
-    function isSignedIn() {
-    	return request.auth != null;
-    }
+    // function isSignedIn() {
+    // 	return request.auth != null;
+    // }
     
     // function isEmailVerified() {
     // 	return request.auth.token.email_verified;
     // }
     
-    function isOwner(userId) {
-    	return request.auth.uid == userId;
-    }
+    // function isOwner(userId) {
+    // 	return request.auth.uid == userId;
+    // }
     
     // function existingData() {
     // 	return resource.data;

@@ -12,10 +12,6 @@ let config: any = {
   measurementId: 'G-2YSX4475S9',
 };
 
-if (process.env.NODE_ENV === 'development') {
-  config.databaseURL = 'http://localhost:8080?ns=emulatorui';
-}
-
 const app = firebase.initializeApp(config);
 
 export type FirebaseError = firebase.FirebaseError;
@@ -25,4 +21,5 @@ export const db = firebase.firestore(app);
 
 if (process.env.NODE_ENV === 'development') {
   auth.useEmulator('http://localhost:9099');
+  firebase.firestore().useEmulator('localhost', 8080);
 }
