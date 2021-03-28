@@ -23,3 +23,18 @@ if (process.env.NODE_ENV === 'development') {
   auth.useEmulator('http://localhost:9099');
   firebase.firestore().useEmulator('localhost', 8080);
 }
+
+export const createCategory = (category: string) => {
+  if (!auth.currentUser) return Promise.reject({ message: 'NO_USER' });
+  return auth.currentUser.getIdToken().then((idToken) => {
+    return fetch(
+      `http://localhost:5001/not-reddit-5a7e3/us-central1/username/${category}`,
+      {
+        method: 'POST',
+        headers: {
+          Authorization: idToken,
+        },
+      }
+    );
+  });
+};

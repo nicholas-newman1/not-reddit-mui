@@ -43,7 +43,6 @@ const ResetPasswordDialog: React.FC<Props> = ({
 
   useEffect(() => {
     setError('email', { message: error });
-    window.addEventListener('keypress', console.log);
   }, [error, setError]);
 
   return (
