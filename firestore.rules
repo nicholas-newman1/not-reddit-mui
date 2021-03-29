@@ -7,7 +7,10 @@ service cloud.firestore {
 
     match /users/{userId} {
       allow read;
-      allow write: if isOwner(userId)
+      allow update: if 
+        isOwner(userId) && 
+        incomingData().keys().hasAny(["bio"]) &&
+        incomingData()
     }
 
     
@@ -29,8 +32,8 @@ service cloud.firestore {
     // 	return resource.data;
     // }
     
-    // function incomingData() {
-    // 	return request.resource.data;
-    // }
+    function incomingData() {
+    	return request.resource.data;
+    }
   }
 }
