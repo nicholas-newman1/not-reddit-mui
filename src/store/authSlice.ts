@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { auth, FirebaseError } from '../firebase/client';
+import { auth, db, FirebaseError } from '../firebase/client';
 
 interface SignInParams {
   email: string;
@@ -51,6 +51,11 @@ export const signUp = createAsyncThunk(
           });
 
           dispatch(sendEmailVerification());
+
+          db.collection('users').doc(cred.user.uid).set({
+            username,
+            bio: '',
+          });
 
           return {
             displayName: cred.user.displayName,
