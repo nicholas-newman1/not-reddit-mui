@@ -54,7 +54,6 @@ export const signUp = createAsyncThunk(
 
           db.collection('users').doc(cred.user.uid).set({
             username,
-            bio: '',
           });
 
           return {
