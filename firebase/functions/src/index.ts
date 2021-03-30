@@ -45,8 +45,6 @@ exports.createCategory = functions.https.onCall(
 
     categoryRef.set({
       ownerId: context.auth.uid,
-      moderatorIds: [],
-      subscriberIds: [],
     });
   }
 );
