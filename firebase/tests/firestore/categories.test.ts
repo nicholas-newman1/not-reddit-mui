@@ -2,16 +2,11 @@ import * as firebase from '@firebase/rules-unit-testing';
 import firebaseApp from 'firebase/app';
 
 const PROJECT_ID = 'not-reddit-5a7e3';
-
-afterEach(async () => {
-  await firebase.clearFirestoreData({ projectId: PROJECT_ID });
-});
-
-let myId = 'user_mine';
-let myAuth = { uid: myId, email_verified: true };
-let myUnverifiedAuth = { uid: myId };
-let theirId = 'user_theirs';
-let thirdId = 'user_third';
+const myId = 'user_mine';
+const myAuth = { uid: myId, email_verified: true };
+const myUnverifiedAuth = { uid: myId };
+const theirId = 'user_theirs';
+const thirdId = 'user_third';
 let db: firebaseApp.firestore.Firestore;
 let admin: firebaseApp.firestore.Firestore;
 
@@ -23,63 +18,8 @@ beforeEach(() => {
   admin = firebase.initializeAdminApp({ projectId: PROJECT_ID }).firestore();
 });
 
-describe('/users', () => {
-  describe('read', () => {
-    it('should allow anyone', async () => {
-      const db = getFirestore();
-      await firebase.assertSucceeds(db.collection('users').get());
-    });
-  });
-
-  describe('create', () => {
-    const myPath = `users/${myId}`;
-    const theirPath = `users/${theirId}`;
-
-    it('should allow if document ID matches user ID', async () => {
-      await firebase.assertSucceeds(db.doc(myPath).set({ username: '123' }));
-    });
-
-    it('should not allow if document ID does not match user ID', async () => {
-      await firebase.assertFails(db.doc(theirPath).set({ username: '123' }));
-    });
-
-    it('should not allow having more fields than username', async () => {
-      await firebase.assertFails(
-        db.doc(myPath).set({ username: '123', other: '321' })
-      );
-    });
-
-    it('should not allow missing username field', async () => {
-      await firebase.assertFails(db.doc(myPath).set({}));
-    });
-  });
-
-  describe('update', () => {
-    const myPath = `users/${myId}`;
-    const theirPath = `users/${theirId}`;
-
-    it('should allow if document ID matches user ID', async () => {
-      db.doc(myPath).set({ username: '123' });
-      await firebase.assertSucceeds(db.doc(myPath).set({ username: '321' }));
-    });
-
-    it('should not allow if document ID does not match user ID', async () => {
-      admin.doc(theirPath).set({ username: '123' });
-      await firebase.assertFails(db.doc(theirPath).set({ username: '321' }));
-    });
-
-    it('should not allow having more fields than username', async () => {
-      db.doc(myPath).set({ username: '123' });
-      await firebase.assertFails(
-        db.doc(myPath).set({ username: '123', other: '321' })
-      );
-    });
-
-    it('should not allow missing username field', async () => {
-      db.doc(myPath).set({ username: '123' });
-      await firebase.assertFails(db.doc(myPath).set({}));
-    });
-  });
+afterEach(async () => {
+  await firebase.clearFirestoreData({ projectId: PROJECT_ID });
 });
 
 describe('/categories', () => {
