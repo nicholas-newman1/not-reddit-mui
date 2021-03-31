@@ -4,59 +4,92 @@ service cloud.firestore {
     // Functions
     function onlyMarker() {
       return incomingData().keys().hasOnly(["exists"]) 
-        && incomingData().exists == true
+        && incomingData().exists == true;
     }
     
     function incomingData() {
     	return request.resource.data;
     }
 
+    function isVerified() {
+      return request.auth.token.email_verified == true;
+    }
+
+    function documentFieldsCheckOut(requiredFields, optionalFields) {
+      let allFields = requiredFields.concat(optionalFields);
+      let requestKeys = incomingData().keys();
+      return requestKeys.hasAll(requiredFields) && requestKeys.hasOnly(allFields);
+    }
+
+    // function editChangesOnlyFields(allowedFields) {
+    //   let affectedKeys = incomingData().diff(resource.data).affectedKeys();
+    //   return affectedKeys.hasOnly(allowedFields);
+    // }
+
     // Rules
     match /users/{userId} {      
       allow read;
-      allow write: if 
-        request.auth.uid == userId &&
-        incomingData().keys().hasOnly(['username']) &&
-        incomingData().keys().hasAll(['username'])
+      allow create, update: if request.auth.uid == userId && documentFieldsCheckOut(['username'], []);
     }
 
     match /categories/{categoryId} {
-      // useful category specific functions
-      function isOwnerOfCategory() {
-        return request.auth.uid == 
-          get(/databases/$(database)/documents/categories/$(categoryId)).data.ownerId;
+      function isOwnerOfCategory(uid) {
+        return uid == get(/databases/$(database)/documents/categories/$(categoryId)).data.ownerId;
       }
 
-      function isModerator() {
-        return exists(/databases/$(database)/documents/categories/$(categoryId)/moderatorIds/$(request.auth.uid));
+      function isModerator(uid) {
+        return exists(/databases/$(database)/documents/categories/$(categoryId)/moderatorIds/$(uid));
       }
 
       allow read;
-      allow update: if         
-        // is only updating whitelisted fields and is owner
-        incomingData().keys().hasOnly(['ownerId']) && isOwnerOfCategory()
+
+      allow create: if documentFieldsCheckOut(['ownerId'], []) 
+        && request.auth.uid == request.resource.data.ownerId
+        && isVerified()
+        && categoryId.size() > 2
+        && categoryId.matches('^[a-z0-9]+$');
+
+      allow update: if documentFieldsCheckOut(['ownerId'], [])
+        && isVerified()
+        && isOwnerOfCategory(request.auth.uid);
 
       match /moderatorIds/{moderatorId} {
-        allow create: if onlyMarker() && isOwnerOfCategory();
-        allow delete: if isOwnerOfCategory();
+        allow create: if onlyMarker()
+          && isVerified()
+          && isOwnerOfCategory(request.auth.uid);
+        allow delete: if isVerified()
+          && (isOwnerOfCategory(request.auth.uid) || request.auth.uid == moderatorId);
       }
 
       match /subscriberIds/{subscriberId} {
         allow create: if
           onlyMarker()
-          // uid matches document ID
           && request.auth.uid == subscriberId
-          // uid is not banned
+          && isVerified()
           && !exists(/databases/$(database)/documents/categories/$(categoryId)/bannedIds/$(request.auth.uid))
-          // category exists
           && exists(/databases/$(database)/documents/categories/$(categoryId));
           
-        allow delete: if isOwnerOfCategory() || isModerator();
+        allow delete: if isVerified()
+          && (
+            isOwnerOfCategory(request.auth.uid) 
+            || isModerator(request.auth.uid) 
+            || request.auth.uid == subscriberId
+          );
       }
 
       match /bannedIds/{bannedId} {
-        allow create: if onlyMarker() && (isModerator() || isOwnerOfCategory());
-        allow delete: if isModerator() || isOwnerOfCategory();      
+        allow create: if onlyMarker()
+        && isVerified()
+        && (
+          (isModerator(request.auth.uid) && !isOwnerOfCategory(bannedId)) 
+          || isOwnerOfCategory(request.auth.uid)
+        );
+
+        allow delete: if isVerified()
+          && (
+            isModerator(request.auth.uid) 
+            || isOwnerOfCategory(request.auth.uid)
+          );      
       }
     }
   }
