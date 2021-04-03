@@ -1,7 +1,6 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Functions
     function onlyMarker() {
       return incomingData().keys().hasOnly(["exists"]) 
         && incomingData().exists == true;
@@ -26,21 +25,33 @@ service cloud.firestore {
     //   return affectedKeys.hasOnly(allowedFields);
     // }
 
+    function categoryExists(categoryId) {
+      return exists(/databases/$(database)/documents/categories/$(categoryId))
+    }
+
+    function isOwnerOfCategory(uid, categoryId) {
+      return uid == get(/databases/$(database)/documents/categories/$(categoryId)).data.ownerId;
+    }
+
+    function isModeratorOfCategory(uid, categoryId) {
+      return exists(/databases/$(database)/documents/categories/$(categoryId)/moderatorIds/$(uid));
+    }
+    
+    function isSubscriberOfCategory(uid, categoryId) {
+      return exists(/databases/$(database)/documents/categories/$(categoryId)/subscriberIds/$(uid));
+    }
+
+    function isBannedFromCategory(uid, categoryId) {
+      return exists(/databases/$(database)/documents/categories/$(categoryId)/bannedIds/$(uid));
+    }
+
     // Rules
     match /users/{userId} {      
       allow read;
       allow create, update: if request.auth.uid == userId && documentFieldsCheckOut(['username'], []);
     }
 
-    match /categories/{categoryId} {
-      function isOwnerOfCategory(uid) {
-        return uid == get(/databases/$(database)/documents/categories/$(categoryId)).data.ownerId;
-      }
-
-      function isModerator(uid) {
-        return exists(/databases/$(database)/documents/categories/$(categoryId)/moderatorIds/$(uid));
-      }
-
+    match /categories/{categoryId} {  
       allow read;
 
       allow create: if documentFieldsCheckOut(['ownerId'], []) 
@@ -51,14 +62,17 @@ service cloud.firestore {
 
       allow update: if documentFieldsCheckOut(['ownerId'], [])
         && isVerified()
-        && isOwnerOfCategory(request.auth.uid);
+        && isOwnerOfCategory(request.auth.uid, categoryId);
 
       match /moderatorIds/{moderatorId} {
         allow create: if onlyMarker()
           && isVerified()
-          && isOwnerOfCategory(request.auth.uid);
+          && isOwnerOfCategory(request.auth.uid, categoryId);
         allow delete: if isVerified()
-          && (isOwnerOfCategory(request.auth.uid) || request.auth.uid == moderatorId);
+          && (
+            isOwnerOfCategory(request.auth.uid, categoryId) 
+            || request.auth.uid == moderatorId
+          );
       }
 
       match /subscriberIds/{subscriberId} {
@@ -66,13 +80,13 @@ service cloud.firestore {
           onlyMarker()
           && request.auth.uid == subscriberId
           && isVerified()
-          && !exists(/databases/$(database)/documents/categories/$(categoryId)/bannedIds/$(request.auth.uid))
-          && exists(/databases/$(database)/documents/categories/$(categoryId));
+          && categoryExists(categoryId)
+          && !isBannedFromCategory(request.auth.uid, categoryId)
           
         allow delete: if isVerified()
           && (
-            isOwnerOfCategory(request.auth.uid) 
-            || isModerator(request.auth.uid) 
+            isOwnerOfCategory(request.auth.uid, categoryId) 
+            || isModeratorOfCategory(request.auth.uid, categoryId) 
             || request.auth.uid == subscriberId
           );
       }
@@ -81,16 +95,36 @@ service cloud.firestore {
         allow create: if onlyMarker()
         && isVerified()
         && (
-          (isModerator(request.auth.uid) && !isOwnerOfCategory(bannedId)) 
-          || isOwnerOfCategory(request.auth.uid)
+          (
+            isModeratorOfCategory(request.auth.uid, categoryId) 
+            && !isOwnerOfCategory(bannedId, categoryId)
+          )          
+          || isOwnerOfCategory(request.auth.uid, categoryId)
         );
 
         allow delete: if isVerified()
           && (
-            isModerator(request.auth.uid) 
-            || isOwnerOfCategory(request.auth.uid)
+            isModeratorOfCategory(request.auth.uid, categoryId) 
+            || isOwnerOfCategory(request.auth.uid, categoryId)
           );      
       }
+    }
+
+    match /posts/{postId} {
+      allow read;
+      allow create: if isVerified() 
+        && documentFieldsCheckOut(['title', 'body', 'authorId', 'categoryId'], [])
+        && incomingData().title is string
+        && incomingData().title.size() >= 3
+        && incomingData().body is string
+        && incomingData().authorId == request.auth.uid
+        && categoryExists(incomingData().categoryId)
+        && (
+          isSubscriberOfCategory(request.auth.uid, incomingData().categoryId) 
+          || isModeratorOfCategory(request.auth.uid, incomingData().categoryId)
+          || isOwnerOfCategory(request.auth.uid, incomingData().categoryId)
+          )
+        && !isBannedFromCategory(request.auth.uid, incomingData().categoryId)
     }
   }
 }
