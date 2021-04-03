@@ -7,6 +7,7 @@ const myAuth = { uid: myId, email_verified: true };
 const myUnverifiedAuth = { uid: myId };
 const theirId = 'user_theirs';
 const thirdId = 'user_third';
+const categoryPath = 'categories/meditation';
 let db: firebaseApp.firestore.Firestore;
 let admin: firebaseApp.firestore.Firestore;
 
@@ -23,7 +24,6 @@ afterEach(async () => {
 });
 
 describe('/categories', () => {
-  const categoryPath = 'categories/meditation';
   describe('read', () => {
     it('should allow anyone', async () => {
       const db = getFirestore();
@@ -32,7 +32,7 @@ describe('/categories', () => {
   });
 
   describe('create', () => {
-    it('should allow verified users', async () => {
+    it('should allow', async () => {
       await firebase.assertSucceeds(
         db.doc(categoryPath).set({ ownerId: myId })
       );
@@ -46,6 +46,16 @@ describe('/categories', () => {
     it('should not allow unverified users', async () => {
       const db = getFirestore(myUnverifiedAuth);
       await firebase.assertFails(db.doc(categoryPath).set({ ownerId: myId }));
+    });
+
+    it('should not allow ownerId field to be missing', async () => {
+      await firebase.assertFails(db.doc(categoryPath).set({}));
+    });
+
+    it("should not allow ownerId to be different from user's id", async () => {
+      await firebase.assertFails(
+        db.doc(categoryPath).set({ ownerId: theirId })
+      );
     });
 
     it('should not allow categories of length < 3', async () => {
