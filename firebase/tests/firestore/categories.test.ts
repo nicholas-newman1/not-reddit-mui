@@ -75,117 +75,6 @@ describe('/categories', () => {
         db.doc('/categories/abc!@#').set({ ownerId: myId })
       );
     });
-
-    describe('/moderatorIds', () => {
-      const theirModeratorRef = (db: firebaseApp.firestore.Firestore) =>
-        db.doc(`${categoryPath}/moderatorIds/${theirId}`);
-
-      it('should allow owner', async () => {
-        admin.doc(categoryPath).set({ ownerId: myId });
-        await firebase.assertSucceeds(
-          theirModeratorRef(db).set({ exists: true })
-        );
-      });
-
-      it('should not allow unverified users', async () => {
-        const db = getFirestore(myUnverifiedAuth);
-        admin.doc(categoryPath).set({ ownerId: myId });
-        await firebase.assertFails(theirModeratorRef(db).set({ exists: true }));
-      });
-
-      it('should not allow documents without a marker', async () => {
-        admin.doc(categoryPath).set({ ownerId: myId });
-        await firebase.assertFails(theirModeratorRef(db).set({}));
-      });
-
-      it('should not allow documents with extra fields', async () => {
-        admin.doc(categoryPath).set({ ownerId: myId });
-        await firebase.assertFails(
-          theirModeratorRef(db).set({ exists: true, notAllowed: true })
-        );
-      });
-    });
-
-    describe('/subscriberIds', () => {
-      const mySubscriberRef = (db: firebaseApp.firestore.Firestore) =>
-        db.doc(`${categoryPath}/subscriberIds/${myId}`);
-
-      it('should allow if document ID matches user ID', async () => {
-        admin.doc(categoryPath).set({ ownerId: theirId });
-        await firebase.assertSucceeds(
-          mySubscriberRef(db).set({ exists: true })
-        );
-      });
-
-      it('should not allow unverified users', async () => {
-        const db = getFirestore(myUnverifiedAuth);
-        admin.doc(categoryPath).set({ ownerId: theirId });
-        await firebase.assertFails(mySubscriberRef(db).set({ exists: true }));
-      });
-
-      it('should not allow documents without a marker', async () => {
-        admin.doc(categoryPath).set({ ownerId: theirId });
-        await firebase.assertFails(mySubscriberRef(db).set({}));
-      });
-
-      it('should not allow documents with extra fields', async () => {
-        admin.doc(categoryPath).set({ ownerId: theirId });
-        await firebase.assertFails(
-          mySubscriberRef(db).set({ exists: true, extraField: 'poop' })
-        );
-      });
-
-      it('should not allow if user is banned', async () => {
-        admin.doc(categoryPath).set({ ownerId: theirId });
-        admin.doc(`${categoryPath}/bannedIds/${myId}`).set({ exists: true });
-        await firebase.assertFails(mySubscriberRef(db).set({ exists: true }));
-      });
-
-      it('should not allow if category does not exist', async () => {
-        await firebase.assertFails(mySubscriberRef(db).set({}));
-      });
-    });
-
-    describe('/bannedIds', () => {
-      const theirBannedRef = (db: firebaseApp.firestore.Firestore) =>
-        db.doc(`${categoryPath}/bannedIds/${theirId}`);
-
-      it('should allow owner', async () => {
-        admin.doc(categoryPath).set({ ownerId: myId });
-        await firebase.assertSucceeds(theirBannedRef(db).set({ exists: true }));
-      });
-
-      it('should allow moderators', async () => {
-        admin.doc(categoryPath).set({ ownerId: thirdId });
-        admin.doc(`${categoryPath}/moderatorIds/${myId}`).set({ exists: true });
-        await firebase.assertSucceeds(theirBannedRef(db).set({ exists: true }));
-      });
-
-      it('should not allow unverified users', async () => {
-        const db = getFirestore(myUnverifiedAuth);
-        admin.doc(categoryPath).set({ ownerId: thirdId });
-        admin.doc(`${categoryPath}/moderatorIds/${myId}`).set({ exists: true });
-        await firebase.assertFails(theirBannedRef(db).set({ exists: true }));
-      });
-
-      it('should not allow moderators to ban owner', async () => {
-        admin.doc(categoryPath).set({ ownerId: theirId });
-        admin.doc(`${categoryPath}/moderatorIds/${myId}`).set({ exists: true });
-        await firebase.assertFails(theirBannedRef(db).set({ exists: true }));
-      });
-
-      it('should not allow documents without a marker', async () => {
-        admin.doc(categoryPath).set({ ownerId: myId });
-        await firebase.assertFails(theirBannedRef(db).set({}));
-      });
-
-      it('should not allow documents with extra fields', async () => {
-        admin.doc(categoryPath).set({ ownerId: myId });
-        await firebase.assertFails(
-          theirBannedRef(db).set({ exists: true, hackerNoob: true })
-        );
-      });
-    });
   });
 
   describe('update', () => {
@@ -211,87 +100,200 @@ describe('/categories', () => {
       );
     });
   });
+});
+
+describe('/categories/moderatorIds', () => {
+  describe('create', () => {
+    const theirModeratorRef = (db: firebaseApp.firestore.Firestore) =>
+      db.doc(`${categoryPath}/moderatorIds/${theirId}`);
+
+    it('should allow owner', async () => {
+      admin.doc(categoryPath).set({ ownerId: myId });
+      await firebase.assertSucceeds(
+        theirModeratorRef(db).set({ exists: true })
+      );
+    });
+
+    it('should not allow unverified users', async () => {
+      const db = getFirestore(myUnverifiedAuth);
+      admin.doc(categoryPath).set({ ownerId: myId });
+      await firebase.assertFails(theirModeratorRef(db).set({ exists: true }));
+    });
+
+    it('should not allow documents without a marker', async () => {
+      admin.doc(categoryPath).set({ ownerId: myId });
+      await firebase.assertFails(theirModeratorRef(db).set({}));
+    });
+
+    it('should not allow documents with extra fields', async () => {
+      admin.doc(categoryPath).set({ ownerId: myId });
+      await firebase.assertFails(
+        theirModeratorRef(db).set({ exists: true, notAllowed: true })
+      );
+    });
+  });
 
   describe('delete', () => {
-    describe('/moderatorIds', () => {
-      it('should allow owner to delete moderators', async () => {
-        const moderatorPath = `${categoryPath}/moderatorIds/${theirId}`;
-        admin.doc(categoryPath).set({ ownerId: myId });
-        admin.doc(moderatorPath).set({ exists: true });
-        await firebase.assertSucceeds(db.doc(moderatorPath).delete());
-      });
-
-      it('should allow moderators to delete themselves', async () => {
-        const moderatorPath = `${categoryPath}/moderatorIds/${myId}`;
-        admin.doc(categoryPath).set({ ownerId: theirId });
-        admin.doc(moderatorPath).set({ exists: true });
-        await firebase.assertSucceeds(db.doc(moderatorPath).delete());
-      });
-
-      it('should not allow unverified users', async () => {
-        const db = getFirestore(myUnverifiedAuth);
-        const moderatorPath = `${categoryPath}/moderatorIds/${myId}`;
-        admin.doc(categoryPath).set({ ownerId: theirId });
-        admin.doc(moderatorPath).set({ exists: true });
-        await firebase.assertFails(db.doc(moderatorPath).delete());
-      });
+    it('should allow owner to delete moderators', async () => {
+      const moderatorPath = `${categoryPath}/moderatorIds/${theirId}`;
+      admin.doc(categoryPath).set({ ownerId: myId });
+      admin.doc(moderatorPath).set({ exists: true });
+      await firebase.assertSucceeds(db.doc(moderatorPath).delete());
     });
 
-    describe('/subscriberIds', () => {
-      it('should allow owner to delete subscribers', async () => {
-        const subscriberPath = `${categoryPath}/subscriberIds/${theirId}`;
-        admin.doc(categoryPath).set({ ownerId: myId });
-        admin.doc(subscriberPath).set({ exists: true });
-        await firebase.assertSucceeds(db.doc(subscriberPath).delete());
-      });
-
-      it('should allow moderators to delete subscribers', async () => {
-        const subscriberPath = `${categoryPath}/subscriberIds/${theirId}`;
-        admin.doc(categoryPath).set({ ownerId: thirdId });
-        admin.doc(subscriberPath).set({ exists: true });
-        admin.doc(`${categoryPath}/moderatorIds/${myId}`).set({ exists: true });
-        await firebase.assertSucceeds(db.doc(subscriberPath).delete());
-      });
-
-      it('should allow subscribers to delete themselves', async () => {
-        const subscriberPath = `${categoryPath}/subscriberIds/${myId}`;
-        admin.doc(categoryPath).set({ ownerId: theirId });
-        admin.doc(subscriberPath).set({ exists: true });
-        await firebase.assertSucceeds(db.doc(subscriberPath).delete());
-      });
-
-      it('should not allow unverified users', async () => {
-        const db = getFirestore(myUnverifiedAuth);
-        const subscriberPath = `${categoryPath}/subscriberIds/${myId}`;
-        admin.doc(categoryPath).set({ ownerId: theirId });
-        admin.doc(subscriberPath).set({ exists: true });
-        await firebase.assertFails(db.doc(subscriberPath).delete());
-      });
+    it('should allow moderators to delete themselves', async () => {
+      const moderatorPath = `${categoryPath}/moderatorIds/${myId}`;
+      admin.doc(categoryPath).set({ ownerId: theirId });
+      admin.doc(moderatorPath).set({ exists: true });
+      await firebase.assertSucceeds(db.doc(moderatorPath).delete());
     });
 
-    describe('/bannedIds', () => {
-      it('should allow owner to delete bans', async () => {
-        const bannedPath = `${categoryPath}/bannedIds/${theirId}`;
-        admin.doc(categoryPath).set({ ownerId: myId });
-        admin.doc(bannedPath).set({ exists: true });
-        await firebase.assertSucceeds(db.doc(bannedPath).delete());
-      });
+    it('should not allow unverified users', async () => {
+      const db = getFirestore(myUnverifiedAuth);
+      const moderatorPath = `${categoryPath}/moderatorIds/${myId}`;
+      admin.doc(categoryPath).set({ ownerId: theirId });
+      admin.doc(moderatorPath).set({ exists: true });
+      await firebase.assertFails(db.doc(moderatorPath).delete());
+    });
+  });
+});
 
-      it('should allow moderators to delete bans', async () => {
-        const bannedPath = `${categoryPath}/bannedIds/${theirId}`;
-        admin.doc(categoryPath).set({ ownerId: thirdId });
-        admin.doc(bannedPath).set({ exists: true });
-        admin.doc(`${categoryPath}/moderatorIds/${myId}`).set({ exists: true });
-        await firebase.assertSucceeds(db.doc(bannedPath).delete());
-      });
+describe('/categories/subscriberIds', () => {
+  describe('create', () => {
+    const mySubscriberRef = (db: firebaseApp.firestore.Firestore) =>
+      db.doc(`${categoryPath}/subscriberIds/${myId}`);
 
-      it('should not allow unverified users', async () => {
-        const db = getFirestore(myUnverifiedAuth);
-        const bannedPath = `${categoryPath}/bannedIds/${theirId}`;
-        admin.doc(categoryPath).set({ ownerId: myId });
-        admin.doc(bannedPath).set({ exists: true });
-        await firebase.assertFails(db.doc(bannedPath).delete());
-      });
+    it('should allow if document ID matches user ID', async () => {
+      admin.doc(categoryPath).set({ ownerId: theirId });
+      await firebase.assertSucceeds(mySubscriberRef(db).set({ exists: true }));
+    });
+
+    it('should not allow unverified users', async () => {
+      const db = getFirestore(myUnverifiedAuth);
+      admin.doc(categoryPath).set({ ownerId: theirId });
+      await firebase.assertFails(mySubscriberRef(db).set({ exists: true }));
+    });
+
+    it('should not allow documents without a marker', async () => {
+      admin.doc(categoryPath).set({ ownerId: theirId });
+      await firebase.assertFails(mySubscriberRef(db).set({}));
+    });
+
+    it('should not allow documents with extra fields', async () => {
+      admin.doc(categoryPath).set({ ownerId: theirId });
+      await firebase.assertFails(
+        mySubscriberRef(db).set({ exists: true, extraField: 'poop' })
+      );
+    });
+
+    it('should not allow if user is banned', async () => {
+      admin.doc(categoryPath).set({ ownerId: theirId });
+      admin.doc(`${categoryPath}/bannedIds/${myId}`).set({ exists: true });
+      await firebase.assertFails(mySubscriberRef(db).set({ exists: true }));
+    });
+
+    it('should not allow if category does not exist', async () => {
+      await firebase.assertFails(mySubscriberRef(db).set({}));
+    });
+  });
+
+  describe('delete', () => {
+    it('should allow owner to delete subscribers', async () => {
+      const subscriberPath = `${categoryPath}/subscriberIds/${theirId}`;
+      admin.doc(categoryPath).set({ ownerId: myId });
+      admin.doc(subscriberPath).set({ exists: true });
+      await firebase.assertSucceeds(db.doc(subscriberPath).delete());
+    });
+
+    it('should allow moderators to delete subscribers', async () => {
+      const subscriberPath = `${categoryPath}/subscriberIds/${theirId}`;
+      admin.doc(categoryPath).set({ ownerId: thirdId });
+      admin.doc(subscriberPath).set({ exists: true });
+      admin.doc(`${categoryPath}/moderatorIds/${myId}`).set({ exists: true });
+      await firebase.assertSucceeds(db.doc(subscriberPath).delete());
+    });
+
+    it('should allow subscribers to delete themselves', async () => {
+      const subscriberPath = `${categoryPath}/subscriberIds/${myId}`;
+      admin.doc(categoryPath).set({ ownerId: theirId });
+      admin.doc(subscriberPath).set({ exists: true });
+      await firebase.assertSucceeds(db.doc(subscriberPath).delete());
+    });
+
+    it('should not allow unverified users', async () => {
+      const db = getFirestore(myUnverifiedAuth);
+      const subscriberPath = `${categoryPath}/subscriberIds/${myId}`;
+      admin.doc(categoryPath).set({ ownerId: theirId });
+      admin.doc(subscriberPath).set({ exists: true });
+      await firebase.assertFails(db.doc(subscriberPath).delete());
+    });
+  });
+});
+
+describe('/categories/bannedIds', () => {
+  describe('create', () => {
+    const theirBannedRef = (db: firebaseApp.firestore.Firestore) =>
+      db.doc(`${categoryPath}/bannedIds/${theirId}`);
+
+    it('should allow owner', async () => {
+      admin.doc(categoryPath).set({ ownerId: myId });
+      await firebase.assertSucceeds(theirBannedRef(db).set({ exists: true }));
+    });
+
+    it('should allow moderators', async () => {
+      admin.doc(categoryPath).set({ ownerId: thirdId });
+      admin.doc(`${categoryPath}/moderatorIds/${myId}`).set({ exists: true });
+      await firebase.assertSucceeds(theirBannedRef(db).set({ exists: true }));
+    });
+
+    it('should not allow unverified users', async () => {
+      const db = getFirestore(myUnverifiedAuth);
+      admin.doc(categoryPath).set({ ownerId: thirdId });
+      admin.doc(`${categoryPath}/moderatorIds/${myId}`).set({ exists: true });
+      await firebase.assertFails(theirBannedRef(db).set({ exists: true }));
+    });
+
+    it('should not allow moderators to ban owner', async () => {
+      admin.doc(categoryPath).set({ ownerId: theirId });
+      admin.doc(`${categoryPath}/moderatorIds/${myId}`).set({ exists: true });
+      await firebase.assertFails(theirBannedRef(db).set({ exists: true }));
+    });
+
+    it('should not allow documents without a marker', async () => {
+      admin.doc(categoryPath).set({ ownerId: myId });
+      await firebase.assertFails(theirBannedRef(db).set({}));
+    });
+
+    it('should not allow documents with extra fields', async () => {
+      admin.doc(categoryPath).set({ ownerId: myId });
+      await firebase.assertFails(
+        theirBannedRef(db).set({ exists: true, hackerNoob: true })
+      );
+    });
+  });
+
+  describe('delete', () => {
+    it('should allow owner to delete bans', async () => {
+      const bannedPath = `${categoryPath}/bannedIds/${theirId}`;
+      admin.doc(categoryPath).set({ ownerId: myId });
+      admin.doc(bannedPath).set({ exists: true });
+      await firebase.assertSucceeds(db.doc(bannedPath).delete());
+    });
+
+    it('should allow moderators to delete bans', async () => {
+      const bannedPath = `${categoryPath}/bannedIds/${theirId}`;
+      admin.doc(categoryPath).set({ ownerId: thirdId });
+      admin.doc(bannedPath).set({ exists: true });
+      admin.doc(`${categoryPath}/moderatorIds/${myId}`).set({ exists: true });
+      await firebase.assertSucceeds(db.doc(bannedPath).delete());
+    });
+
+    it('should not allow unverified users', async () => {
+      const db = getFirestore(myUnverifiedAuth);
+      const bannedPath = `${categoryPath}/bannedIds/${theirId}`;
+      admin.doc(categoryPath).set({ ownerId: myId });
+      admin.doc(bannedPath).set({ exists: true });
+      await firebase.assertFails(db.doc(bannedPath).delete());
     });
   });
 });
