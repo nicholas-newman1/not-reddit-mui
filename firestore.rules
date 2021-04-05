@@ -10,6 +10,10 @@ service cloud.firestore {
     	return request.resource.data;
     }
 
+    function currentData() {
+      return resource.data;
+    }
+
     function isVerified() {
       return request.auth.token.email_verified == true;
     }
@@ -20,10 +24,10 @@ service cloud.firestore {
       return requestKeys.hasAll(requiredFields) && requestKeys.hasOnly(allFields);
     }
 
-    // function editChangesOnlyFields(allowedFields) {
-    //   let affectedKeys = incomingData().diff(resource.data).affectedKeys();
-    //   return affectedKeys.hasOnly(allowedFields);
-    // }
+    function editChangesOnlyFields(allowedFields) {
+      let affectedKeys = incomingData().diff(resource.data).affectedKeys();
+      return affectedKeys.hasOnly(allowedFields);
+    }
 
     function categoryExists(categoryId) {
       return exists(/databases/$(database)/documents/categories/$(categoryId))
@@ -55,7 +59,7 @@ service cloud.firestore {
       allow read;
 
       allow create: if documentFieldsCheckOut(['ownerId'], []) 
-        && request.auth.uid == request.resource.data.ownerId
+        && request.auth.uid == incomingData().ownerId
         && isVerified()
         && categoryId.size() > 2
         && categoryId.matches('^[a-z0-9]+$');
@@ -111,7 +115,12 @@ service cloud.firestore {
     }
 
     match /posts/{postId} {
+      function isOwnerOfPost() {
+        return currentData().authorId == request.auth.uid
+      }
+
       allow read;
+
       allow create: if isVerified() 
         && documentFieldsCheckOut(['title', 'body', 'authorId', 'categoryId'], [])
         && incomingData().title is string
@@ -125,6 +134,25 @@ service cloud.firestore {
           || isOwnerOfCategory(request.auth.uid, incomingData().categoryId)
           )
         && !isBannedFromCategory(request.auth.uid, incomingData().categoryId)
+
+      allow update: if isVerified()
+        && editChangesOnlyFields(['title', 'body'])
+        && incomingData().title is string
+        && incomingData().title.size() >= 3
+        && incomingData().body is string
+        && (
+          isOwnerOfPost()
+          || isModeratorOfCategory(request.auth.uid, currentData().categoryId)
+          || isOwnerOfCategory(request.auth.uid, currentData().categoryId)
+        );
+
+      allow delete: if isVerified()
+        && (
+          isOwnerOfPost()
+          || isModeratorOfCategory(request.auth.uid, currentData().categoryId)
+          || isOwnerOfCategory(request.auth.uid, currentData().categoryId)
+        );
+
     }
   }
 }
