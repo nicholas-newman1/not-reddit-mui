@@ -265,6 +265,15 @@ describe('posts/upVoteIds', () => {
   const upVotePath = `${postPath}/upVoteIds/${myId}`;
   const theirUpVotePath = `${postPath}/upVoteIds/${theirId}`;
 
+  describe('read', () => {
+    it('should allow anyone', async () => {
+      const db = getFirestore();
+      await firebase.assertSucceeds(
+        db.collection(`${postPath}/upVoteIds`).get()
+      );
+    });
+  });
+
   describe('create', () => {
     it('should allow verified users', async () => {
       admin.doc(categoryPath).set({ ownerId: theirId });
@@ -333,6 +342,15 @@ describe('posts/upVoteIds', () => {
 describe('posts/downVoteIds', () => {
   const downVotePath = `${postPath}/downVoteIds/${myId}`;
   const theirDownVotePath = `${postPath}/downVoteIds/${theirId}`;
+
+  describe('read', () => {
+    it('should allow anyone', async () => {
+      const db = getFirestore();
+      await firebase.assertSucceeds(
+        db.collection(`${postPath}/downVoteIds`).get()
+      );
+    });
+  });
 
   describe('create', () => {
     it('should allow verified users', async () => {

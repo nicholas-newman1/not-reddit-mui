@@ -158,6 +158,8 @@ service cloud.firestore {
         );
 
       match /upVoteIds/{upVoteId} {
+        allow read;
+
         allow create: if isVerified()
           && onlyHasMarker()
           && request.auth.uid == upVoteId
@@ -168,6 +170,8 @@ service cloud.firestore {
       }
 
       match /downVoteIds/{downVoteId} {
+        allow read;
+        
         allow create: if isVerified()
           && onlyHasMarker()
           && request.auth.uid == downVoteId
