@@ -1,7 +1,7 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    function onlyMarker() {
+    function onlyHasMarker() {
       return incomingData().keys().hasOnly(["exists"]) 
         && incomingData().exists == true;
     }
@@ -69,7 +69,7 @@ service cloud.firestore {
         && isOwnerOfCategory(request.auth.uid, categoryId);
 
       match /moderatorIds/{moderatorId} {
-        allow create: if onlyMarker()
+        allow create: if onlyHasMarker()
           && isVerified()
           && isOwnerOfCategory(request.auth.uid, categoryId);
         allow delete: if isVerified()
@@ -81,7 +81,7 @@ service cloud.firestore {
 
       match /subscriberIds/{subscriberId} {
         allow create: if
-          onlyMarker()
+          onlyHasMarker()
           && request.auth.uid == subscriberId
           && isVerified()
           && categoryExists(categoryId)
@@ -96,7 +96,7 @@ service cloud.firestore {
       }
 
       match /bannedIds/{bannedId} {
-        allow create: if onlyMarker()
+        allow create: if onlyHasMarker()
         && isVerified()
         && (
           (
@@ -117,6 +117,10 @@ service cloud.firestore {
     match /posts/{postId} {
       function isOwnerOfPost() {
         return currentData().authorId == request.auth.uid
+      }
+
+      function postExists() {
+        return exists(/databases/$(database)/documents/posts/$(postId))
       }
 
       allow read;
@@ -153,6 +157,25 @@ service cloud.firestore {
           || isOwnerOfCategory(request.auth.uid, currentData().categoryId)
         );
 
+      match /upVoteIds/{upVoteId} {
+        allow create: if isVerified()
+          && onlyHasMarker()
+          && request.auth.uid == upVoteId
+          && postExists()
+
+        allow delete: if isVerified()
+          && request.auth.uid == upVoteId
+      }
+
+      match /downVoteIds/{downVoteId} {
+        allow create: if isVerified()
+          && onlyHasMarker()
+          && request.auth.uid == downVoteId
+          && postExists()
+
+        allow delete: if isVerified()
+          && request.auth.uid == downVoteId
+      }
     }
   }
 }

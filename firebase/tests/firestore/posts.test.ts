@@ -260,3 +260,143 @@ describe('posts', () => {
     });
   });
 });
+
+describe('posts/upVoteIds', () => {
+  const upVotePath = `${postPath}/upVoteIds/${myId}`;
+  const theirUpVotePath = `${postPath}/upVoteIds/${theirId}`;
+
+  describe('create', () => {
+    it('should allow verified users', async () => {
+      admin.doc(categoryPath).set({ ownerId: theirId });
+      admin.doc(postPath).set(theirPost);
+      await firebase.assertSucceeds(db.doc(upVotePath).set({ exists: true }));
+    });
+
+    it('should not allow unverified users', async () => {
+      const db = getFirestore(myUnverifiedAuth);
+      admin.doc(categoryPath).set({ ownerId: theirId });
+      admin.doc(postPath).set(theirPost);
+      await firebase.assertFails(db.doc(upVotePath).set({ exists: true }));
+    });
+
+    it('should not allow document id to be different from user id', async () => {
+      admin.doc(categoryPath).set({ ownerId: theirId });
+      admin.doc(postPath).set(theirPost);
+      await firebase.assertFails(db.doc(theirUpVotePath).set({ exists: true }));
+    });
+
+    it('should not allow documents without a marker field', async () => {
+      admin.doc(categoryPath).set({ ownerId: theirId });
+      admin.doc(postPath).set(theirPost);
+      await firebase.assertFails(db.doc(upVotePath).set({}));
+    });
+
+    it('should not allow extra fields', async () => {
+      admin.doc(categoryPath).set({ ownerId: theirId });
+      admin.doc(postPath).set(theirPost);
+      await firebase.assertFails(
+        db.doc(theirUpVotePath).set({ exists: true, noob: true })
+      );
+    });
+
+    it('should not allow on posts that do not exist', async () => {
+      admin.doc(categoryPath).set({ ownerId: theirId });
+      await firebase.assertFails(db.doc(upVotePath).set({ exists: true }));
+    });
+  });
+
+  describe('delete', () => {
+    it('should allow verified users', async () => {
+      admin.doc(categoryPath).set({ ownerId: theirId });
+      admin.doc(postPath).set(theirPost);
+      admin.doc(upVotePath).set({ exists: true });
+      await firebase.assertSucceeds(db.doc(upVotePath).delete());
+    });
+
+    it('should not allow unverified users', async () => {
+      const db = getFirestore(myUnverifiedAuth);
+      admin.doc(categoryPath).set({ ownerId: theirId });
+      admin.doc(postPath).set(theirPost);
+      admin.doc(upVotePath).set({ exists: true });
+      await firebase.assertFails(db.doc(upVotePath).delete());
+    });
+
+    it('should not allow document id to be different from user id', async () => {
+      admin.doc(categoryPath).set({ ownerId: theirId });
+      admin.doc(postPath).set(theirPost);
+      admin.doc(theirUpVotePath).set({ exists: true });
+      await firebase.assertFails(db.doc(theirUpVotePath).delete());
+    });
+  });
+});
+
+describe('posts/downVoteIds', () => {
+  const downVotePath = `${postPath}/downVoteIds/${myId}`;
+  const theirDownVotePath = `${postPath}/downVoteIds/${theirId}`;
+
+  describe('create', () => {
+    it('should allow verified users', async () => {
+      admin.doc(categoryPath).set({ ownerId: theirId });
+      admin.doc(postPath).set(theirPost);
+      await firebase.assertSucceeds(db.doc(downVotePath).set({ exists: true }));
+    });
+
+    it('should not allow unverified users', async () => {
+      const db = getFirestore(myUnverifiedAuth);
+      admin.doc(categoryPath).set({ ownerId: theirId });
+      admin.doc(postPath).set(theirPost);
+      await firebase.assertFails(db.doc(downVotePath).set({ exists: true }));
+    });
+
+    it('should not allow document id to be different from user id', async () => {
+      admin.doc(categoryPath).set({ ownerId: theirId });
+      admin.doc(postPath).set(theirPost);
+      await firebase.assertFails(
+        db.doc(theirDownVotePath).set({ exists: true })
+      );
+    });
+
+    it('should not allow documents without a marker field', async () => {
+      admin.doc(categoryPath).set({ ownerId: theirId });
+      admin.doc(postPath).set(theirPost);
+      await firebase.assertFails(db.doc(downVotePath).set({}));
+    });
+
+    it('should not allow extra fields', async () => {
+      admin.doc(categoryPath).set({ ownerId: theirId });
+      admin.doc(postPath).set(theirPost);
+      await firebase.assertFails(
+        db.doc(theirDownVotePath).set({ exists: true, noob: true })
+      );
+    });
+
+    it('should not allow on posts that do not exist', async () => {
+      admin.doc(categoryPath).set({ ownerId: theirId });
+      await firebase.assertFails(db.doc(downVotePath).set({ exists: true }));
+    });
+  });
+
+  describe('delete', () => {
+    it('should allow verified users', async () => {
+      admin.doc(categoryPath).set({ ownerId: theirId });
+      admin.doc(postPath).set(theirPost);
+      admin.doc(downVotePath).set({ exists: true });
+      await firebase.assertSucceeds(db.doc(downVotePath).delete());
+    });
+
+    it('should not allow unverified users', async () => {
+      const db = getFirestore(myUnverifiedAuth);
+      admin.doc(categoryPath).set({ ownerId: theirId });
+      admin.doc(postPath).set(theirPost);
+      admin.doc(downVotePath).set({ exists: true });
+      await firebase.assertFails(db.doc(downVotePath).delete());
+    });
+
+    it('should not allow document id to be different from user id', async () => {
+      admin.doc(categoryPath).set({ ownerId: theirId });
+      admin.doc(postPath).set(theirPost);
+      admin.doc(theirDownVotePath).set({ exists: true });
+      await firebase.assertFails(db.doc(theirDownVotePath).delete());
+    });
+  });
+});
