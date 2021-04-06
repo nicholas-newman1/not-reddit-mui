@@ -10,7 +10,7 @@ service cloud.firestore {
     	return request.resource.data;
     }
 
-    function currentData() {
+    function existingData() {
       return resource.data;
     }
 
@@ -116,7 +116,7 @@ service cloud.firestore {
 
     match /posts/{postId} {
       function isOwnerOfPost() {
-        return currentData().authorId == request.auth.uid
+        return existingData().authorId == request.auth.uid
       }
 
       function postExists() {
@@ -146,15 +146,15 @@ service cloud.firestore {
         && incomingData().body is string
         && (
           isOwnerOfPost()
-          || isModeratorOfCategory(request.auth.uid, currentData().categoryId)
-          || isOwnerOfCategory(request.auth.uid, currentData().categoryId)
+          || isModeratorOfCategory(request.auth.uid, existingData().categoryId)
+          || isOwnerOfCategory(request.auth.uid, existingData().categoryId)
         );
 
       allow delete: if isVerified()
         && (
           isOwnerOfPost()
-          || isModeratorOfCategory(request.auth.uid, currentData().categoryId)
-          || isOwnerOfCategory(request.auth.uid, currentData().categoryId)
+          || isModeratorOfCategory(request.auth.uid, existingData().categoryId)
+          || isOwnerOfCategory(request.auth.uid, existingData().categoryId)
         );
 
       match /upVoteIds/{upVoteId} {
@@ -176,6 +176,43 @@ service cloud.firestore {
         allow delete: if isVerified()
           && request.auth.uid == downVoteId
       }
+    }
+
+    match /comments/{commentId} {
+      function getCategory(postId) {
+        return get(/databases/$(database)/documents/posts/$(postId)).data.categoryId
+      }
+
+      function commentExists(commentId) {
+        return exists(/databases/$(database)/documents/comments/$(commentId))
+      }
+
+      allow read;
+
+      allow create: if isVerified()
+        && documentFieldsCheckOut(['authorId', 'postId', 'body'], ['repliesTo'])
+        && request.auth.uid == incomingData().authorId
+        && incomingData().body is string
+        && incomingData().body.size() > 0
+        && (
+          !('repliesTo' in incomingData().keys()) 
+          || commentExists(incomingData().repliesTo)
+        )
+        && (
+          isSubscriberOfCategory(request.auth.uid, getCategory(incomingData().postId))
+          || isModeratorOfCategory(request.auth.uid, getCategory(incomingData().postId))
+          || isOwnerOfCategory(request.auth.uid, getCategory(incomingData().postId))
+        );
+
+      allow update: if isVerified()
+        && editChangesOnlyFields(['body'])
+        && incomingData().body is string
+        && incomingData().body.size() > 0
+        && (
+            request.auth.uid == existingData().authorId
+            || isModeratorOfCategory(request.auth.uid, getCategory(incomingData().postId))
+            || isOwnerOfCategory(request.auth.uid, getCategory(incomingData().postId))
+        );
     }
   }
 }
