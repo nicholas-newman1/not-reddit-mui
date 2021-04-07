@@ -52,7 +52,9 @@ service cloud.firestore {
     // Rules
     match /users/{userId} {      
       allow read;
-      allow create, update: if request.auth.uid == userId && documentFieldsCheckOut(['username'], []);
+      allow create, update: if request.auth.uid == userId 
+        && documentFieldsCheckOut(['username'], [])
+        && incomingData().username is string;
     }
 
     match /categories/{categoryId} {  
@@ -137,7 +139,7 @@ service cloud.firestore {
           || isModeratorOfCategory(request.auth.uid, incomingData().categoryId)
           || isOwnerOfCategory(request.auth.uid, incomingData().categoryId)
           )
-        && !isBannedFromCategory(request.auth.uid, incomingData().categoryId)
+        && !isBannedFromCategory(request.auth.uid, incomingData().categoryId);
 
       allow update: if isVerified()
         && editChangesOnlyFields(['title', 'body'])
@@ -148,14 +150,16 @@ service cloud.firestore {
           isOwnerOfPost()
           || isModeratorOfCategory(request.auth.uid, existingData().categoryId)
           || isOwnerOfCategory(request.auth.uid, existingData().categoryId)
-        );
+        )
+        && !isBannedFromCategory(request.auth.uid, existingData().categoryId);
 
       allow delete: if isVerified()
         && (
           isOwnerOfPost()
           || isModeratorOfCategory(request.auth.uid, existingData().categoryId)
           || isOwnerOfCategory(request.auth.uid, existingData().categoryId)
-        );
+        )
+        && !isBannedFromCategory(request.auth.uid, existingData().categoryId);
 
       match /upVoteIds/{upVoteId} {
         allow read;
@@ -206,7 +210,8 @@ service cloud.firestore {
           isSubscriberOfCategory(request.auth.uid, getCategory(incomingData().postId))
           || isModeratorOfCategory(request.auth.uid, getCategory(incomingData().postId))
           || isOwnerOfCategory(request.auth.uid, getCategory(incomingData().postId))
-        );
+        )
+        && !isBannedFromCategory(request.auth.uid, getCategory(incomingData().postId));
 
       allow update: if isVerified()
         && editChangesOnlyFields(['body'])
@@ -216,14 +221,16 @@ service cloud.firestore {
             request.auth.uid == existingData().authorId
             || isModeratorOfCategory(request.auth.uid, getCategory(existingData().postId))
             || isOwnerOfCategory(request.auth.uid, getCategory(existingData().postId))
-        );
+        )
+        && !isBannedFromCategory(request.auth.uid, getCategory(incomingData().postId));
       
       allow delete: if isVerified()
         && (
           request.auth.uid == existingData().authorId
           || isModeratorOfCategory(request.auth.uid, getCategory(existingData().postId))
           || isOwnerOfCategory(request.auth.uid, getCategory(existingData().postId))
-        );
+        )
+        && !isBannedFromCategory(request.auth.uid, getCategory(existingData().postId));
     }
   }
 }

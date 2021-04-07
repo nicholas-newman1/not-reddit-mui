@@ -49,6 +49,10 @@ describe('/users', () => {
     it('should not allow missing username field', async () => {
       await firebase.assertFails(db.doc(myPath).set({}));
     });
+
+    it('should only allow username to be a string', async () => {
+      await firebase.assertFails(db.doc(myPath).set({ username: false }));
+    });
   });
 
   describe('update', () => {

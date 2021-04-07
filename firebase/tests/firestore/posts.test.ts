@@ -61,6 +61,13 @@ describe('posts', () => {
       await firebase.assertSucceeds(db.doc(postPath).set(post));
     });
 
+    it('should not allow users banned from given category', async () => {
+      admin.doc(categoryPath).set({ ownerId: theirId });
+      admin.doc(`${categoryPath}/subscriberIds/${myId}`).set({ exists: true });
+      admin.doc(`${categoryPath}/bannedIds/${myId}`).set({ exists: true });
+      await firebase.assertFails(db.doc(postPath).set(post));
+    });
+
     it('should only allow a categoryId that exists', async () => {
       admin.doc(`${categoryPath}/subscriberIds/${myId}`).set({ exists: true });
       // subscriberIds subcollection exists, but should still fail
@@ -150,6 +157,14 @@ describe('posts', () => {
       admin.doc(postPath).set(theirPost);
       const theirUpdatedPost = { ...theirPost, body: post.body + '123' };
       await firebase.assertSucceeds(db.doc(postPath).set(theirUpdatedPost));
+    });
+
+    it('should not allow users banned from given category', async () => {
+      admin.doc(categoryPath).set({ ownerId: theirId });
+      admin.doc(postPath).set(post);
+      admin.doc(`${categoryPath}/bannedIds/${myId}`).set({ exists: true });
+      const updatedPost = { ...post, body: post.body + '123' };
+      await firebase.assertFails(db.doc(postPath).set(updatedPost));
     });
 
     it('should not allow any other subscriber/user', async () => {
@@ -243,6 +258,13 @@ describe('posts', () => {
       admin.doc(categoryPath).set({ ownerId: myId });
       admin.doc(postPath).set(theirPost);
       await firebase.assertSucceeds(db.doc(postPath).delete());
+    });
+
+    it('should not allow users banned from given category', async () => {
+      admin.doc(categoryPath).set({ ownerId: theirId });
+      admin.doc(postPath).set(post);
+      admin.doc(`${categoryPath}/bannedIds/${myId}`).set({ exists: true });
+      await firebase.assertFails(db.doc(postPath).delete());
     });
 
     it('should not allow any other subscriber/user', async () => {

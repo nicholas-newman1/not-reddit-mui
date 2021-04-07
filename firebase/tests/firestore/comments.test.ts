@@ -86,6 +86,14 @@ describe('comments', () => {
       await firebase.assertSucceeds(db.doc(commentPath).set(comment));
     });
 
+    it('should not allow users banned from category of post', async () => {
+      admin.doc(categoryPath).set({ ownerId: theirId });
+      admin.doc(postPath).set(theirPost);
+      admin.doc(`${categoryPath}/subscriberIds/${myId}`).set({ exists: true });
+      admin.doc(`${categoryPath}/bannedIds/${myId}`).set({ exists: true });
+      await firebase.assertFails(db.doc(commentPath).set(comment));
+    });
+
     it('should not allow a user who is not a subscriber, moderator, or owner of category of post', async () => {
       admin.doc(categoryPath).set({ ownerId: theirId });
       admin.doc(postPath).set(theirPost);
@@ -197,6 +205,15 @@ describe('comments', () => {
       await firebase.assertSucceeds(db.doc(commentPath).set(theirOtherComment));
     });
 
+    it('should not allow users banned from category of post', async () => {
+      admin.doc(categoryPath).set({ ownerId: theirId });
+      admin.doc(postPath).set(theirPost);
+      admin.doc(`${categoryPath}/subscriberIds/${myId}`).set({ exists: true });
+      admin.doc(commentPath).set(comment);
+      admin.doc(`${categoryPath}/bannedIds/${myId}`).set({ exists: true });
+      await firebase.assertFails(db.doc(commentPath).set(otherComment));
+    });
+
     it('should not allow !author, or !moderator/owner of category of post', async () => {
       admin.doc(categoryPath).set({ ownerId: theirId });
       admin.doc(postPath).set(theirPost);
@@ -256,6 +273,15 @@ describe('comments', () => {
       admin.doc(`${categoryPath}/subscriberIds/${myId}`).set({ exists: true });
       admin.doc(commentPath).set(theirComment);
       await firebase.assertSucceeds(db.doc(commentPath).delete());
+    });
+
+    it('should not allow users banned category of post', async () => {
+      admin.doc(categoryPath).set({ ownerId: theirId });
+      admin.doc(postPath).set(theirPost);
+      admin.doc(`${categoryPath}/subscriberIds/${myId}`).set({ exists: true });
+      admin.doc(commentPath).set(comment);
+      admin.doc(`${categoryPath}/bannedIds/${myId}`).set({ exists: true });
+      await firebase.assertFails(db.doc(commentPath).delete());
     });
 
     it('should not allow !author, or !moderator/owner of category of post', async () => {
