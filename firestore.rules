@@ -214,8 +214,15 @@ service cloud.firestore {
         && incomingData().body.size() > 0
         && (
             request.auth.uid == existingData().authorId
-            || isModeratorOfCategory(request.auth.uid, getCategory(incomingData().postId))
-            || isOwnerOfCategory(request.auth.uid, getCategory(incomingData().postId))
+            || isModeratorOfCategory(request.auth.uid, getCategory(existingData().postId))
+            || isOwnerOfCategory(request.auth.uid, getCategory(existingData().postId))
+        );
+      
+      allow delete: if isVerified()
+        && (
+          request.auth.uid == existingData().authorId
+          || isModeratorOfCategory(request.auth.uid, getCategory(existingData().postId))
+          || isOwnerOfCategory(request.auth.uid, getCategory(existingData().postId))
         );
     }
   }
