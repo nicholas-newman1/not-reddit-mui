@@ -25,6 +25,7 @@ const useStyles = makeStyles((theme) => {
       minHeight: 0,
       minWidth: 0,
       textTransform: 'lowercase',
+      fontSize: '0.7rem',
     },
     username: {
       fontWeight: theme.typography.fontWeightBold,

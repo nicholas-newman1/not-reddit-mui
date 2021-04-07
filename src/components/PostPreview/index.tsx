@@ -36,11 +36,15 @@ const useStyles = makeStyles((theme) => {
 
   return {
     root: {
-      padding: layoutSpacing,
+      padding: '1rem',
+      width: '100%',
     },
     gap: {
       gap: layoutSpacing,
       marginLeft: layoutSpacing,
+    },
+    link: {
+      padding: '1rem 0',
     },
     buttonGroup: {
       margin: `0 -${buttonSpacing}px`,
@@ -50,7 +54,7 @@ const useStyles = makeStyles((theme) => {
       paddingRight: buttonSpacing,
       minHeight: 0,
       minWidth: 0,
-      fontSize: '0.75rem',
+      fontSize: '0.7rem',
       fontWeight: theme.typography.fontWeightBold,
     },
   };
@@ -84,6 +88,7 @@ const PostPreview: React.FC<Props> = (props) => {
               component={Link}
               to={props.postHref}
               color='textPrimary'
+              className={classes.link}
             >
               {props.title}
             </StyledLink>

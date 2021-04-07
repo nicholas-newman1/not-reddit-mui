@@ -39,7 +39,7 @@ const Rating: React.FC<Props> = (props) => {
         <ExpandLess className={classes.svgIcon} />
       </IconButton>
 
-      <Typography>{props.rating}</Typography>
+      <Typography itemProp='vote count'>{props.rating}</Typography>
 
       <IconButton
         onClick={() => props.onDownVote()}
