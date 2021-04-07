@@ -77,7 +77,7 @@ const Header = () => {
     main.style.paddingTop = headerHeight;
 
     //eslint-disable-next-line
-  }, []);
+  }, [user?.emailVerified]);
 
   return (
     <AppBar
