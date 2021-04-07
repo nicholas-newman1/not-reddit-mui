@@ -1,9 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit';
 import auth, { verifyAuth } from './authSlice';
+import createCategory from './createCategorySlice';
 
 const store = configureStore({
   reducer: {
     auth,
+    createCategory,
   },
 });
 
