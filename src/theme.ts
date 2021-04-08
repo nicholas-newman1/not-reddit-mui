@@ -62,6 +62,9 @@ theme.props = {
   MuiButton: {
     disableElevation: true,
   },
+  MuiContainer: {
+    maxWidth: 'xl',
+  },
 };
 
 theme.overrides = {

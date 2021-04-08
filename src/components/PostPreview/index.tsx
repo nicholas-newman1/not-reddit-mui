@@ -36,7 +36,7 @@ const useStyles = makeStyles((theme) => {
 
   return {
     root: {
-      padding: '1rem',
+      padding: theme.spacing(2),
       width: '100%',
     },
     gap: {
