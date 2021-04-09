@@ -25,8 +25,8 @@ const SignUpDialogContainer = () => {
   const error = useAppSelector((state) => state.auth.error);
   const open = useAppSelector((state) => state.auth.isSignUpDialogOpen);
 
-  const handleSignUp = ({ username, email, password }: FormDetails) => {
-    dispatch(signUp({ username, email, password }));
+  const handleSignUp = (data: FormDetails) => {
+    dispatch(signUp(data));
   };
 
   return (

@@ -1,4 +1,4 @@
-import SignUpSuccessToast from '../../components/SignUpSuccessToast';
+import Toast from '../../components/Toast';
 import { useAppDispatch } from '../../hooks/useAppDispatch';
 import { useAppSelector } from '../../hooks/useAppSelector';
 import { hideSignUpSuccessToast } from '../../store/authSlice';
@@ -8,7 +8,9 @@ const SignUpSuccessToastContainer = () => {
   const open = useAppSelector((state) => state.auth.isSignUpSuccessToastOpen);
 
   return (
-    <SignUpSuccessToast
+    <Toast
+      message='Account successfully created!'
+      severity='success'
       open={open}
       handleClose={() => dispatch(hideSignUpSuccessToast())}
     />

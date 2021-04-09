@@ -1,24 +1,26 @@
 import Snackbar from '@material-ui/core/Snackbar';
-import { Alert } from '@material-ui/lab';
+import { Alert, Color } from '@material-ui/lab';
 
 interface Props {
   open: boolean;
   handleClose: () => void;
+  message: string;
+  severity?: Color;
 }
 
-const CreatePostSuccessToast: React.FC<Props> = ({ open, handleClose }) => {
+const Toast: React.FC<Props> = ({ open, handleClose, message, severity }) => {
   return (
     <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
       <Alert
         onClose={handleClose}
-        severity='success'
+        severity={severity}
         variant='filled'
         elevation={6}
       >
-        Post successfully created!
+        {message}
       </Alert>
     </Snackbar>
   );
 };
 
-export default CreatePostSuccessToast;
+export default Toast;

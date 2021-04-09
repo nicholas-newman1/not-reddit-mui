@@ -1,22 +1,22 @@
 import { fireEvent, render } from '@testing-library/react';
-import SignUpSuccessToast from '.';
+import Toast from '.';
 
-describe('<SignUpSuccessToast />', () => {
+describe('<Toast />', () => {
   it('renders without crashing', () => {
-    render(<SignUpSuccessToast open={true} handleClose={() => {}} />);
+    render(<Toast open={true} message='test' handleClose={() => {}} />);
   });
 
   it('should have a message', () => {
     const { getByText } = render(
-      <SignUpSuccessToast open={true} handleClose={() => {}} />
+      <Toast open={true} message='test' handleClose={() => {}} />
     );
 
-    getByText(/account successfully created/i);
+    getByText(/test/i);
   });
 
   it('should not render when open is false', () => {
     const { queryByRole } = render(
-      <SignUpSuccessToast open={false} handleClose={() => {}} />
+      <Toast open={false} message='test' handleClose={() => {}} />
     );
 
     expect(queryByRole('alert')).not.toBeInTheDocument();
@@ -24,7 +24,7 @@ describe('<SignUpSuccessToast />', () => {
 
   it('should have a close button', () => {
     const { getByRole } = render(
-      <SignUpSuccessToast open={true} handleClose={() => {}} />
+      <Toast open={true} message='test' handleClose={() => {}} />
     );
 
     getByRole('button');
@@ -33,7 +33,7 @@ describe('<SignUpSuccessToast />', () => {
   it('should call handleClose on click close button', () => {
     const fn = jest.fn();
     const { getByRole } = render(
-      <SignUpSuccessToast open={true} handleClose={fn} />
+      <Toast open={true} message='test' handleClose={fn} />
     );
 
     fireEvent.click(getByRole('button'));
