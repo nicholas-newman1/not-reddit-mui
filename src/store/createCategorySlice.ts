@@ -25,18 +25,18 @@ export const createCategory = createAsyncThunk(
     { categoryName }: createCategoryData,
     { rejectWithValue, dispatch }
   ) => {
-    const ref = db.doc(`categories/${categoryName.toLowerCase()}`);
+    const uid = auth.currentUser?.uid;
+    const categoryId = categoryName.toLowerCase();
+    const ref = db.doc(`categories/${categoryId}`);
     const snap = await ref.get();
-    return snap.exists
-      ? rejectWithValue('')
-      : ref
-          .set({
-            ownerId: auth.currentUser?.uid,
-          })
-          .then(() => {
-            dispatch(hideCreateCategoryDialog());
-            dispatch(displayCreateCategorySuccessToast());
-          });
+    if (snap.exists) return rejectWithValue('');
+    await ref.set({ ownerId: uid });
+    await ref.collection('subscriberIds').doc(uid).set({
+      uid,
+      categoryId,
+    });
+    dispatch(hideCreateCategoryDialog());
+    dispatch(displayCreateCategorySuccessToast());
   }
 );
 
