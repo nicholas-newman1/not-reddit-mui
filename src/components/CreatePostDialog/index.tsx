@@ -19,6 +19,9 @@ const useStyles = makeStyles((theme) => ({
     margin: '0 auto',
     overflow: 'auto',
   },
+  info: {
+    marginTop: '1rem',
+  },
   form: {
     width: '100%',
     marginTop: '2rem',
@@ -29,8 +32,8 @@ const useStyles = makeStyles((theme) => ({
 
 interface FormDetails {
   title: string;
-  categoryId: string;
-  body?: string;
+  category: string;
+  body: string;
 }
 
 interface Props {
@@ -38,6 +41,7 @@ interface Props {
   open: boolean;
   hideDialog: () => void;
   loading: boolean;
+  loadingSubscribedCategoryIds: boolean;
   error: string;
   subscribedCategoryIds: string[];
   defaultCategoryId?: string;
@@ -48,12 +52,12 @@ const CreatePostDialog: React.FC<Props> = ({
   open,
   hideDialog,
   loading,
+  loadingSubscribedCategoryIds,
   error,
   subscribedCategoryIds,
   defaultCategoryId = '',
 }) => {
   const classes = useStyles();
-
   const { register, handleSubmit, errors, setError, control } = useForm();
 
   useEffect(() => {
@@ -68,102 +72,113 @@ const CreatePostDialog: React.FC<Props> = ({
           Create Post
         </Typography>
 
-        <form
-          aria-label='create post'
-          className={classes.form}
-          onSubmit={handleSubmit((data: FormDetails) => handleCreatePost(data))}
-        >
-          <Grid container direction='column' spacing={3}>
-            <Grid item>
-              <TextField
-                inputRef={register({
-                  required: 'Title is required',
-                  minLength: 3,
-                })}
-                id='title'
-                label='Title'
-                fullWidth
-                autoFocus
-                autoComplete='title'
-                name='title'
-                aria-invalid={errors.title ? 'true' : 'false'}
-              />
-            </Grid>
-
-            {errors.title && (
-              <Grid item>
-                <Typography role='alert' variant='subtitle2' color='error'>
-                  {errors.title.type === 'required' && errors.title.message}
-                  {errors.title.type === 'minLength' &&
-                    'Title must be at least 3 characters'}
-                </Typography>
-              </Grid>
+        {!loadingSubscribedCategoryIds && !subscribedCategoryIds.length ? (
+          <Typography component='h2' align='center' className={classes.info}>
+            You must be subscribed to a category before you can make a post
+          </Typography>
+        ) : (
+          <form
+            aria-label='create post'
+            className={classes.form}
+            onSubmit={handleSubmit((data: FormDetails) =>
+              handleCreatePost(data)
             )}
-
-            <Grid item>
-              <ReactHookFormSelect
-                id='category'
-                name='category'
-                label='Category'
-                control={control}
-                defaultValue={defaultCategoryId}
-                className={classes.select}
-                rules={{
-                  required:
-                    'Category is required. If none are available, subscribe to one first!',
-                }}
-              >
-                {subscribedCategoryIds.map((categoryId) => (
-                  <MenuItem value={categoryId} key={categoryId}>
-                    {categoryId}
-                  </MenuItem>
-                ))}
-              </ReactHookFormSelect>
-            </Grid>
-
-            {errors.category && (
+          >
+            <Grid container direction='column' spacing={3}>
               <Grid item>
-                <Typography role='alert' variant='subtitle2' color='error'>
-                  {(errors.category.type === 'required' ||
-                    errors.category.type === 'prop') &&
-                    errors.category.message}
-                </Typography>
+                <TextField
+                  inputRef={register({
+                    required: 'Title is required',
+                    minLength: 3,
+                  })}
+                  id='title'
+                  label='Title'
+                  fullWidth
+                  autoFocus
+                  autoComplete='title'
+                  name='title'
+                  aria-invalid={errors.title ? 'true' : 'false'}
+                />
               </Grid>
-            )}
 
-            <Grid item>
-              <TextField
-                multiline
-                inputRef={register()}
-                id='body'
-                label='Body'
-                fullWidth
-                name='body'
-                aria-invalid={errors.body ? 'true' : 'false'}
-              ></TextField>
-            </Grid>
+              {errors.title && (
+                <Grid item>
+                  <Typography role='alert' variant='subtitle2' color='error'>
+                    {errors.title.type === 'required' && errors.title.message}
+                    {errors.title.type === 'minLength' &&
+                      'Title must be at least 3 characters'}
+                  </Typography>
+                </Grid>
+              )}
 
-            {errors.body && (
               <Grid item>
-                <Typography role='alert' variant='subtitle2' color='error'>
-                  {errors.body.type === 'prop' && errors.body.message}
-                </Typography>
+                <ReactHookFormSelect
+                  disabled={loadingSubscribedCategoryIds}
+                  id='category'
+                  name='category'
+                  label='Category'
+                  control={control}
+                  defaultValue={
+                    loadingSubscribedCategoryIds ? '' : defaultCategoryId
+                  }
+                  className={classes.select}
+                  rules={{
+                    required:
+                      'Category is required. If none are available, subscribe to one first!',
+                  }}
+                >
+                  {subscribedCategoryIds.map((categoryId) => (
+                    <MenuItem value={categoryId} key={categoryId}>
+                      {categoryId}
+                    </MenuItem>
+                  ))}
+                </ReactHookFormSelect>
               </Grid>
-            )}
 
-            <Grid item container justify='center'>
-              <Button
-                disabled={loading}
-                variant='contained'
-                color='primary'
-                type='submit'
-                fullWidth
-              >
-                Create Post
-              </Button>
+              {errors.category && (
+                <Grid item>
+                  <Typography role='alert' variant='subtitle2' color='error'>
+                    {(errors.category.type === 'required' ||
+                      errors.category.type === 'prop') &&
+                      errors.category.message}
+                  </Typography>
+                </Grid>
+              )}
+
+              <Grid item>
+                <TextField
+                  multiline
+                  inputRef={register()}
+                  id='body'
+                  label='Body'
+                  fullWidth
+                  name='body'
+                  aria-invalid={errors.body ? 'true' : 'false'}
+                ></TextField>
+              </Grid>
+
+              {errors.body && (
+                <Grid item>
+                  <Typography role='alert' variant='subtitle2' color='error'>
+                    {errors.body.type === 'prop' && errors.body.message}
+                  </Typography>
+                </Grid>
+              )}
+
+              <Grid item container justify='center'>
+                <Button
+                  disabled={loading}
+                  variant='contained'
+                  color='primary'
+                  type='submit'
+                  fullWidth
+                >
+                  Create Post
+                </Button>
+              </Grid>
             </Grid>
-          </Grid>
-        </form>
+          </form>
+        )}
       </Card>
     </Dialog>
   );
