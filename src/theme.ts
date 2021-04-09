@@ -95,4 +95,10 @@ theme.overrides = {
       caretColor: theme.palette.text.primary,
     },
   },
+  MuiSelect: {
+    select: {
+      marginRight: '1rem',
+      minWidth: '100px',
+    },
+  },
 };
