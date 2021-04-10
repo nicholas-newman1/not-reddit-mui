@@ -242,8 +242,18 @@ service cloud.firestore {
         && !isBannedFromCategory(request.auth.uid, getCategory(existingData().postId));
     }
 
-    // match /{path=**}/subscriberIds/{subscriberId} {
-    //   allow read;
-    // }
+    // collection group queries
+    match /{path=**}/subscriberIds/{subscriberId} {
+      allow read;
+    }
+    match /{path=**}/moderatorIds/{moderatorId} {
+      allow read;
+    }
+    match /{path=**}/upVoteIds/{upVoteId} {
+      allow read;
+    }
+    match /{path=**}/downVoteIds/{upVoteId} {
+      allow read;
+    }
   }
 }
