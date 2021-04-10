@@ -1,5 +1,5 @@
 import { List, ListItem, makeStyles } from '@material-ui/core';
-import PostPreview from '../PostPreview';
+import PostListing from '../PostListing';
 
 const useStyles = makeStyles((theme) => ({
   item: {
@@ -39,7 +39,7 @@ const PostList: React.FC<Props> = ({ posts }) => {
     <List disablePadding>
       {posts.map((post) => (
         <ListItem disableGutters className={classes.item}>
-          <PostPreview {...post} />
+          <PostListing {...post} />
         </ListItem>
       ))}
     </List>
