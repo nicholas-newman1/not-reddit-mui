@@ -60,7 +60,7 @@ const useStyles = makeStyles((theme) => {
   };
 });
 
-const PostPreview: React.FC<Props> = (props) => {
+const PostListing: React.FC<Props> = (props) => {
   const classes = useStyles();
 
   return (
@@ -118,4 +118,4 @@ const PostPreview: React.FC<Props> = (props) => {
   );
 };
 
-export default PostPreview;
+export default PostListing;

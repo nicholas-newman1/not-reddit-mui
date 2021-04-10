@@ -1,9 +1,9 @@
 import { fireEvent, render } from '@testing-library/react';
 import { MemoryRouter, Router } from 'react-router-dom';
 import { createMemoryHistory } from 'history';
-import PostPreview from '.';
+import PostListing from '.';
 
-describe('<PostPreview />', () => {
+describe('<PostListing />', () => {
   const props = {
     commentsHref: '/posts/3131fnu91h1e#comments',
     numOfComments: 12,
@@ -27,7 +27,7 @@ describe('<PostPreview />', () => {
   it('should render without crashing', () => {
     render(
       <MemoryRouter>
-        <PostPreview {...props} />
+        <PostListing {...props} />
       </MemoryRouter>
     );
   });
@@ -35,7 +35,7 @@ describe('<PostPreview />', () => {
   it('should render rating', () => {
     const { getByText } = render(
       <MemoryRouter>
-        <PostPreview {...props} />
+        <PostListing {...props} />
       </MemoryRouter>
     );
 
@@ -45,7 +45,7 @@ describe('<PostPreview />', () => {
   it('should render username', () => {
     const { getByText } = render(
       <MemoryRouter>
-        <PostPreview {...props} />
+        <PostListing {...props} />
       </MemoryRouter>
     );
 
@@ -55,7 +55,7 @@ describe('<PostPreview />', () => {
   it('should render time ago string', () => {
     const { getByText } = render(
       <MemoryRouter>
-        <PostPreview {...props} />
+        <PostListing {...props} />
       </MemoryRouter>
     );
 
@@ -65,7 +65,7 @@ describe('<PostPreview />', () => {
   it('should render category', () => {
     const { getByText } = render(
       <MemoryRouter>
-        <PostPreview {...props} />
+        <PostListing {...props} />
       </MemoryRouter>
     );
 
@@ -75,7 +75,7 @@ describe('<PostPreview />', () => {
   it('should render title', () => {
     const { getByText } = render(
       <MemoryRouter>
-        <PostPreview {...props} />
+        <PostListing {...props} />
       </MemoryRouter>
     );
 
@@ -85,7 +85,7 @@ describe('<PostPreview />', () => {
   it('should render comments link with correct number of comments', () => {
     const { getByText } = render(
       <MemoryRouter>
-        <PostPreview {...props} />
+        <PostListing {...props} />
       </MemoryRouter>
     );
 
@@ -95,7 +95,7 @@ describe('<PostPreview />', () => {
   it('should render save button', () => {
     const { getByText } = render(
       <MemoryRouter>
-        <PostPreview {...props} />
+        <PostListing {...props} />
       </MemoryRouter>
     );
 
@@ -105,7 +105,7 @@ describe('<PostPreview />', () => {
   it('should render share button', () => {
     const { getByText } = render(
       <MemoryRouter>
-        <PostPreview {...props} />
+        <PostListing {...props} />
       </MemoryRouter>
     );
 
@@ -115,7 +115,7 @@ describe('<PostPreview />', () => {
   it('should render report button', () => {
     const { getByText } = render(
       <MemoryRouter>
-        <PostPreview {...props} />
+        <PostListing {...props} />
       </MemoryRouter>
     );
 
@@ -128,7 +128,7 @@ describe('<PostPreview />', () => {
 
     const { getByText } = render(
       <Router history={history}>
-        <PostPreview {...props} />
+        <PostListing {...props} />
       </Router>
     );
 
@@ -144,7 +144,7 @@ describe('<PostPreview />', () => {
 
     const { getByText } = render(
       <Router history={history}>
-        <PostPreview {...props} />
+        <PostListing {...props} />
       </Router>
     );
 
@@ -160,7 +160,7 @@ describe('<PostPreview />', () => {
 
     const { getByText } = render(
       <Router history={history}>
-        <PostPreview {...props} />
+        <PostListing {...props} />
       </Router>
     );
 
@@ -175,7 +175,7 @@ describe('<PostPreview />', () => {
 
     const { getByTestId } = render(
       <MemoryRouter>
-        <PostPreview {...props} onUpVote={onUpVote} />
+        <PostListing {...props} onUpVote={onUpVote} />
       </MemoryRouter>
     );
 
@@ -191,7 +191,7 @@ describe('<PostPreview />', () => {
 
     const { getByTestId } = render(
       <MemoryRouter>
-        <PostPreview {...props} onDownVote={onDownVote} />
+        <PostListing {...props} onDownVote={onDownVote} />
       </MemoryRouter>
     );
 
@@ -207,7 +207,7 @@ describe('<PostPreview />', () => {
 
     const { getByText } = render(
       <MemoryRouter>
-        <PostPreview {...props} onSave={onSave} />
+        <PostListing {...props} onSave={onSave} />
       </MemoryRouter>
     );
 
@@ -223,7 +223,7 @@ describe('<PostPreview />', () => {
 
     const { getByText } = render(
       <MemoryRouter>
-        <PostPreview {...props} onShare={onShare} />
+        <PostListing {...props} onShare={onShare} />
       </MemoryRouter>
     );
 
@@ -239,7 +239,7 @@ describe('<PostPreview />', () => {
 
     const { getByText } = render(
       <MemoryRouter>
-        <PostPreview {...props} onReport={onReport} />
+        <PostListing {...props} onReport={onReport} />
       </MemoryRouter>
     );
 
