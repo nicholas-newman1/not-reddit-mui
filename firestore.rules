@@ -1,10 +1,10 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    function onlyHasMarker() {
-      return incomingData().keys().hasOnly(["exists"]) 
-        && incomingData().exists == true;
-    }
+    // function onlyHasMarker() {
+    //   return incomingData().keys().hasOnly(["exists"]) 
+    //     && incomingData().exists == true;
+    // }
     
     function incomingData() {
     	return request.resource.data;
@@ -71,7 +71,9 @@ service cloud.firestore {
         && isOwnerOfCategory(request.auth.uid, categoryId);
 
       match /moderatorIds/{moderatorId} {
-        allow create: if onlyHasMarker()
+        allow create: if documentFieldsCheckOut(['uid', 'categoryId'], [])
+          && incomingData().categoryId == categoryId
+          && incomingData().uid == moderatorId
           && isVerified()
           && isOwnerOfCategory(request.auth.uid, categoryId);
         allow delete: if isVerified()
@@ -82,8 +84,9 @@ service cloud.firestore {
       }
 
       match /subscriberIds/{subscriberId} {
-        allow create: if
-          onlyHasMarker()
+        allow create: if documentFieldsCheckOut(['uid', 'categoryId'], [])
+          && incomingData().uid == subscriberId
+          && incomingData().categoryId == categoryId
           && request.auth.uid == subscriberId
           && isVerified()
           && categoryExists(categoryId)
@@ -98,15 +101,17 @@ service cloud.firestore {
       }
 
       match /bannedIds/{bannedId} {
-        allow create: if onlyHasMarker()
-        && isVerified()
-        && (
-          (
-            isModeratorOfCategory(request.auth.uid, categoryId) 
-            && !isOwnerOfCategory(bannedId, categoryId)
-          )          
-          || isOwnerOfCategory(request.auth.uid, categoryId)
-        );
+        allow create: if documentFieldsCheckOut(['uid', 'categoryId'], [])
+          && incomingData().uid == bannedId
+          && incomingData().categoryId == categoryId
+          && isVerified()
+          && (
+            (
+              isModeratorOfCategory(request.auth.uid, categoryId) 
+              && !isOwnerOfCategory(bannedId, categoryId)
+            )          
+            || isOwnerOfCategory(request.auth.uid, categoryId)
+          );
 
         allow delete: if isVerified()
           && (
@@ -121,8 +126,8 @@ service cloud.firestore {
         return existingData().authorId == request.auth.uid
       }
 
-      function postExists() {
-        return exists(/databases/$(database)/documents/posts/$(postId))
+      function getPostTitle() {
+        return get(/databases/$(database)/documents/posts/$(postId)).data.title
       }
 
       allow read;
@@ -165,9 +170,11 @@ service cloud.firestore {
         allow read;
 
         allow create: if isVerified()
-          && onlyHasMarker()
+          && documentFieldsCheckOut(['uid', 'title', 'postId'], [])
+          && incomingData().uid == upVoteId
+          && incomingData().postId == postId
           && request.auth.uid == upVoteId
-          && postExists()
+          && incomingData().title == getPostTitle()
 
         allow delete: if isVerified()
           && request.auth.uid == upVoteId
@@ -177,9 +184,11 @@ service cloud.firestore {
         allow read;
         
         allow create: if isVerified()
-          && onlyHasMarker()
+          && documentFieldsCheckOut(['uid', 'title', 'postId'], [])
+          && incomingData().uid == downVoteId
+          && incomingData().postId == postId
           && request.auth.uid == downVoteId
-          && postExists()
+          && incomingData().title == getPostTitle()
 
         allow delete: if isVerified()
           && request.auth.uid == downVoteId
@@ -232,5 +241,9 @@ service cloud.firestore {
         )
         && !isBannedFromCategory(request.auth.uid, getCategory(existingData().postId));
     }
+
+    // match /{path=**}/subscriberIds/{subscriberId} {
+    //   allow read;
+    // }
   }
 }
