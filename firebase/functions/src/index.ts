@@ -3,6 +3,73 @@ import * as functions from 'firebase-functions';
 const admin = firebase.initializeApp();
 const db = admin.firestore();
 
+exports.categoryCreated = functions.firestore
+  .document('categories/{categoryId}')
+  .onCreate((snap) => {
+    const data = snap.data();
+    const id = snap.id;
+    db.doc(`categories/${id}`).set({
+      ...data,
+      numOfSubscribers: 0,
+      numOfModerators: 0,
+    });
+  });
+
+const updateNumOfSubscribers = async (
+  snap: functions.firestore.QueryDocumentSnapshot,
+  decrease = false
+) => {
+  const category = snap.ref.parent.parent;
+  const id = category?.id;
+  const data = (await category?.get())?.data();
+
+  if (id && data) {
+    const numOfSubscribers = decrease
+      ? data.numOfSubscribers - 1
+      : data.numOfSubscribers + 1;
+    db.doc(`categories/${id}`).set({ ...data, numOfSubscribers });
+  }
+};
+
+exports.subscriberCreated = functions.firestore
+  .document('categories/{categoryId}/subscriberIds/{subscriberId}')
+  .onCreate((snap) => {
+    updateNumOfSubscribers(snap);
+  });
+
+exports.subscriberDeleted = functions.firestore
+  .document('categories/{categoryId}/subscriberIds/{subscriberId}')
+  .onDelete((snap) => {
+    updateNumOfSubscribers(snap, true);
+  });
+
+const updateNumOfModerators = async (
+  snap: functions.firestore.QueryDocumentSnapshot,
+  decrease = false
+) => {
+  const category = snap.ref.parent.parent;
+  const id = category?.id;
+  const data = (await category?.get())?.data();
+  if (id && data) {
+    const numOfModerators = decrease
+      ? data.numOfModerators - 1
+      : data.numOfModerators + 1;
+    db.doc(`categories/${id}`).set({ ...data, numOfModerators });
+  }
+};
+
+exports.moderatorCreated = functions.firestore
+  .document('categories/{categoryId}/moderatorIds/{moderatorId}')
+  .onCreate((snap) => {
+    updateNumOfModerators(snap);
+  });
+
+exports.moderatorDeleted = functions.firestore
+  .document('categories/{categoryId}/moderatorIds/{moderatorId}')
+  .onDelete((snap) => {
+    updateNumOfModerators(snap, true);
+  });
+
 exports.postCreated = functions.firestore
   .document('posts/{postId}')
   .onCreate((snap) => {
