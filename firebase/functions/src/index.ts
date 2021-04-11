@@ -72,10 +72,21 @@ exports.moderatorDeleted = functions.firestore
 
 exports.postCreated = functions.firestore
   .document('posts/{postId}')
-  .onCreate((snap) => {
+  .onCreate(async (snap) => {
     const data = snap.data();
     const id = snap.id;
-    db.doc(`posts/${id}`).set({ ...data, rating: 0, edited: false });
+    const authorUsername = (await db.doc(`users/${data.authorId}`).get()).data()
+      ?.username;
+    const postData = {
+      ...data,
+      rating: 0,
+      edited: false,
+      authorUsername:
+        authorUsername && typeof authorUsername === 'string'
+          ? authorUsername
+          : null,
+    };
+    db.doc(`posts/${id}`).set(postData);
   });
 
 exports.postUpdated = functions.firestore
