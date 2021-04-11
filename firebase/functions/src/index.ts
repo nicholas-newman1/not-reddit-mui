@@ -24,16 +24,14 @@ exports.postUpdated = functions.firestore
   });
 
 const updatePostRating = async (
-  snap: functions.firestore.QueryDocumentSnapshot
+  snap: functions.firestore.QueryDocumentSnapshot,
+  decrease = false
 ) => {
   const post = snap.ref.parent.parent;
   const id = post?.id;
   const data = (await post?.get())?.data();
   if (id && data) {
-    const upVotes = (await db.collection(`posts/${id}/upVoteIds`).get()).size;
-    const downVotes = (await db.collection(`posts/${id}/downVoteIds`).get())
-      .size;
-    const rating = upVotes - downVotes;
+    const rating = decrease ? data.rating - 1 : data.rating + 1;
     db.doc(`posts/${id}`).set({ ...data, rating });
   }
 };
@@ -47,13 +45,13 @@ exports.postUpVoteCreated = functions.firestore
 exports.postDownVoteCreated = functions.firestore
   .document('posts/{postId}/downVoteIds/{downVoteId}')
   .onCreate((snap) => {
-    updatePostRating(snap);
+    updatePostRating(snap, true);
   });
 
 exports.postUpVoteDeleted = functions.firestore
   .document('posts/{postId}/upVoteIds/{upVoteId}')
   .onDelete((snap) => {
-    updatePostRating(snap);
+    updatePostRating(snap, true);
   });
 
 exports.postDownVoteDeleted = functions.firestore
@@ -83,17 +81,14 @@ exports.commentUpdated = functions.firestore
   });
 
 const updateCommentRating = async (
-  snap: functions.firestore.QueryDocumentSnapshot
+  snap: functions.firestore.QueryDocumentSnapshot,
+  decrease = false
 ) => {
   const comment = snap.ref.parent.parent;
   const id = comment?.id;
   const data = (await comment?.get())?.data();
   if (id && data) {
-    const upVotes = (await db.collection(`comments/${id}/upVoteIds`).get())
-      .size;
-    const downVotes = (await db.collection(`comments/${id}/downVoteIds`).get())
-      .size;
-    const rating = upVotes - downVotes;
+    const rating = decrease ? data.rating - 1 : data.rating + 1;
     db.doc(`comments/${id}`).set({ ...data, rating });
   }
 };
@@ -107,13 +102,13 @@ exports.commentUpVoteCreated = functions.firestore
 exports.commentDownVoteCreated = functions.firestore
   .document('comments/{commentId}/downVoteIds/{downVoteId}')
   .onCreate((snap) => {
-    updateCommentRating(snap);
+    updateCommentRating(snap, true);
   });
 
 exports.commentUpVoteDeleted = functions.firestore
   .document('comments/{commentId}/upVoteIds/{upVoteId}')
   .onDelete((snap) => {
-    updateCommentRating(snap);
+    updateCommentRating(snap, true);
   });
 
 exports.commentDownVoteDeleted = functions.firestore
