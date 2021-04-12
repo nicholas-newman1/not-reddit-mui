@@ -1,6 +1,7 @@
 import { makeStyles, List, ListItem } from '@material-ui/core';
 import React from 'react';
 import CategoryListing from '../CategoryListing';
+import CategoryListLoading from './Loading';
 
 const useStyles = makeStyles((theme) => ({
   item: {
@@ -28,11 +29,15 @@ const CategoryList: React.FC<Props> = ({ categories, loading }) => {
   const classes = useStyles();
 
   return loading ? (
-    <h2>Loading...</h2>
+    <CategoryListLoading />
   ) : (
     <List disablePadding>
       {categories.map((category) => (
-        <ListItem disableGutters className={classes.item}>
+        <ListItem
+          disableGutters
+          className={classes.item}
+          key={category.categoryId}
+        >
           <CategoryListing {...category} />
         </ListItem>
       ))}

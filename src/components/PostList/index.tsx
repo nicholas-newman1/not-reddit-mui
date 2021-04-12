@@ -1,5 +1,6 @@
 import { List, ListItem, makeStyles } from '@material-ui/core';
 import PostListing from '../PostListing';
+import PostListLoading from './Loading';
 
 const useStyles = makeStyles((theme) => ({
   item: {
@@ -37,7 +38,7 @@ const PostList: React.FC<Props> = ({ posts, loading }) => {
   const classes = useStyles();
 
   return loading ? (
-    <h2>Loading...</h2>
+    <PostListLoading />
   ) : (
     <List disablePadding>
       {posts.map((post) => (
