@@ -147,9 +147,7 @@ const CreatePostDialog: React.FC<Props> = ({
                   name='category'
                   label='Category'
                   control={control}
-                  defaultValue={
-                    loadingSubscribedCategoryIds ? '' : defaultCategoryId
-                  }
+                  defaultValue={defaultCategoryId}
                   className={classes.select}
                   rules={{
                     required:
