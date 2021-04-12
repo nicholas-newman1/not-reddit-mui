@@ -3,6 +3,7 @@ import {
   Card,
   Dialog,
   Grid,
+  Link,
   makeStyles,
   MenuItem,
   TextField,
@@ -41,6 +42,8 @@ interface Props {
   open: boolean;
   hideDialog: () => void;
   loading: boolean;
+  user: boolean;
+  onLogin: () => void;
   loadingSubscribedCategoryIds: boolean;
   error: string;
   subscribedCategoryIds: string[];
@@ -52,18 +55,30 @@ const CreatePostDialog: React.FC<Props> = ({
   open,
   hideDialog,
   loading,
+  user,
+  onLogin,
   loadingSubscribedCategoryIds,
   error,
   subscribedCategoryIds,
   defaultCategoryId = '',
 }) => {
   const classes = useStyles();
-  const { register, handleSubmit, errors, setError, control } = useForm();
+  const {
+    register,
+    handleSubmit,
+    errors,
+    setError,
+    control,
+    clearErrors,
+  } = useForm();
 
   useEffect(() => {
-    if (error)
+    if (error) {
       setError('body', { type: 'prop', message: error, shouldFocus: false });
-  }, [error, setError]);
+    } else {
+      clearErrors();
+    }
+  }, [error, setError, clearErrors]);
 
   return (
     <Dialog open={open} onClose={hideDialog} fullWidth maxWidth='md'>
@@ -72,9 +87,23 @@ const CreatePostDialog: React.FC<Props> = ({
           Create Post
         </Typography>
 
-        {!loadingSubscribedCategoryIds && !subscribedCategoryIds.length ? (
+        {!user ||
+        (!loadingSubscribedCategoryIds && !subscribedCategoryIds.length) ? (
           <Typography component='h2' align='center' className={classes.info}>
-            You must be subscribed to a category before you can make a post
+            You must{' '}
+            {user ? (
+              'be subscribed to a category'
+            ) : (
+              <Link
+                variant='body1'
+                underline='always'
+                component='button'
+                onClick={onLogin}
+              >
+                log in
+              </Link>
+            )}{' '}
+            before you can make a post
           </Typography>
         ) : (
           <form

@@ -44,8 +44,8 @@ export const createPost = createAsyncThunk(
   }
 );
 
-export const displayCreatePostDialog = createAsyncThunk(
-  'createPost/displayCreatePostDialog',
+export const getSubscribedCategoryIds = createAsyncThunk(
+  'createPost/getSubscribedCategoryIds',
   async () => {
     return db
       .collectionGroup('subscriberIds')
@@ -61,11 +61,23 @@ export const createPostSlice = createSlice({
   name: 'createPost',
   initialState,
   reducers: {
+    displayCreatePostDialog: (state) => {
+      state.isCreatePostSuccessToastOpen = false;
+      state.isCreatePostDialogOpen = true;
+      state.error = '';
+      state.loading = false;
+    },
     hideCreatePostDialog: (state) => {
       state.isCreatePostDialogOpen = false;
+      state.loading = false;
+      state.error = '';
     },
     displayCreatePostSuccessToast: (state) => {
+      state.isCreatePostDialogOpen = false;
       state.isCreatePostSuccessToastOpen = true;
+      state.loading = false;
+      state.error = '';
+      state.subscribedCategoryIds = [];
     },
     hideCreatePostSuccessToast: (state) => {
       state.isCreatePostSuccessToastOpen = false;
@@ -78,34 +90,36 @@ export const createPostSlice = createSlice({
         state.loading = true;
       })
       .addCase(createPost.fulfilled, (state) => {
-        state.error = '';
+        state.isCreatePostDialogOpen = false;
+        state.isCreatePostSuccessToastOpen = true;
+        state.loading = false;
+        state.subscribedCategoryIds = [];
+      })
+      .addCase(createPost.rejected, (state) => {
+        state.error = 'An error occured';
         state.loading = false;
       })
-      .addCase(createPost.rejected, (state, action) => {
-        state.error = 'An unknown error occured';
-        state.loading = false;
-      })
-      .addCase(displayCreatePostDialog.pending, (state) => {
-        state.isCreatePostDialogOpen = true;
+      .addCase(getSubscribedCategoryIds.pending, (state) => {
         state.error = '';
+        state.subscribedCategoryIds = [];
         state.loadingSubscribedCategoryIds = true;
       })
-      .addCase(displayCreatePostDialog.fulfilled, (state, action) => {
-        state.error = '';
+      .addCase(getSubscribedCategoryIds.fulfilled, (state, action) => {
         state.loadingSubscribedCategoryIds = false;
         state.subscribedCategoryIds = action.payload;
       })
-      .addCase(displayCreatePostDialog.rejected, (state, action) => {
-        state.error = 'An unknown error occured';
+      .addCase(getSubscribedCategoryIds.rejected, (state) => {
+        state.error = 'An error occured';
         state.loadingSubscribedCategoryIds = false;
       });
   },
 });
 
 export const {
+  displayCreatePostDialog,
   hideCreatePostDialog,
-  hideCreatePostSuccessToast,
   displayCreatePostSuccessToast,
+  hideCreatePostSuccessToast,
 } = createPostSlice.actions;
 
 export default createPostSlice.reducer;

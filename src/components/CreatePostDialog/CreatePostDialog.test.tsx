@@ -7,6 +7,9 @@ const props = {
   open: true,
   hideDialog: () => {},
   loading: false,
+  user: true,
+  onLogin: () => {},
+  loadingSubscribedCategoryIds: false,
   error: '',
   subscribedCategoryIds: ['meditation', 'hockey'],
 };
@@ -144,7 +147,7 @@ describe('<CreatePostDialog />', () => {
     });
   });
 
-  it('should not display dialog if open props is false', () => {
+  it('should not display dialog if open prop is false', () => {
     const { queryByRole } = render(
       <CreatePostDialog {...props} open={false} />
     );
@@ -197,5 +200,36 @@ describe('<CreatePostDialog />', () => {
       <CreatePostDialog {...props} defaultCategoryId='hockey' />
     );
     getByText(/hockey/i);
+  });
+
+  it('should disable category button while loadingSubscribedCategoryIds', () => {
+    const { getByLabelText, queryByText } = render(
+      <CreatePostDialog {...props} loadingSubscribedCategoryIds={true} />
+    );
+    const category = getByLabelText(/category/i);
+    fireEvent.mouseDown(category);
+    expect(queryByText(/meditation/i)).not.toBeInTheDocument();
+  });
+
+  it('should render log in button if no user', () => {
+    const { getByText } = render(<CreatePostDialog {...props} user={false} />);
+    getByText(/log in/i);
+  });
+
+  it('should call onLogin on login button click', () => {
+    const fn = jest.fn();
+    const { getByText } = render(
+      <CreatePostDialog {...props} user={false} onLogin={fn} />
+    );
+    const login = getByText(/log in/i);
+    fireEvent.click(login);
+    expect(fn).toBeCalled();
+  });
+
+  it('should render helpful message if user has no subscribed categories', () => {
+    const { getByText } = render(
+      <CreatePostDialog {...props} subscribedCategoryIds={[]} />
+    );
+    getByText(/you must be subscribed to a category/i);
   });
 });
