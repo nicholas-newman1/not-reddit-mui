@@ -74,6 +74,7 @@ exports.postCreated = functions.firestore
   .document('posts/{postId}')
   .onCreate(async (snap) => {
     const data = snap.data();
+
     const id = snap.id;
     const authorUsername = (await db.doc(`users/${data.authorId}`).get()).data()
       ?.username;
@@ -81,6 +82,7 @@ exports.postCreated = functions.firestore
       ...data,
       rating: 0,
       edited: false,
+      timestamp: snap.createTime,
       authorUsername:
         authorUsername && typeof authorUsername === 'string'
           ? authorUsername

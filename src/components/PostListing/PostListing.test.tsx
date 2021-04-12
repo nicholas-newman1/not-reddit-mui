@@ -13,14 +13,15 @@ describe('<PostListing />', () => {
     onReport: () => {},
     onUpVote: () => {},
     postHref: '/posts/3131fnu91h1e',
+    postId: '3131fnu91h1e',
     rating: 143,
     ratingStatus: 'up' as 'up',
     title:
       'Hello if i looked at the sun I would see how beautiful it is, and then go blind',
-    username: 'ovechking899',
+    authorUsername: 'ovechking899',
     userProfileHref: '/profiles/ovechking899',
     timestamp: 1614429965,
-    category: 'meditation',
+    categoryId: 'meditation',
     categoryHref: '/categories/meditation',
   };
 

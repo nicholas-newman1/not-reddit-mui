@@ -19,26 +19,29 @@ interface Props {
     onShare: () => void;
     onReport: () => void;
     postHref: string;
-    commentsHref: string;
+    postId: string;
     userProfileHref: string;
     categoryHref: string;
     title: string;
-    username: string;
+    authorUsername: string | null;
     timestamp: number;
-    category: string;
+    categoryId: string;
     numOfComments: number;
     rating: number;
     ratingStatus?: 'up' | 'down';
   }[];
+  loading: boolean;
 }
 
-const PostList: React.FC<Props> = ({ posts }) => {
+const PostList: React.FC<Props> = ({ posts, loading }) => {
   const classes = useStyles();
 
-  return (
+  return loading ? (
+    <h2>Loading...</h2>
+  ) : (
     <List disablePadding>
       {posts.map((post) => (
-        <ListItem disableGutters className={classes.item}>
+        <ListItem disableGutters className={classes.item} key={post.postId}>
           <PostListing {...post} />
         </ListItem>
       ))}

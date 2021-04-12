@@ -2,12 +2,14 @@ import { configureStore } from '@reduxjs/toolkit';
 import auth, { verifyAuth } from './authSlice';
 import createCategory from './createCategorySlice';
 import createPost from './createPostSlice';
+import categoryPage from './categoryPageSlice';
 
 const store = configureStore({
   reducer: {
     auth,
     createCategory,
     createPost,
+    categoryPage,
   },
 });
 

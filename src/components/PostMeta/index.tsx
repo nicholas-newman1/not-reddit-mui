@@ -5,10 +5,10 @@ import { Link } from 'react-router-dom';
 import { getTimeAgoString } from '../../utils';
 
 interface Props {
-  username: string;
+  authorUsername: string | null;
   userProfileHref: string;
   timestamp: number;
-  category: string;
+  categoryId: string;
   categoryHref: string;
 }
 
@@ -48,7 +48,7 @@ const PostMeta: React.FC<Props> = (props) => {
         className={clsx(classes.username, classes.item)}
         to={props.userProfileHref}
       >
-        {props.username}
+        {props.authorUsername ? props.authorUsername : <em>Unknown</em>}
       </Button>
 
       <Typography
@@ -63,7 +63,7 @@ const PostMeta: React.FC<Props> = (props) => {
         className={clsx(classes.category, classes.item)}
         to={props.categoryHref}
       >
-        {props.category}
+        {props.categoryId}
       </Button>
     </Grid>
   );

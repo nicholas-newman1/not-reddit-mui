@@ -18,13 +18,13 @@ interface Props {
   onShare: () => void;
   onReport: () => void;
   postHref: string;
-  commentsHref: string;
+  postId: string;
   userProfileHref: string;
   categoryHref: string;
   title: string;
-  username: string;
+  authorUsername: string | null;
   timestamp: number;
-  category: string;
+  categoryId: string;
   numOfComments: number;
   rating: number;
   ratingStatus?: 'up' | 'down';
@@ -76,11 +76,11 @@ const PostListing: React.FC<Props> = (props) => {
         </Grid>
         <Grid container direction='column' className={classes.gap}>
           <PostMeta
-            category={props.category}
+            categoryId={props.categoryId}
             categoryHref={props.categoryHref}
             timestamp={props.timestamp}
             userProfileHref={props.userProfileHref}
-            username={props.username}
+            authorUsername={props.authorUsername}
           />
 
           <Typography component='h2' variant='body1'>

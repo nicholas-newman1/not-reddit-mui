@@ -17,6 +17,7 @@ const app = firebase.initializeApp(config);
 
 export type FirebaseError = firebase.FirebaseError;
 export type FirebaseUser = firebase.User | null;
+export type Timestamp = firebase.firestore.Timestamp;
 export const auth = firebase.auth();
 export const db = firebase.firestore(app);
 export const functions = firebase.functions();
