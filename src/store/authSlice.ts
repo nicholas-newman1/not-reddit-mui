@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { auth, db, FirebaseError } from '../firebase/client';
+import { auth, db } from '../firebase/client';
+import { FirebaseError } from '../firebase/types';
 
 interface SignInParams {
   email: string;

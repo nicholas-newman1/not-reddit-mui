@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { db, Timestamp } from '../firebase/client';
+import { db } from '../firebase/client';
+import { Timestamp } from '../firebase/types';
 
 interface ReceivedPost {
   title: string;
