@@ -8,6 +8,7 @@ import SentEmailVerificationDialogContainer from './containers/SentEmailVerifica
 import SignInDialogContainer from './containers/SignInDialogContainer';
 import SignUpDialogContainer from './containers/SignUpDialogContainer';
 import SignUpSuccessToastContainer from './containers/SignUpSuccessToastContainer';
+import Category from './pages/Category';
 import Home from './pages/Home';
 import { theme } from './theme';
 
@@ -27,6 +28,7 @@ function App() {
         <main>
           <Switch>
             <Route exact path='/' component={Home} />
+            <Route exact path='/categories/:categoryId' component={Category} />
           </Switch>
         </main>
       </Router>

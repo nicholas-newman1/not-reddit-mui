@@ -3,6 +3,8 @@ import auth, { verifyAuth } from './authSlice';
 import createCategory from './createCategorySlice';
 import createPost from './createPostSlice';
 import categoryPage from './categoryPageSlice';
+import homePage from './homePageSlice';
+import subscribedCategories from './subscribedCategoriesSlice';
 
 const store = configureStore({
   reducer: {
@@ -10,6 +12,8 @@ const store = configureStore({
     createCategory,
     createPost,
     categoryPage,
+    homePage,
+    subscribedCategories,
   },
 });
 

@@ -33,7 +33,7 @@ describe('<CategoryList />', () => {
   it('should render without exploding', () => {
     render(
       <MemoryRouter>
-        <CategoryList categories={categories} />
+        <CategoryList categories={categories} loading={false} />
       </MemoryRouter>
     );
   });
@@ -41,7 +41,7 @@ describe('<CategoryList />', () => {
   it('should render a list', () => {
     const { getByRole } = render(
       <MemoryRouter>
-        <CategoryList categories={categories} />
+        <CategoryList categories={categories} loading={false} />
       </MemoryRouter>
     );
 
@@ -51,7 +51,7 @@ describe('<CategoryList />', () => {
   it('should render a list item for each category', () => {
     const { getAllByRole } = render(
       <MemoryRouter>
-        <CategoryList categories={categories} />
+        <CategoryList categories={categories} loading={false} />
       </MemoryRouter>
     );
 

@@ -86,8 +86,7 @@ export const categoryPageSlice = createSlice({
         state.postListLoading = false;
         state.postListError = '';
       })
-      .addCase(getPostList.rejected, (state, action) => {
-        console.log(action.error);
+      .addCase(getPostList.rejected, (state) => {
         state.postList = [];
         state.postListLoading = false;
         state.postListError = 'An error occurred';

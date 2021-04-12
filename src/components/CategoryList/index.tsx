@@ -21,12 +21,15 @@ interface Props {
     subscribed: boolean;
     loading: boolean;
   }[];
+  loading: boolean;
 }
 
-const CategoryList: React.FC<Props> = ({ categories }) => {
+const CategoryList: React.FC<Props> = ({ categories, loading }) => {
   const classes = useStyles();
 
-  return (
+  return loading ? (
+    <h2>Loading...</h2>
+  ) : (
     <List disablePadding>
       {categories.map((category) => (
         <ListItem disableGutters className={classes.item}>
