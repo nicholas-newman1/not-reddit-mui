@@ -73,7 +73,7 @@ const Header = () => {
 
     /* Puts main into view from under header */
     const main = document.querySelector('main')!;
-    const headerHeight = header.getBoundingClientRect().height + 'px';
+    const headerHeight = header.getBoundingClientRect().height + 16 + 'px';
     main.style.paddingTop = headerHeight;
 
     //eslint-disable-next-line
