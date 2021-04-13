@@ -55,13 +55,13 @@ interface categoryPageState {
 
 const initialState: categoryPageState = {
   postList: [],
-  postListLoading: false,
+  postListLoading: true,
   postListError: '',
   morePostsLoading: false,
   morePostsError: '',
   morePostsExhausted: false,
   categoryList: [],
-  categoryListLoading: false,
+  categoryListLoading: true,
   categoryListError: '',
   moreCategoriesLoading: false,
   moreCategoriesError: '',
@@ -172,6 +172,7 @@ export const homePageSlice = createSlice({
         state.postList = [];
         state.postListLoading = true;
         state.postListError = '';
+        state.morePostsExhausted = false;
       })
       .addCase(getHomePostList.fulfilled, (state, action) => {
         state.postList = action.payload;
@@ -200,6 +201,7 @@ export const homePageSlice = createSlice({
         state.morePostsError = 'An error occurred';
       })
       .addCase(getHomeCategoryList.pending, (state) => {
+        state.moreCategoriesExhausted = false;
         state.categoryList = [];
         state.categoryListLoading = true;
         state.categoryListError = '';

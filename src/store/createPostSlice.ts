@@ -8,6 +8,7 @@ interface createPostState {
   error: string;
   subscribedCategoryIds: string[];
   loadingSubscribedCategoryIds: boolean;
+  defaultCategoryId: string;
 }
 
 const initialState: createPostState = {
@@ -17,6 +18,7 @@ const initialState: createPostState = {
   error: '',
   subscribedCategoryIds: [],
   loadingSubscribedCategoryIds: false,
+  defaultCategoryId: '',
 };
 
 interface createPostData {
@@ -61,11 +63,15 @@ export const createPostSlice = createSlice({
   name: 'createPost',
   initialState,
   reducers: {
-    displayCreatePostDialog: (state) => {
+    displayCreatePostDialog: (
+      state,
+      action: { type: string; payload: string | undefined }
+    ) => {
       state.isCreatePostSuccessToastOpen = false;
       state.isCreatePostDialogOpen = true;
       state.error = '';
       state.loading = false;
+      if (action.payload) state.defaultCategoryId = action.payload;
     },
     hideCreatePostDialog: (state) => {
       state.isCreatePostDialogOpen = false;

@@ -9,13 +9,7 @@ import {
   hideCreatePostDialog,
 } from '../../store/createPostSlice';
 
-interface Props {
-  defaultCategoryId?: string;
-}
-
-const CreatePostDialogContainer: React.FC<Props> = ({
-  defaultCategoryId = '',
-}) => {
+const CreatePostDialogContainer = () => {
   const dispatch = useAppDispatch();
   const hideDialog = () => dispatch(hideCreatePostDialog());
   const onLogin = () => dispatch(displaySignInDialog());
@@ -30,6 +24,9 @@ const CreatePostDialogContainer: React.FC<Props> = ({
   );
   const loadingSubscribedCategoryIds = useAppSelector(
     (state) => state.createPost.loadingSubscribedCategoryIds
+  );
+  const defaultCategoryId = useAppSelector(
+    (state) => state.createPost.defaultCategoryId
   );
 
   interface createPostData {

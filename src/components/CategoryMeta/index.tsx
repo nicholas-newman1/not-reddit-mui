@@ -8,6 +8,7 @@ import {
 } from '@material-ui/core';
 import React from 'react';
 import { Link } from 'react-router-dom';
+import CategoryMetaLoading from './Loading';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -26,12 +27,15 @@ const useStyles = makeStyles((theme) => ({
 interface Props {
   categoryName: string;
   owner: {
-    name: string;
+    username: string;
     uid: string;
   };
   numOfModerators: number;
   numOfSubscribers: number;
-  onSubscribe: () => void;
+  onToggleSubscribe: () => void;
+  loadingToggleSubscribe: boolean;
+  loading: boolean;
+  subscribed: boolean;
 }
 
 const CategoryMeta: React.FC<Props> = ({
@@ -39,11 +43,16 @@ const CategoryMeta: React.FC<Props> = ({
   owner,
   numOfModerators,
   numOfSubscribers,
-  onSubscribe,
+  onToggleSubscribe,
+  loadingToggleSubscribe,
+  loading,
+  subscribed,
 }) => {
   const classes = useStyles();
 
-  return (
+  return loading ? (
+    <CategoryMetaLoading />
+  ) : (
     <Card className={classes.root}>
       <Grid container spacing={3} direction='column'>
         <Grid item>
@@ -62,7 +71,7 @@ const CategoryMeta: React.FC<Props> = ({
               component={Link}
               to={`/profile/${owner.uid}`}
             >
-              {owner.name}
+              {owner.username}
             </StyledLink>
           </Typography>
         </Grid>
@@ -89,10 +98,11 @@ const CategoryMeta: React.FC<Props> = ({
           <Button
             fullWidth
             variant='contained'
-            color='primary'
-            onClick={onSubscribe}
+            color={subscribed ? 'default' : 'primary'}
+            onClick={onToggleSubscribe}
+            disabled={loadingToggleSubscribe}
           >
-            Subscribe
+            {subscribed ? 'Unsubscribe' : 'Subscribe'}
           </Button>
         </Grid>
       </Grid>

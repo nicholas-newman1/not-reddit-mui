@@ -5,17 +5,19 @@ import CategoryMeta from '.';
 
 const props = {
   categoryName: 'hellokitty',
-  owner: { name: 'bigboss', uid: 'id101' },
+  owner: { username: 'bigboss', uid: 'id101' },
   numOfModerators: 3,
   numOfSubscribers: 867,
-  onSubscribe: () => {},
+  onToggleSubscribe: () => {},
+  loadingToggleSubscribe: false,
+  subscribed: false,
 };
 
 describe('<CategoryMeta />', () => {
   it('renders without crashing', () => {
     render(
       <MemoryRouter>
-        <CategoryMeta {...props} />
+        <CategoryMeta {...props} loading={false} />
       </MemoryRouter>
     );
   });
@@ -23,7 +25,7 @@ describe('<CategoryMeta />', () => {
   it('renders given category name', () => {
     const { getByText } = render(
       <MemoryRouter>
-        <CategoryMeta {...props} />
+        <CategoryMeta {...props} loading={false} />
       </MemoryRouter>
     );
     getByText(/hellokitty/i);
@@ -32,7 +34,7 @@ describe('<CategoryMeta />', () => {
   it('renders given owner name', () => {
     const { getByText } = render(
       <MemoryRouter>
-        <CategoryMeta {...props} />
+        <CategoryMeta {...props} loading={false} />
       </MemoryRouter>
     );
     getByText(/bigboss/i);
@@ -42,7 +44,7 @@ describe('<CategoryMeta />', () => {
     const history = createMemoryHistory();
     const { getByText } = render(
       <Router history={history}>
-        <CategoryMeta {...props} />
+        <CategoryMeta {...props} loading={false} />
       </Router>
     );
     const ownerName = getByText(/bigboss/i);
@@ -53,7 +55,7 @@ describe('<CategoryMeta />', () => {
   it('renders given numOfModerators', () => {
     const { getByText } = render(
       <MemoryRouter>
-        <CategoryMeta {...props} />
+        <CategoryMeta {...props} loading={false} />
       </MemoryRouter>
     );
     getByText(/3/i);
@@ -62,7 +64,7 @@ describe('<CategoryMeta />', () => {
   it('renders given numOfSubscribers', () => {
     const { getByText } = render(
       <MemoryRouter>
-        <CategoryMeta {...props} />
+        <CategoryMeta {...props} loading={false} />
       </MemoryRouter>
     );
     getByText(/867/i);
@@ -71,17 +73,46 @@ describe('<CategoryMeta />', () => {
   it('renders subscribe button', () => {
     const { getByRole } = render(
       <MemoryRouter>
-        <CategoryMeta {...props} />
+        <CategoryMeta {...props} loading={false} />
       </MemoryRouter>
     );
-    getByRole('button');
+    getByRole('button', {
+      name: /subscribe/i,
+    });
   });
 
-  it('calls onSubscribe on button click', () => {
+  it('renders unsubscribe button when already subscribed', () => {
+    const { getByRole } = render(
+      <MemoryRouter>
+        <CategoryMeta {...props} loading={false} subscribed={true} />
+      </MemoryRouter>
+    );
+    getByRole('button', {
+      name: /unsubscribe/i,
+    });
+  });
+
+  it('disables button when loadingToggleSubscribe', () => {
+    const { getByRole } = render(
+      <MemoryRouter>
+        <CategoryMeta
+          {...props}
+          loading={false}
+          loadingToggleSubscribe={true}
+        />
+      </MemoryRouter>
+    );
+    const button = getByRole('button', {
+      name: /subscribe/i,
+    }) as HTMLButtonElement;
+    expect(button.disabled).toBe(true);
+  });
+
+  it('calls onToggleSubscribe on button click', () => {
     const fn = jest.fn();
     const { getByRole } = render(
       <MemoryRouter>
-        <CategoryMeta {...props} onSubscribe={fn} />
+        <CategoryMeta {...props} loading={false} onToggleSubscribe={fn} />
       </MemoryRouter>
     );
     const subscribeBtn = getByRole('button');
