@@ -9,7 +9,7 @@ function getTheme(theme: { paletteType: PaletteType }) {
     palette: {
       type: theme.paletteType,
       primary: {
-        main: '#008aa6',
+        main: '#01758c',
       },
       secondary: {
         main: '#c28800',

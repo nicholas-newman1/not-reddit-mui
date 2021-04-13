@@ -32,19 +32,19 @@ interface Props {
 
 const useStyles = makeStyles((theme) => {
   const buttonSpacing = theme.spacing(1);
-  const layoutSpacing = theme.spacing(1);
 
   return {
     root: {
       padding: theme.spacing(2),
       width: '100%',
     },
-    gap: {
-      gap: layoutSpacing,
-      marginLeft: layoutSpacing,
-    },
-    link: {
-      padding: '1rem 0',
+    title: {
+      padding: '0.5rem 0',
+      display: 'inline-block',
+
+      '&::first-letter': {
+        textTransform: 'uppercase',
+      },
     },
     buttonGroup: {
       margin: `0 -${buttonSpacing}px`,
@@ -65,8 +65,14 @@ const PostListing: React.FC<Props> = (props) => {
 
   return (
     <Paper className={classes.root}>
-      <Grid container direction='row' alignItems='center' wrap='nowrap'>
-        <Grid>
+      <Grid
+        container
+        direction='row'
+        alignItems='center'
+        wrap='nowrap'
+        spacing={2}
+      >
+        <Grid item>
           <Rating
             rating={props.rating}
             onUpVote={props.onUpVote}
@@ -74,7 +80,7 @@ const PostListing: React.FC<Props> = (props) => {
             status={props.ratingStatus}
           />
         </Grid>
-        <Grid container direction='column' className={classes.gap}>
+        <Grid item container direction='column'>
           <PostMeta
             categoryId={props.categoryId}
             categoryHref={props.categoryHref}
@@ -88,7 +94,7 @@ const PostListing: React.FC<Props> = (props) => {
               component={Link}
               to={props.postHref}
               color='textPrimary'
-              className={classes.link}
+              className={classes.title}
             >
               {props.title}
             </StyledLink>

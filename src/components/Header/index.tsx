@@ -82,7 +82,7 @@ const Header = () => {
   return (
     <AppBar
       ref={headerRef}
-      color='default'
+      // color='default'
       className={clsx(classes.root, classes.rootAnimate)}
     >
       {user && !user.emailVerified && (

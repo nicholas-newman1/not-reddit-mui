@@ -14,6 +14,9 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(2),
     width: '100%',
   },
+  categoryId: {
+    textTransform: 'capitalize',
+  },
 }));
 
 interface Props {
@@ -40,7 +43,12 @@ const CategoryListing: React.FC<Props> = ({
       <Grid container direction='column' spacing={1}>
         <Grid item>
           <Typography component='h2' variant='h5'>
-            <StyledLink component={Link} to={categoryHref} color='textPrimary'>
+            <StyledLink
+              component={Link}
+              to={categoryHref}
+              color='textPrimary'
+              className={classes.categoryId}
+            >
               {categoryId}
             </StyledLink>
           </Typography>
