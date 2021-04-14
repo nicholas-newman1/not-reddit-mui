@@ -1,3 +1,5 @@
+import CreateCategoryDialogContainer from '../../containers/CreateCategoryDialogContainer';
+import CreateCategorySuccessToastContainer from '../../containers/CreateCategorySuccessToastContainer';
 import CreatePostDialogContainer from '../../containers/CreatePostDialogContainer';
 import CreatePostSuccessToastContainer from '../../containers/CreatePostSuccessToastContainer';
 import ResetPasswordDialogContainer from '../../containers/ResetPasswordDialogContainer';
@@ -18,6 +20,8 @@ const Singletons = () => {
       <SentEmailVerificationDialogContainer />
       <CreatePostDialogContainer />
       <CreatePostSuccessToastContainer />
+      <CreateCategoryDialogContainer />
+      <CreateCategorySuccessToastContainer />
     </>
   );
 };
