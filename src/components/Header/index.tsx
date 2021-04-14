@@ -178,7 +178,7 @@ const Header = () => {
               </Button>
               <Button
                 onClick={() => dispatch(displaySignUpDialog())}
-                color='primary'
+                color='secondary'
                 variant='contained'
               >
                 Sign Up

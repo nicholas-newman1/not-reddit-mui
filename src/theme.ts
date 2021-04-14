@@ -12,7 +12,7 @@ function getTheme(theme: { paletteType: PaletteType }) {
         main: '#01758c',
       },
       secondary: {
-        main: '#c28800',
+        main: '#a89100',
       },
       background: {
         paper: theme.paletteType === 'dark' ? '#333' : '#e1e1e1',
