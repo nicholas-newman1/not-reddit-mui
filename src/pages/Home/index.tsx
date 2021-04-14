@@ -13,6 +13,9 @@ import PostList from '../../components/PostList';
 import PostListLoading from '../../components/PostList/Loading';
 import CategoryListLoading from '../../components/CategoryList/Loading';
 import useSubscribedCategoryIds from '../../hooks/useSubscribedCategoryIds';
+import { displayCreatePostDialog } from '../../store/createPostSlice';
+import { displayCreateCategoryDialog } from '../../store/createCategorySlice';
+import { Link } from 'react-router-dom';
 
 const Home = () => {
   const dispatch = useAppDispatch();
@@ -64,8 +67,6 @@ const Home = () => {
     if (!loadingUser) {
       !postList.length && dispatch(getHomePostList());
       !categoryList.length && dispatch(getHomeCategoryList());
-
-      // get subscribedIds
     }
 
     //eslint-disable-next-line
@@ -76,6 +77,15 @@ const Home = () => {
       <Grid container spacing={2}>
         <Grid item xs={8}>
           <Grid container direction='column' spacing={2}>
+            <Grid item>
+              <Button
+                variant='contained'
+                onClick={() => dispatch(displayCreatePostDialog())}
+              >
+                Create Post
+              </Button>
+            </Grid>
+
             <Grid item>
               <PostList posts={posts} loading={postListLoading} />
             </Grid>
@@ -97,6 +107,19 @@ const Home = () => {
         </Grid>
         <Grid item xs={4}>
           <Grid container direction='column' spacing={2}>
+            <Grid item container>
+              <Button
+                variant='contained'
+                onClick={() => dispatch(displayCreateCategoryDialog())}
+              >
+                Create Category
+              </Button>
+
+              <Button component={Link} to='/categories' variant='contained'>
+                All Categories
+              </Button>
+            </Grid>
+
             <Grid item>
               <CategoryList
                 categories={categories}

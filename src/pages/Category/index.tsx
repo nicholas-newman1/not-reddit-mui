@@ -34,6 +34,7 @@ const Category: React.FC<Props> = ({ match }) => {
   } = useAppSelector((state) => state.categoryPage);
 
   const getMorePosts = () => dispatch(getMoreCategoryPosts());
+  const onCreatePost = () => dispatch(displayCreatePostDialog(categoryId));
 
   const {
     onToggleSubscribe,
@@ -107,10 +108,7 @@ const Category: React.FC<Props> = ({ match }) => {
             </Grid>
 
             <Grid item>
-              <Button
-                variant='contained'
-                onClick={() => dispatch(displayCreatePostDialog(categoryId))}
-              >
+              <Button variant='contained' onClick={onCreatePost}>
                 Create Post
               </Button>
             </Grid>
