@@ -4,15 +4,15 @@ import PostList from '.';
 
 const dummyPosts = [
   {
-    commentsHref: '/posts/3131fnu91h1e#comments',
+    commentsHref: '/posts/3131fnu91h1e1#comments',
     numOfComments: 12,
     onDownVote: () => {},
     onSave: () => {},
     onShare: () => {},
     onReport: () => {},
     onUpVote: () => {},
-    postHref: '/posts/3131fnu91h1e',
-    postId: '3131fnu91h1e',
+    postHref: '/posts/3131fnu91h1e1',
+    postId: '3131fnu91h1e1',
     rating: 143,
     ratingStatus: 'up' as 'up',
     title:
@@ -24,15 +24,15 @@ const dummyPosts = [
     categoryHref: '/categories/meditation',
   },
   {
-    commentsHref: '/posts/3131fnu91h1e#comments',
+    commentsHref: '/posts/3131fnu91h1e2#comments',
     numOfComments: 12,
     onDownVote: () => {},
     onSave: () => {},
     onShare: () => {},
     onReport: () => {},
     onUpVote: () => {},
-    postHref: '/posts/3131fnu91h1e',
-    postId: '3131fnu91h1e',
+    postHref: '/posts/3131fnu91h1e2',
+    postId: '3131fnu91h1e2',
     rating: 143,
     ratingStatus: 'up' as 'up',
     title:
@@ -44,15 +44,15 @@ const dummyPosts = [
     categoryHref: '/categories/meditation',
   },
   {
-    commentsHref: '/posts/3131fnu91h1e#comments',
+    commentsHref: '/posts/3131fnu91h1e3#comments',
     numOfComments: 12,
     onDownVote: () => {},
     onSave: () => {},
     onShare: () => {},
     onReport: () => {},
     onUpVote: () => {},
-    postHref: '/posts/3131fnu91h1e',
-    postId: '3131fnu91h1e',
+    postHref: '/posts/3131fnu91h1e3',
+    postId: '3131fnu91h1e3',
     rating: 143,
     ratingStatus: 'up' as 'up',
     title:
@@ -92,5 +92,15 @@ describe('<PostList />', () => {
     );
 
     expect(dummyPosts.length).toBe(getAllByRole('listitem').length);
+  });
+
+  it('renders message for no posts', () => {
+    const { getByText } = render(
+      <MemoryRouter>
+        <PostList posts={[]} loading={false} />
+      </MemoryRouter>
+    );
+
+    getByText(/no posts found/i);
   });
 });

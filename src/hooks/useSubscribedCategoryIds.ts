@@ -41,7 +41,7 @@ const useSubscribedCategoryIds = () => {
     //eslint-disable-next-line
   }, [user]);
 
-  return { onToggleSubscribe, loading, subscribed };
+  return { onToggleSubscribe, loading, subscribed, subscribedCategoryIds };
 };
 
 export default useSubscribedCategoryIds;

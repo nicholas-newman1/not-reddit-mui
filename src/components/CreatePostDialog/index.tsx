@@ -12,6 +12,7 @@ import {
 import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import ReactHookFormSelect from '../ReactHookFormSelect';
+import Spinner from '../Spinner';
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -48,6 +49,8 @@ interface Props {
   error: string;
   subscribedCategoryIds: string[];
   defaultCategoryId?: string;
+  onSubscribe: () => void;
+  isSubscribed: boolean;
 }
 
 const CreatePostDialog: React.FC<Props> = ({
@@ -61,6 +64,8 @@ const CreatePostDialog: React.FC<Props> = ({
   error,
   subscribedCategoryIds,
   defaultCategoryId = '',
+  onSubscribe,
+  isSubscribed,
 }) => {
   const classes = useStyles();
   const {
@@ -87,22 +92,30 @@ const CreatePostDialog: React.FC<Props> = ({
           Create Post
         </Typography>
 
-        {!user ||
-        (!loadingSubscribedCategoryIds && !subscribedCategoryIds.length) ? (
+        {loadingSubscribedCategoryIds ? (
+          <Grid
+            container
+            justify='center'
+            className={classes.info}
+            data-testid='loader'
+          >
+            <Spinner />
+          </Grid>
+        ) : !subscribedCategoryIds.length ? (
+          <Typography component='h2' align='center' className={classes.info}>
+            You must subscribe to a category before you can make a post
+          </Typography>
+        ) : !user || (defaultCategoryId && !isSubscribed) ? (
           <Typography component='h2' align='center' className={classes.info}>
             You must{' '}
-            {user ? (
-              'be subscribed to a category'
-            ) : (
-              <Link
-                variant='body1'
-                underline='always'
-                component='button'
-                onClick={onLogin}
-              >
-                log in
-              </Link>
-            )}{' '}
+            <Link
+              variant='body1'
+              underline='always'
+              component='button'
+              onClick={user ? onSubscribe : onLogin}
+            >
+              {user ? 'subscribe' : 'log in'}
+            </Link>{' '}
             before you can make a post
           </Typography>
         ) : (
@@ -142,7 +155,6 @@ const CreatePostDialog: React.FC<Props> = ({
 
               <Grid item>
                 <ReactHookFormSelect
-                  disabled={loadingSubscribedCategoryIds}
                   id='category'
                   name='category'
                   label='Category'

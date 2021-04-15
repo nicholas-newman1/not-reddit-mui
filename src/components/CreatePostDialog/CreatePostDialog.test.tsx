@@ -12,6 +12,8 @@ const props = {
   loadingSubscribedCategoryIds: false,
   error: '',
   subscribedCategoryIds: ['meditation', 'hockey'],
+  onSubscribe: () => {},
+  isSubscribed: false,
 };
 
 describe('<CreatePostDialog />', () => {
@@ -197,18 +199,20 @@ describe('<CreatePostDialog />', () => {
 
   it('should select given defaultCategoryId by default', () => {
     const { getByText } = render(
-      <CreatePostDialog {...props} defaultCategoryId='hockey' />
+      <CreatePostDialog
+        {...props}
+        defaultCategoryId='hockey'
+        isSubscribed={true}
+      />
     );
     getByText(/hockey/i);
   });
 
-  it('should disable category button while loadingSubscribedCategoryIds', () => {
-    const { getByLabelText, queryByText } = render(
+  it('should render loader while loadingSubscribedCategoryIds', () => {
+    const { getByTestId } = render(
       <CreatePostDialog {...props} loadingSubscribedCategoryIds={true} />
     );
-    const category = getByLabelText(/category/i);
-    fireEvent.mouseDown(category);
-    expect(queryByText(/meditation/i)).not.toBeInTheDocument();
+    getByTestId('loader');
   });
 
   it('should render log in button if no user', () => {
@@ -230,6 +234,13 @@ describe('<CreatePostDialog />', () => {
     const { getByText } = render(
       <CreatePostDialog {...props} subscribedCategoryIds={[]} />
     );
-    getByText(/you must be subscribed to a category/i);
+    getByText(/you must subscribe to a category/i);
+  });
+
+  it('should render subscribe button if user is not subscribed to defaultCategoryId', () => {
+    const { getByRole } = render(
+      <CreatePostDialog {...props} defaultCategoryId='baseball' />
+    );
+    getByRole('button', { name: /subscribe/i });
   });
 });

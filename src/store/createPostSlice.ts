@@ -46,19 +46,6 @@ export const createPost = createAsyncThunk(
   }
 );
 
-export const getSubscribedCategoryIds = createAsyncThunk(
-  'createPost/getSubscribedCategoryIds',
-  async () => {
-    return db
-      .collectionGroup('subscriberIds')
-      .where('uid', '==', auth.currentUser?.uid)
-      .get()
-      .then((snap) =>
-        snap.docs.map((snap) => snap.data().categoryId as string)
-      );
-  }
-);
-
 export const createPostSlice = createSlice({
   name: 'createPost',
   initialState,
@@ -77,6 +64,7 @@ export const createPostSlice = createSlice({
       state.isCreatePostDialogOpen = false;
       state.loading = false;
       state.error = '';
+      state.defaultCategoryId = '';
     },
     displayCreatePostSuccessToast: (state) => {
       state.isCreatePostDialogOpen = false;
@@ -104,19 +92,6 @@ export const createPostSlice = createSlice({
       .addCase(createPost.rejected, (state) => {
         state.error = 'An error occured';
         state.loading = false;
-      })
-      .addCase(getSubscribedCategoryIds.pending, (state) => {
-        state.error = '';
-        state.subscribedCategoryIds = [];
-        state.loadingSubscribedCategoryIds = true;
-      })
-      .addCase(getSubscribedCategoryIds.fulfilled, (state, action) => {
-        state.loadingSubscribedCategoryIds = false;
-        state.subscribedCategoryIds = action.payload;
-      })
-      .addCase(getSubscribedCategoryIds.rejected, (state) => {
-        state.error = 'An error occured';
-        state.loadingSubscribedCategoryIds = false;
       });
   },
 });

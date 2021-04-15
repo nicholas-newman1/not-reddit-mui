@@ -1,4 +1,4 @@
-import { List, ListItem, makeStyles } from '@material-ui/core';
+import { List, ListItem, Typography, makeStyles } from '@material-ui/core';
 import PostListing from '../PostListing';
 import PostListLoading from './Loading';
 
@@ -39,7 +39,7 @@ const PostList: React.FC<Props> = ({ posts, loading }) => {
 
   return loading ? (
     <PostListLoading />
-  ) : (
+  ) : posts.length ? (
     <List disablePadding>
       {posts.map((post) => (
         <ListItem disableGutters className={classes.item} key={post.postId}>
@@ -47,6 +47,10 @@ const PostList: React.FC<Props> = ({ posts, loading }) => {
         </ListItem>
       ))}
     </List>
+  ) : (
+    <Typography component='h1' variant='h4' paragraph>
+      No Posts Found
+    </Typography>
   );
 };
 
