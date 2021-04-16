@@ -5,8 +5,9 @@ import { hideResetPasswordDialog, resetPassword } from '../../store/authSlice';
 
 const ResetPasswordDialogContainer = () => {
   const dispatch = useAppDispatch();
-  const open = useAppSelector((state) => state.auth.isResetPasswordDialogOpen);
-  const error = useAppSelector((state) => state.auth.error);
+  const { error, isResetPasswordDialogOpen } = useAppSelector(
+    (state) => state.auth
+  );
 
   const handleResetPassword = (email: string) => {
     dispatch(resetPassword({ email }));
@@ -15,7 +16,7 @@ const ResetPasswordDialogContainer = () => {
   return (
     <ResetPasswordDialog
       handleResetPassword={handleResetPassword}
-      open={open}
+      open={isResetPasswordDialogOpen}
       hideDialog={() => dispatch(hideResetPasswordDialog())}
       loading={false}
       error={error}

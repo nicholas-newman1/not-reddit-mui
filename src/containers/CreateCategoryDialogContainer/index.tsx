@@ -9,10 +9,8 @@ import {
 const CreateCategoryDialogContainer = () => {
   const dispatch = useAppDispatch();
   const hideDialog = () => dispatch(hideCreateCategoryDialog());
-  const loading = useAppSelector((state) => state.createCategory.loading);
-  const error = useAppSelector((state) => state.createCategory.error);
-  const open = useAppSelector(
-    (state) => state.createCategory.isCreateCategoryDialogOpen
+  const { loading, error, isCreateCategoryDialogOpen } = useAppSelector(
+    (state) => state.createCategory
   );
 
   interface createCategoryData {
@@ -26,7 +24,7 @@ const CreateCategoryDialogContainer = () => {
   return (
     <CreateCategoryDialog
       handleCreateCategory={handleCreateCategory}
-      open={open}
+      open={isCreateCategoryDialogOpen}
       hideDialog={hideDialog}
       loading={loading}
       error={error}

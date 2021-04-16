@@ -23,10 +23,9 @@ const SignInDialogContainer = () => {
     dispatch(hideSignInDialog());
     dispatch(displayResetPasswordDialog());
   };
-
-  const loading = useAppSelector((state) => state.auth.loading);
-  const error = useAppSelector((state) => state.auth.error);
-  const open = useAppSelector((state) => state.auth.isSignInDialogOpen);
+  const { isSignInDialogOpen, loading, error } = useAppSelector(
+    (state) => state.auth
+  );
 
   const handleSignIn = ({ email, password }: FormDetails) => {
     dispatch(signIn({ email, password }));
@@ -37,7 +36,7 @@ const SignInDialogContainer = () => {
       handleSignIn={handleSignIn}
       switchToSignUpDialog={switchToSignUpDialog}
       switchToResetPasswordDialog={switchToResetPasswordDialog}
-      open={open}
+      open={isSignInDialogOpen}
       hideDialog={hideDialog}
       loading={loading}
       error={error}
