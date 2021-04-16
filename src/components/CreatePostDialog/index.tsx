@@ -101,10 +101,6 @@ const CreatePostDialog: React.FC<Props> = ({
           >
             <Spinner />
           </Grid>
-        ) : !subscribedCategoryIds.length ? (
-          <Typography component='h2' align='center' className={classes.info}>
-            You must subscribe to a category before you can make a post
-          </Typography>
         ) : !user || (defaultCategoryId && !isSubscribed) ? (
           <Typography component='h2' align='center' className={classes.info}>
             You must{' '}
@@ -117,6 +113,10 @@ const CreatePostDialog: React.FC<Props> = ({
               {user ? 'subscribe' : 'log in'}
             </Link>{' '}
             before you can make a post
+          </Typography>
+        ) : !subscribedCategoryIds.length ? (
+          <Typography component='h2' align='center' className={classes.info}>
+            You must subscribe to a category before you can make a post
           </Typography>
         ) : (
           <form

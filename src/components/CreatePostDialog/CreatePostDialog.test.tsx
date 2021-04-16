@@ -216,7 +216,9 @@ describe('<CreatePostDialog />', () => {
   });
 
   it('should render log in button if no user', () => {
-    const { getByText } = render(<CreatePostDialog {...props} user={false} />);
+    const { getByText } = render(
+      <CreatePostDialog {...props} subscribedCategoryIds={[]} user={false} />
+    );
     getByText(/log in/i);
   });
 
