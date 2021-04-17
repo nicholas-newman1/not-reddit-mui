@@ -6,6 +6,7 @@ import {
   DBCategory,
   DBUser,
 } from '../firebase/types';
+import { daysSinceEpoch } from '../utils';
 
 interface Post {
   title: string;
@@ -29,10 +30,13 @@ interface CategoryMeta {
   numOfSubscribers: number;
 }
 
+type PostOrder = 'new' | 'hot' | 'top';
+
 interface CategoryPageState {
   postList: Post[];
   postListLoading: boolean;
   postListError: string;
+  postOrder: PostOrder;
   morePostsLoading: boolean;
   morePostsError: string;
   morePostsExhausted: boolean;
@@ -45,6 +49,7 @@ const initialState: CategoryPageState = {
   postList: [],
   postListLoading: true,
   postListError: '',
+  postOrder: 'new',
   morePostsLoading: false,
   morePostsError: '',
   morePostsExhausted: false,
@@ -66,12 +71,31 @@ let lastPost: DocumentSnapshot | null = null;
 
 export const getPostList = createAsyncThunk(
   'categoryPage/getPostList',
-  async (categoryId: string) =>
-    db
+  async ({
+    categoryId,
+    postOrder,
+  }: {
+    categoryId: string;
+    postOrder: PostOrder;
+  }) => {
+    let field = 'rating';
+    if (postOrder === 'new') field = 'timestamp';
+    let postsQuery = db
       .collection('posts')
       .where('categoryId', '==', categoryId)
-      .limit(postsPageLength)
-      .orderBy('rating', 'desc')
+      .limit(postsPageLength);
+
+    if (postOrder === 'hot') {
+      /* only include posts that are up to a week old */
+      postsQuery = postsQuery.where(
+        'daysWhenPostIsLessThanWeekOld',
+        'array-contains',
+        daysSinceEpoch()
+      );
+    }
+
+    return postsQuery
+      .orderBy(field, 'desc')
       .get()
       .then((snap) => {
         lastPost = snap.docs[snap.docs.length - 1];
@@ -83,17 +107,31 @@ export const getPostList = createAsyncThunk(
             timestamp: data.timestamp.seconds,
           };
         }) as Post[];
-      })
+      });
+  }
 );
 
-export const getMoreCategoryPosts = createAsyncThunk(
-  'categoryPage/getMoreCategoryPosts',
-  async () =>
-    db
+export const getMorePosts = createAsyncThunk(
+  'categoryPage/getMorePosts',
+  async (postOrder: string) => {
+    let field = 'rating';
+    if (postOrder === 'new') field = 'timestamp';
+    let postsQuery = db
       .collection('posts')
       .where('categoryId', '==', lastPost?.data().categoryId)
-      .limit(postsPageLength)
-      .orderBy('rating', 'desc')
+      .limit(postsPageLength);
+
+    if (postOrder === 'hot') {
+      /* only include posts that are up to a week old */
+      postsQuery = postsQuery.where(
+        'daysWhenPostIsLessThanWeekOld',
+        'array-contains',
+        daysSinceEpoch()
+      );
+    }
+
+    return postsQuery
+      .orderBy(field, 'desc')
       .startAfter(lastPost)
       .get()
       .then((snap) => {
@@ -106,7 +144,8 @@ export const getMoreCategoryPosts = createAsyncThunk(
             timestamp: data.timestamp.seconds,
           };
         }) as Post[];
-      })
+      });
+  }
 );
 
 export const getCategoryMeta = createAsyncThunk(
@@ -132,7 +171,11 @@ export const getCategoryMeta = createAsyncThunk(
 export const categoryPageSlice = createSlice({
   name: 'categoryPage',
   initialState,
-  reducers: {},
+  reducers: {
+    setPostOrder: (state, action: { payload: PostOrder }) => {
+      state.postOrder = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(getPostList.pending, (state) => {
@@ -153,17 +196,17 @@ export const categoryPageSlice = createSlice({
         state.postListLoading = false;
         state.postListError = 'An error occurred';
       })
-      .addCase(getMoreCategoryPosts.pending, (state) => {
+      .addCase(getMorePosts.pending, (state) => {
         state.morePostsLoading = true;
         state.morePostsError = '';
       })
-      .addCase(getMoreCategoryPosts.fulfilled, (state, action) => {
+      .addCase(getMorePosts.fulfilled, (state, action) => {
         state.postList = [...state.postList, ...action.payload];
         state.morePostsLoading = false;
         if (action.payload.length < postsPageLength)
           state.morePostsExhausted = true;
       })
-      .addCase(getMoreCategoryPosts.rejected, (state) => {
+      .addCase(getMorePosts.rejected, (state) => {
         state.morePostsLoading = false;
         state.morePostsError = 'An error occurred';
       })
@@ -181,5 +224,7 @@ export const categoryPageSlice = createSlice({
       });
   },
 });
+
+export const { setPostOrder } = categoryPageSlice.actions;
 
 export default categoryPageSlice.reducer;

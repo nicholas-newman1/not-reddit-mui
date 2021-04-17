@@ -61,8 +61,8 @@ const categoriesPageLength = postsPageLength;
 let lastPost: DocumentSnapshot | null = null;
 let lastCategory: DocumentSnapshot | null = null;
 
-export const getHomePostList = createAsyncThunk(
-  'homePage/getHomePostList',
+export const getPostList = createAsyncThunk(
+  'homePage/getPostList',
   async (order: PostOrder) => {
     let field = 'rating';
     if (order === 'new') field = 'timestamp';
@@ -94,8 +94,8 @@ export const getHomePostList = createAsyncThunk(
   }
 );
 
-export const getMoreHomePosts = createAsyncThunk(
-  'homePage/getMoreHomePosts',
+export const getMorePosts = createAsyncThunk(
+  'homePage/getMorePosts',
   async (order: PostOrder) => {
     let field = 'rating';
     if (order === 'new') field = 'timestamp';
@@ -127,8 +127,8 @@ export const getMoreHomePosts = createAsyncThunk(
   }
 );
 
-export const getHomeCategoryList = createAsyncThunk(
-  'homePage/getHomeCategoryList',
+export const getCategoryList = createAsyncThunk(
+  'homePage/getCategoryList',
   async () =>
     await db
       .collection('categories')
@@ -148,8 +148,8 @@ export const getHomeCategoryList = createAsyncThunk(
       })
 );
 
-export const getMoreHomeCategories = createAsyncThunk(
-  'homePage/getMoreHomeCategories',
+export const getMoreCategories = createAsyncThunk(
+  'homePage/getMoreCategories',
   async () => {
     return db
       .collection('categories')
@@ -181,68 +181,68 @@ export const homePageSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(getHomePostList.pending, (state) => {
+      .addCase(getPostList.pending, (state) => {
         state.postList = [];
         state.postListLoading = true;
         state.postListError = '';
         state.morePostsExhausted = false;
       })
-      .addCase(getHomePostList.fulfilled, (state, action) => {
+      .addCase(getPostList.fulfilled, (state, action) => {
         state.postList = action.payload;
         state.postListLoading = false;
         state.postListError = '';
         if (action.payload.length < postsPageLength)
           state.morePostsExhausted = true;
       })
-      .addCase(getHomePostList.rejected, (state, action) => {
+      .addCase(getPostList.rejected, (state, action) => {
         state.postList = [];
         state.postListLoading = false;
         state.postListError = 'An error occurred';
         console.log(action.error);
       })
-      .addCase(getMoreHomePosts.pending, (state) => {
+      .addCase(getMorePosts.pending, (state) => {
         state.morePostsLoading = true;
         state.morePostsError = '';
       })
-      .addCase(getMoreHomePosts.fulfilled, (state, action) => {
+      .addCase(getMorePosts.fulfilled, (state, action) => {
         state.postList = [...state.postList, ...action.payload];
         state.morePostsLoading = false;
         if (action.payload.length < postsPageLength)
           state.morePostsExhausted = true;
       })
-      .addCase(getMoreHomePosts.rejected, (state) => {
+      .addCase(getMorePosts.rejected, (state) => {
         state.morePostsLoading = false;
         state.morePostsError = 'An error occurred';
       })
-      .addCase(getHomeCategoryList.pending, (state) => {
+      .addCase(getCategoryList.pending, (state) => {
         state.moreCategoriesExhausted = false;
         state.categoryList = [];
         state.categoryListLoading = true;
         state.categoryListError = '';
       })
-      .addCase(getHomeCategoryList.fulfilled, (state, action) => {
+      .addCase(getCategoryList.fulfilled, (state, action) => {
         state.categoryList = action.payload;
         state.categoryListLoading = false;
         state.categoryListError = '';
         if (action.payload.length < categoriesPageLength)
           state.moreCategoriesExhausted = true;
       })
-      .addCase(getHomeCategoryList.rejected, (state) => {
+      .addCase(getCategoryList.rejected, (state) => {
         state.categoryList = [];
         state.categoryListLoading = false;
         state.categoryListError = 'An error occurred';
       })
-      .addCase(getMoreHomeCategories.pending, (state) => {
+      .addCase(getMoreCategories.pending, (state) => {
         state.moreCategoriesLoading = true;
         state.moreCategoriesError = '';
       })
-      .addCase(getMoreHomeCategories.fulfilled, (state, action) => {
+      .addCase(getMoreCategories.fulfilled, (state, action) => {
         state.categoryList = [...state.categoryList, ...action.payload];
         state.moreCategoriesLoading = false;
         if (action.payload.length < categoriesPageLength)
           state.moreCategoriesExhausted = true;
       })
-      .addCase(getMoreHomeCategories.rejected, (state) => {
+      .addCase(getMoreCategories.rejected, (state) => {
         state.moreCategoriesLoading = false;
         state.moreCategoriesError = 'An error occurred';
       });

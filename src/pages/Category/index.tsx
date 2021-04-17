@@ -4,13 +4,16 @@ import { RouteComponentProps } from 'react-router';
 import CategoryMeta from '../../components/CategoryMeta';
 import PostList from '../../components/PostList';
 import PostListLoading from '../../components/PostList/Loading';
+import PostOrder from '../../components/PostOrder';
 import { useAppDispatch } from '../../hooks/useAppDispatch';
 import { useAppSelector } from '../../hooks/useAppSelector';
+import { useIsFirstRender } from '../../hooks/useIsFirstRender';
 import useSubscribedCategoryIds from '../../hooks/useSubscribedCategoryIds';
 import {
   getCategoryMeta,
-  getMoreCategoryPosts,
+  getMorePosts,
   getPostList,
+  setPostOrder,
 } from '../../store/categoryPageSlice';
 import { displayCreatePostDialog } from '../../store/createPostSlice';
 
@@ -27,14 +30,12 @@ const Category: React.FC<Props> = ({ match }) => {
   const {
     postList,
     postListLoading,
+    postOrder,
     morePostsLoading,
     morePostsExhausted,
     categoryMeta,
     categoryMetaLoading,
   } = useAppSelector((state) => state.categoryPage);
-
-  const getMorePosts = () => dispatch(getMoreCategoryPosts());
-  const onCreatePost = () => dispatch(displayCreatePostDialog(categoryId));
 
   const {
     onToggleSubscribe,
@@ -60,18 +61,49 @@ const Category: React.FC<Props> = ({ match }) => {
   useEffect(() => {
     if (!loadingUser) {
       (!postList.length || postList[0].categoryId !== categoryId) &&
-        dispatch(getPostList(categoryId));
+        dispatch(getPostList({ categoryId, postOrder }));
       (!categoryMeta || categoryMeta.categoryId !== categoryId) &&
         dispatch(getCategoryMeta(categoryId));
     }
     //eslint-disable-next-line
   }, [categoryId, loadingUser]);
 
+  /* reload posts if postOrder changes */
+  const isFirstRender = useIsFirstRender();
+  useEffect(() => {
+    if (!isFirstRender) {
+      dispatch(getPostList({ categoryId, postOrder }));
+    }
+    // eslint-disable-next-line
+  }, [postOrder]);
+
   return (
     <Container>
       <Grid container spacing={2} wrap='wrap-reverse'>
         <Grid item xs={12} md={8}>
           <Grid container direction='column' spacing={2}>
+            <Grid item>
+              <PostOrder
+                buttons={[
+                  {
+                    label: 'new',
+                    onClick: () => dispatch(setPostOrder('new')),
+                    disabled: postOrder === 'new',
+                  },
+                  {
+                    label: 'hot',
+                    onClick: () => dispatch(setPostOrder('hot')),
+                    disabled: postOrder === 'hot',
+                  },
+                  {
+                    label: 'top',
+                    onClick: () => dispatch(setPostOrder('top')),
+                    disabled: postOrder === 'top',
+                  },
+                ]}
+              />
+            </Grid>
+
             <Grid item>
               <PostList posts={posts} loading={postListLoading} />
             </Grid>
@@ -84,7 +116,10 @@ const Category: React.FC<Props> = ({ match }) => {
 
             {!morePostsExhausted && (
               <Grid item>
-                <Button variant='contained' onClick={getMorePosts}>
+                <Button
+                  variant='contained'
+                  onClick={() => dispatch(getMorePosts(postOrder))}
+                >
                   More
                 </Button>
               </Grid>
@@ -94,6 +129,15 @@ const Category: React.FC<Props> = ({ match }) => {
 
         <Grid item xs={12} md={4}>
           <Grid container direction='column' spacing={2}>
+            <Grid item>
+              <Button
+                variant='contained'
+                onClick={() => dispatch(displayCreatePostDialog(categoryId))}
+                fullWidth
+              >
+                Create Post
+              </Button>
+            </Grid>
             <Grid item>
               <CategoryMeta
                 categoryName={categoryMeta.categoryId}
@@ -105,12 +149,6 @@ const Category: React.FC<Props> = ({ match }) => {
                 loading={categoryMetaLoading}
                 subscribed={subscribed(categoryId)}
               />
-            </Grid>
-
-            <Grid item>
-              <Button variant='contained' onClick={onCreatePost}>
-                Create Post
-              </Button>
             </Grid>
           </Grid>
         </Grid>

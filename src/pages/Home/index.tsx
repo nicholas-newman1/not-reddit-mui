@@ -3,10 +3,10 @@ import { useEffect } from 'react';
 import { useAppDispatch } from '../../hooks/useAppDispatch';
 import { useAppSelector } from '../../hooks/useAppSelector';
 import {
-  getHomeCategoryList,
-  getHomePostList,
-  getMoreHomeCategories,
-  getMoreHomePosts,
+  getCategoryList,
+  getPostList,
+  getMoreCategories,
+  getMorePosts,
   setPostOrder,
 } from '../../store/homePageSlice';
 import CategoryList from '../../components/CategoryList';
@@ -34,9 +34,6 @@ const Home = () => {
     moreCategoriesLoading,
     moreCategoriesExhausted,
   } = useAppSelector((state) => state.homePage);
-
-  const getMorePosts = () => dispatch(getMoreHomePosts(postOrder));
-  const getMoreCategories = () => dispatch(getMoreHomeCategories());
 
   const {
     onToggleSubscribe,
@@ -69,8 +66,8 @@ const Home = () => {
   not already posts/categories loaded */
   useEffect(() => {
     if (!loadingUser) {
-      !postList.length && dispatch(getHomePostList(postOrder));
-      !categoryList.length && dispatch(getHomeCategoryList());
+      !postList.length && dispatch(getPostList(postOrder));
+      !categoryList.length && dispatch(getCategoryList());
     }
 
     // eslint-disable-next-line
@@ -80,8 +77,8 @@ const Home = () => {
   const isFirstRender = useIsFirstRender();
   useEffect(() => {
     if (!isFirstRender) {
-      dispatch(getHomePostList(postOrder));
-      dispatch(getHomeCategoryList());
+      dispatch(getPostList(postOrder));
+      dispatch(getCategoryList());
     }
     // eslint-disable-next-line
   }, [postOrder]);
@@ -133,7 +130,10 @@ const Home = () => {
 
             {!morePostsExhausted && (
               <Grid item>
-                <Button variant='contained' onClick={getMorePosts}>
+                <Button
+                  variant='contained'
+                  onClick={() => dispatch(getMorePosts(postOrder))}
+                >
                   More
                 </Button>
               </Grid>
@@ -178,7 +178,10 @@ const Home = () => {
 
             {!moreCategoriesExhausted && (
               <Grid item>
-                <Button variant='contained' onClick={getMoreCategories}>
+                <Button
+                  variant='contained'
+                  onClick={() => dispatch(getMoreCategories())}
+                >
                   More
                 </Button>
               </Grid>
