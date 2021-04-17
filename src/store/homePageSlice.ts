@@ -1,18 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { db } from '../firebase/client';
-import { DocumentSnapshot, Timestamp } from '../firebase/types';
+import { DocumentSnapshot, DBPost, DBCategory } from '../firebase/types';
 import { daysSinceEpoch } from '../utils';
-
-interface ReceivedPost {
-  title: string;
-  body: string;
-  authorId: string;
-  authorUsername: string | null;
-  categoryId: string;
-  edited: boolean;
-  rating: number;
-  timestamp: Timestamp;
-}
 
 interface Post {
   title: string;
@@ -26,12 +15,6 @@ interface Post {
   timestamp: number;
 }
 
-interface ReceivedCategory {
-  ownerId: string;
-  numOfSubscribers: number;
-  numOfModerators: number;
-}
-
 interface Category {
   ownerId: string;
   numOfSubscribers: number;
@@ -41,7 +24,7 @@ interface Category {
 
 type PostOrder = 'new' | 'hot' | 'top';
 
-interface categoryPageState {
+interface CategoryPageState {
   postList: Post[];
   postListLoading: boolean;
   postListError: string;
@@ -57,7 +40,7 @@ interface categoryPageState {
   moreCategoriesExhausted: boolean;
 }
 
-const initialState: categoryPageState = {
+const initialState: CategoryPageState = {
   postList: [],
   postListLoading: true,
   postListError: '',
@@ -100,7 +83,7 @@ export const getHomePostList = createAsyncThunk(
       .then((snap) => {
         lastPost = snap.docs[snap.docs.length - 1];
         return snap.docs.map((snap) => {
-          const data = snap.data() as ReceivedPost;
+          const data = snap.data() as DBPost;
           return {
             ...data,
             postId: snap.id,
@@ -133,7 +116,7 @@ export const getMoreHomePosts = createAsyncThunk(
       .then((snap) => {
         lastPost = snap.docs[snap.docs.length - 1];
         return snap.docs.map((snap) => {
-          const data = snap.data() as ReceivedPost;
+          const data = snap.data() as DBPost;
           return {
             ...data,
             postId: snap.id,
@@ -155,7 +138,7 @@ export const getHomeCategoryList = createAsyncThunk(
       .then((snap) => {
         lastCategory = snap.docs[snap.docs.length - 1];
         return snap.docs.map((snap) => {
-          const data = snap.data() as ReceivedCategory;
+          const data = snap.data() as DBCategory;
           const categoryId = snap.id;
           return {
             ...data,
@@ -177,7 +160,7 @@ export const getMoreHomeCategories = createAsyncThunk(
       .then((snap) => {
         lastCategory = snap.docs[snap.docs.length - 1];
         return snap.docs.map((snap) => {
-          const data = snap.data() as ReceivedCategory;
+          const data = snap.data() as DBCategory;
           const categoryId = snap.id;
           return {
             ...data,

@@ -1,14 +1,14 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { auth, db } from '../firebase/client';
 
-interface subscribedCategoriesState {
+interface SubscribedCategoriesState {
   subscribedIds: string[];
   loadingIds: string[];
   loading: boolean;
   error: string;
 }
 
-const initialState: subscribedCategoriesState = {
+const initialState: SubscribedCategoriesState = {
   subscribedIds: [],
   loadingIds: [],
   loading: false,

@@ -1,17 +1,11 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { db } from '../firebase/client';
-import { DocumentSnapshot, Timestamp } from '../firebase/types';
-
-interface ReceivedPost {
-  title: string;
-  body: string;
-  authorId: string;
-  authorUsername: string | null;
-  categoryId: string;
-  edited: boolean;
-  rating: number;
-  timestamp: Timestamp;
-}
+import {
+  DocumentSnapshot,
+  DBPost,
+  DBCategory,
+  DBUser,
+} from '../firebase/types';
 
 interface Post {
   title: string;
@@ -25,16 +19,6 @@ interface Post {
   timestamp: number;
 }
 
-interface ReceivedCategoryMeta {
-  ownerId: string;
-  numOfModerators: number;
-  numOfSubscribers: number;
-}
-
-interface ReceivedUser {
-  username: string;
-}
-
 interface CategoryMeta {
   categoryId: string;
   owner: {
@@ -45,7 +29,7 @@ interface CategoryMeta {
   numOfSubscribers: number;
 }
 
-interface categoryPageState {
+interface CategoryPageState {
   postList: Post[];
   postListLoading: boolean;
   postListError: string;
@@ -57,7 +41,7 @@ interface categoryPageState {
   categoryMetaError: string;
 }
 
-const initialState: categoryPageState = {
+const initialState: CategoryPageState = {
   postList: [],
   postListLoading: true,
   postListError: '',
@@ -92,7 +76,7 @@ export const getPostList = createAsyncThunk(
       .then((snap) => {
         lastPost = snap.docs[snap.docs.length - 1];
         return snap.docs.map((snap) => {
-          const data = snap.data() as ReceivedPost;
+          const data = snap.data() as DBPost;
           return {
             ...data,
             postId: snap.id,
@@ -115,7 +99,7 @@ export const getMoreCategoryPosts = createAsyncThunk(
       .then((snap) => {
         lastPost = snap.docs[snap.docs.length - 1];
         return snap.docs.map((snap) => {
-          const data = snap.data() as ReceivedPost;
+          const data = snap.data() as DBPost;
           return {
             ...data,
             postId: snap.id,
@@ -129,10 +113,10 @@ export const getCategoryMeta = createAsyncThunk(
   'categoryPage/getCategoryMeta',
   async (categoryId: string) => {
     const categorySnap = await db.doc(`categories/${categoryId}`).get();
-    const categoryData = categorySnap.data() as ReceivedCategoryMeta;
+    const categoryData = categorySnap.data() as DBCategory;
 
     const userSnap = await db.doc(`users/${categoryData.ownerId}`).get();
-    const userData = userSnap.data() as ReceivedUser;
+    const userData = userSnap.data() as DBUser;
 
     return {
       ...categoryData,

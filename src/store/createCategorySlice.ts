@@ -1,28 +1,28 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { auth, db } from '../firebase/client';
 
-interface createCategoryState {
+interface CreateCategoryState {
   isCreateCategoryDialogOpen: boolean;
   isCreateCategorySuccessToastOpen: boolean;
   loading: boolean;
   error: string;
 }
 
-const initialState: createCategoryState = {
+const initialState: CreateCategoryState = {
   isCreateCategoryDialogOpen: false,
   isCreateCategorySuccessToastOpen: false,
   loading: false,
   error: '',
 };
 
-interface createCategoryData {
+interface CreateCategoryData {
   categoryName: string;
 }
 
 export const createCategory = createAsyncThunk(
   'createCategory/createCategory',
   async (
-    { categoryName }: createCategoryData,
+    { categoryName }: CreateCategoryData,
     { rejectWithValue, dispatch }
   ) => {
     const uid = auth.currentUser?.uid;

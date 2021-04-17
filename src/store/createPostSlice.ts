@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { auth, db } from '../firebase/client';
 
-interface createPostState {
+interface CreatePostState {
   isCreatePostDialogOpen: boolean;
   isCreatePostSuccessToastOpen: boolean;
   loading: boolean;
@@ -11,7 +11,7 @@ interface createPostState {
   defaultCategoryId: string;
 }
 
-const initialState: createPostState = {
+const initialState: CreatePostState = {
   isCreatePostDialogOpen: false,
   isCreatePostSuccessToastOpen: false,
   loading: false,
@@ -21,7 +21,7 @@ const initialState: createPostState = {
   defaultCategoryId: '',
 };
 
-interface createPostData {
+interface CreatePostData {
   title: string;
   category: string;
   body: string;
@@ -29,7 +29,7 @@ interface createPostData {
 
 export const createPost = createAsyncThunk(
   'createPost/createPost',
-  async ({ title, category, body }: createPostData, { dispatch }) => {
+  async ({ title, category, body }: CreatePostData, { dispatch }) => {
     return db
       .collection('posts')
       .doc()
