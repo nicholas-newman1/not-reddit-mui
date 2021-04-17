@@ -37,3 +37,5 @@ export const getTimeAgoString = (timestamp: number) => {
   if (timeAgo < YEAR * 2) return `A year ago`;
   return `${Math.floor(timeAgo / YEAR)} years ago`;
 };
+
+export const daysSinceEpoch = () => Math.floor(Date.now() / 8.64e7);

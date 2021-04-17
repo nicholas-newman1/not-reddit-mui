@@ -108,6 +108,11 @@ const Home = () => {
                     disabled: postOrder === 'new',
                   },
                   {
+                    label: 'hot',
+                    onClick: () => dispatch(setPostOrder('hot')),
+                    disabled: postOrder === 'hot',
+                  },
+                  {
                     label: 'top',
                     onClick: () => dispatch(setPostOrder('top')),
                     disabled: postOrder === 'top',

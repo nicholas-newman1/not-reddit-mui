@@ -3,18 +3,6 @@ import * as functions from 'firebase-functions';
 const admin = firebase.initializeApp();
 const db = admin.firestore();
 
-exports.categoryCreated = functions.firestore
-  .document('categories/{categoryId}')
-  .onCreate((snap) => {
-    const data = snap.data();
-    const id = snap.id;
-    db.doc(`categories/${id}`).set({
-      ...data,
-      numOfSubscribers: 0,
-      numOfModerators: 0,
-    });
-  });
-
 const updateNumOfSubscribers = async (
   snap: functions.firestore.QueryDocumentSnapshot,
   decrease = false
@@ -31,18 +19,6 @@ const updateNumOfSubscribers = async (
   }
 };
 
-exports.subscriberCreated = functions.firestore
-  .document('categories/{categoryId}/subscriberIds/{subscriberId}')
-  .onCreate((snap) => {
-    updateNumOfSubscribers(snap);
-  });
-
-exports.subscriberDeleted = functions.firestore
-  .document('categories/{categoryId}/subscriberIds/{subscriberId}')
-  .onDelete((snap) => {
-    updateNumOfSubscribers(snap, true);
-  });
-
 const updateNumOfModerators = async (
   snap: functions.firestore.QueryDocumentSnapshot,
   decrease = false
@@ -57,6 +33,66 @@ const updateNumOfModerators = async (
     db.doc(`categories/${id}`).set({ ...data, numOfModerators });
   }
 };
+
+const updatePostRating = async (
+  snap: functions.firestore.QueryDocumentSnapshot,
+  decrease = false
+) => {
+  const post = snap.ref.parent.parent;
+  const id = post?.id;
+  const data = (await post?.get())?.data();
+  if (id && data) {
+    const rating = decrease ? data.rating - 1 : data.rating + 1;
+    db.doc(`posts/${id}`).set({ ...data, rating });
+  }
+};
+
+const updateCommentRating = async (
+  snap: functions.firestore.QueryDocumentSnapshot,
+  decrease = false
+) => {
+  const comment = snap.ref.parent.parent;
+  const id = comment?.id;
+  const data = (await comment?.get())?.data();
+  if (id && data) {
+    const rating = decrease ? data.rating - 1 : data.rating + 1;
+    db.doc(`comments/${id}`).set({ ...data, rating });
+  }
+};
+
+const daysWhenPostIsLessThanWeekOld = (timestamp: number = Date.now()) => {
+  const msInOneDay = 8.64e7;
+  const daysSinceEpoch = Math.floor(timestamp / msInOneDay);
+  const daysWhenPostIsLessThanWeekOld = [];
+  for (let i = 0; i < 7; i++) {
+    daysWhenPostIsLessThanWeekOld.push(daysSinceEpoch + i);
+  }
+  return daysWhenPostIsLessThanWeekOld;
+};
+
+exports.categoryCreated = functions.firestore
+  .document('categories/{categoryId}')
+  .onCreate((snap) => {
+    const data = snap.data();
+    const id = snap.id;
+    db.doc(`categories/${id}`).set({
+      ...data,
+      numOfSubscribers: 0,
+      numOfModerators: 0,
+    });
+  });
+
+exports.subscriberCreated = functions.firestore
+  .document('categories/{categoryId}/subscriberIds/{subscriberId}')
+  .onCreate((snap) => {
+    updateNumOfSubscribers(snap);
+  });
+
+exports.subscriberDeleted = functions.firestore
+  .document('categories/{categoryId}/subscriberIds/{subscriberId}')
+  .onDelete((snap) => {
+    updateNumOfSubscribers(snap, true);
+  });
 
 exports.moderatorCreated = functions.firestore
   .document('categories/{categoryId}/moderatorIds/{moderatorId}')
@@ -83,6 +119,7 @@ exports.postCreated = functions.firestore
       rating: 0,
       edited: false,
       timestamp: snap.createTime,
+      daysWhenPostIsLessThanWeekOld: daysWhenPostIsLessThanWeekOld(),
       authorUsername:
         authorUsername && typeof authorUsername === 'string'
           ? authorUsername
@@ -98,23 +135,21 @@ exports.postUpdated = functions.firestore
     const after = snap.after.data();
     const id = snap.after.id;
 
+    /* if title or body is updated, set edited to true */
     if (before.title != after.title || before.body != after.body) {
       db.doc(`posts/${id}`).set({ ...after, edited: true });
     }
-  });
 
-const updatePostRating = async (
-  snap: functions.firestore.QueryDocumentSnapshot,
-  decrease = false
-) => {
-  const post = snap.ref.parent.parent;
-  const id = post?.id;
-  const data = (await post?.get())?.data();
-  if (id && data) {
-    const rating = decrease ? data.rating - 1 : data.rating + 1;
-    db.doc(`posts/${id}`).set({ ...data, rating });
-  }
-};
+    /* if db admin changes timestamp, update daysWhenPostIsLessThanWeekOld */
+    if (before.timestamp != after.timestamp) {
+      const firebaseTimestamp = after.timestamp as firebase.firestore.Timestamp;
+      const timestamp = firebaseTimestamp.toMillis();
+      db.doc(`posts/${id}`).set({
+        ...after,
+        daysWhenPostIsLessThanWeekOld: daysWhenPostIsLessThanWeekOld(timestamp),
+      });
+    }
+  });
 
 exports.postUpVoteCreated = functions.firestore
   .document('posts/{postId}/upVoteIds/{upVoteId}')
@@ -159,19 +194,6 @@ exports.commentUpdated = functions.firestore
       db.doc(`comments/${id}`).set({ ...after, edited: true });
     }
   });
-
-const updateCommentRating = async (
-  snap: functions.firestore.QueryDocumentSnapshot,
-  decrease = false
-) => {
-  const comment = snap.ref.parent.parent;
-  const id = comment?.id;
-  const data = (await comment?.get())?.data();
-  if (id && data) {
-    const rating = decrease ? data.rating - 1 : data.rating + 1;
-    db.doc(`comments/${id}`).set({ ...data, rating });
-  }
-};
 
 exports.commentUpVoteCreated = functions.firestore
   .document('comments/{commentId}/upVoteIds/{upVoteId}')

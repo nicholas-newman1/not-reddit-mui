@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { db } from '../firebase/client';
 import { DocumentSnapshot, Timestamp } from '../firebase/types';
+import { daysSinceEpoch } from '../utils';
 
 interface ReceivedPost {
   title: string;
@@ -38,7 +39,7 @@ interface Category {
   categoryId: string;
 }
 
-type PostOrder = 'new' | 'top';
+type PostOrder = 'new' | 'hot' | 'top';
 
 interface categoryPageState {
   postList: Post[];
@@ -82,10 +83,18 @@ export const getHomePostList = createAsyncThunk(
   async (order: PostOrder) => {
     let field = 'rating';
     if (order === 'new') field = 'timestamp';
+    let postsQuery = db.collection('posts').limit(postsPageLength);
 
-    return db
-      .collection('posts')
-      .limit(postsPageLength)
+    if (order === 'hot') {
+      /* only include posts that are up to a week old */
+      postsQuery = postsQuery.where(
+        'daysWhenPostIsLessThanWeekOld',
+        'array-contains',
+        daysSinceEpoch()
+      );
+    }
+
+    return postsQuery
       .orderBy(field, 'desc')
       .get()
       .then((snap) => {
@@ -107,10 +116,17 @@ export const getMoreHomePosts = createAsyncThunk(
   async (order: PostOrder) => {
     let field = 'rating';
     if (order === 'new') field = 'timestamp';
+    let postsQuery = db.collection('posts').limit(postsPageLength);
 
-    return db
-      .collection('posts')
-      .limit(postsPageLength)
+    if (order === 'hot') {
+      postsQuery = postsQuery.where(
+        'daysWhenPostIsLessThanWeekOld',
+        'array-contains',
+        daysSinceEpoch()
+      );
+    }
+
+    return postsQuery
       .orderBy(field, 'desc')
       .startAfter(lastPost)
       .get()
