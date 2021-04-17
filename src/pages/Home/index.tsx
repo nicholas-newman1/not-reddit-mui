@@ -7,6 +7,7 @@ import {
   getHomePostList,
   getMoreHomeCategories,
   getMoreHomePosts,
+  setPostOrder,
 } from '../../store/homePageSlice';
 import CategoryList from '../../components/CategoryList';
 import PostList from '../../components/PostList';
@@ -16,6 +17,8 @@ import useSubscribedCategoryIds from '../../hooks/useSubscribedCategoryIds';
 import { displayCreatePostDialog } from '../../store/createPostSlice';
 import { displayCreateCategoryDialog } from '../../store/createCategorySlice';
 import { Link } from 'react-router-dom';
+import PostOrder from '../../components/PostOrder';
+import { useIsFirstRender } from '../../hooks/useIsFirstRender';
 
 const Home = () => {
   const dispatch = useAppDispatch();
@@ -23,6 +26,7 @@ const Home = () => {
   const {
     postList,
     postListLoading,
+    postOrder,
     categoryList,
     categoryListLoading,
     morePostsLoading,
@@ -31,7 +35,7 @@ const Home = () => {
     moreCategoriesExhausted,
   } = useAppSelector((state) => state.homePage);
 
-  const getMorePosts = () => dispatch(getMoreHomePosts());
+  const getMorePosts = () => dispatch(getMoreHomePosts(postOrder));
   const getMoreCategories = () => dispatch(getMoreHomeCategories());
 
   const {
@@ -65,12 +69,22 @@ const Home = () => {
   not already posts/categories loaded */
   useEffect(() => {
     if (!loadingUser) {
-      !postList.length && dispatch(getHomePostList());
+      !postList.length && dispatch(getHomePostList(postOrder));
       !categoryList.length && dispatch(getHomeCategoryList());
     }
 
-    //eslint-disable-next-line
+    // eslint-disable-next-line
   }, [loadingUser]);
+
+  /* reload posts if postOrder changes */
+  const isFirstRender = useIsFirstRender();
+  useEffect(() => {
+    if (!isFirstRender) {
+      dispatch(getHomePostList(postOrder));
+      dispatch(getHomeCategoryList());
+    }
+    // eslint-disable-next-line
+  }, [postOrder]);
 
   return (
     <Container>
@@ -84,6 +98,22 @@ const Home = () => {
               >
                 Create Post
               </Button>
+            </Grid>
+            <Grid item>
+              <PostOrder
+                buttons={[
+                  {
+                    label: 'new',
+                    onClick: () => dispatch(setPostOrder('new')),
+                    disabled: postOrder === 'new',
+                  },
+                  {
+                    label: 'top',
+                    onClick: () => dispatch(setPostOrder('top')),
+                    disabled: postOrder === 'top',
+                  },
+                ]}
+              />
             </Grid>
 
             <Grid item>
@@ -107,15 +137,23 @@ const Home = () => {
         </Grid>
         <Grid item xs={4}>
           <Grid container direction='column' spacing={2}>
-            <Grid item container>
+            <Grid item>
               <Button
+                fullWidth
                 variant='contained'
                 onClick={() => dispatch(displayCreateCategoryDialog())}
               >
                 Create Category
               </Button>
+            </Grid>
 
-              <Button component={Link} to='/categories' variant='contained'>
+            <Grid item>
+              <Button
+                fullWidth
+                component={Link}
+                to='/categories'
+                variant='outlined'
+              >
                 All Categories
               </Button>
             </Grid>

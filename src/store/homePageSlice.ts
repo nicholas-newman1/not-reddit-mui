@@ -38,10 +38,13 @@ interface Category {
   categoryId: string;
 }
 
+type PostOrder = 'new' | 'top';
+
 interface categoryPageState {
   postList: Post[];
   postListLoading: boolean;
   postListError: string;
+  postOrder: PostOrder;
   morePostsLoading: boolean;
   morePostsError: string;
   morePostsExhausted: boolean;
@@ -57,6 +60,7 @@ const initialState: categoryPageState = {
   postList: [],
   postListLoading: true,
   postListError: '',
+  postOrder: 'new',
   morePostsLoading: false,
   morePostsError: '',
   morePostsExhausted: false,
@@ -75,11 +79,14 @@ let lastCategory: DocumentSnapshot | null = null;
 
 export const getHomePostList = createAsyncThunk(
   'homePage/getHomePostList',
-  async () => {
+  async (order: PostOrder) => {
+    let field = 'rating';
+    if (order === 'new') field = 'timestamp';
+
     return db
       .collection('posts')
       .limit(postsPageLength)
-      .orderBy('rating', 'desc')
+      .orderBy(field, 'desc')
       .get()
       .then((snap) => {
         lastPost = snap.docs[snap.docs.length - 1];
@@ -97,11 +104,14 @@ export const getHomePostList = createAsyncThunk(
 
 export const getMoreHomePosts = createAsyncThunk(
   'homePage/getMoreHomePosts',
-  async () => {
+  async (order: PostOrder) => {
+    let field = 'rating';
+    if (order === 'new') field = 'timestamp';
+
     return db
       .collection('posts')
       .limit(postsPageLength)
-      .orderBy('rating', 'desc')
+      .orderBy(field, 'desc')
       .startAfter(lastPost)
       .get()
       .then((snap) => {
@@ -165,7 +175,11 @@ export const getMoreHomeCategories = createAsyncThunk(
 export const homePageSlice = createSlice({
   name: 'homePage',
   initialState,
-  reducers: {},
+  reducers: {
+    setPostOrder: (state, action: { payload: PostOrder }) => {
+      state.postOrder = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(getHomePostList.pending, (state) => {
@@ -181,10 +195,11 @@ export const homePageSlice = createSlice({
         if (action.payload.length < postsPageLength)
           state.morePostsExhausted = true;
       })
-      .addCase(getHomePostList.rejected, (state) => {
+      .addCase(getHomePostList.rejected, (state, action) => {
         state.postList = [];
         state.postListLoading = false;
         state.postListError = 'An error occurred';
+        console.log(action.error);
       })
       .addCase(getMoreHomePosts.pending, (state) => {
         state.morePostsLoading = true;
@@ -234,5 +249,7 @@ export const homePageSlice = createSlice({
       });
   },
 });
+
+export const { setPostOrder } = homePageSlice.actions;
 
 export default homePageSlice.reducer;
