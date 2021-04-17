@@ -1,4 +1,4 @@
-import { Button, Container, Grid } from '@material-ui/core';
+import { Button, Container, Grid, Hidden } from '@material-ui/core';
 import { useEffect } from 'react';
 import { useAppDispatch } from '../../hooks/useAppDispatch';
 import { useAppSelector } from '../../hooks/useAppSelector';
@@ -86,9 +86,9 @@ const Home = () => {
   return (
     <Container>
       <Grid container spacing={2}>
-        <Grid item xs={8}>
-          <Grid container direction='column' spacing={2}>
-            <Grid item>
+        <Grid item xs={6} sm={8}>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
               <Button
                 variant='contained'
                 onClick={() => dispatch(displayCreatePostDialog())}
@@ -96,7 +96,8 @@ const Home = () => {
                 Create Post
               </Button>
             </Grid>
-            <Grid item>
+
+            <Grid item xs={12}>
               <PostOrder
                 buttons={[
                   {
@@ -117,7 +118,36 @@ const Home = () => {
                 ]}
               />
             </Grid>
+          </Grid>
+        </Grid>
 
+        <Grid item xs={6} sm={4}>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <Button
+                fullWidth
+                variant='contained'
+                onClick={() => dispatch(displayCreateCategoryDialog())}
+              >
+                Create Category
+              </Button>
+            </Grid>
+
+            <Grid item xs={12}>
+              <Button
+                fullWidth
+                component={Link}
+                to='/categories'
+                variant='outlined'
+              >
+                All Categories
+              </Button>
+            </Grid>
+          </Grid>
+        </Grid>
+
+        <Grid item xs={12} sm={8}>
+          <Grid container direction='column' spacing={2}>
             <Grid item>
               <PostList posts={posts} loading={postListLoading} />
             </Grid>
@@ -140,54 +170,36 @@ const Home = () => {
             )}
           </Grid>
         </Grid>
-        <Grid item xs={4}>
-          <Grid container direction='column' spacing={2}>
-            <Grid item>
-              <Button
-                fullWidth
-                variant='contained'
-                onClick={() => dispatch(displayCreateCategoryDialog())}
-              >
-                Create Category
-              </Button>
-            </Grid>
 
-            <Grid item>
-              <Button
-                fullWidth
-                component={Link}
-                to='/categories'
-                variant='outlined'
-              >
-                All Categories
-              </Button>
-            </Grid>
-
-            <Grid item>
-              <CategoryList
-                categories={categories}
-                loading={categoryListLoading}
-              />
-            </Grid>
-
-            {moreCategoriesLoading && (
+        <Hidden xsDown>
+          <Grid item xs={12} sm={4}>
+            <Grid container direction='column' spacing={2}>
               <Grid item>
-                <CategoryListLoading />
+                <CategoryList
+                  categories={categories}
+                  loading={categoryListLoading}
+                />
               </Grid>
-            )}
 
-            {!moreCategoriesExhausted && (
-              <Grid item>
-                <Button
-                  variant='contained'
-                  onClick={() => dispatch(getMoreCategories())}
-                >
-                  More
-                </Button>
-              </Grid>
-            )}
+              {moreCategoriesLoading && (
+                <Grid item>
+                  <CategoryListLoading />
+                </Grid>
+              )}
+
+              {!moreCategoriesExhausted && (
+                <Grid item>
+                  <Button
+                    variant='contained'
+                    onClick={() => dispatch(getMoreCategories())}
+                  >
+                    More
+                  </Button>
+                </Grid>
+              )}
+            </Grid>
           </Grid>
-        </Grid>
+        </Hidden>
       </Grid>
     </Container>
   );
