@@ -77,20 +77,18 @@ export const getPostList = createAsyncThunk(
       );
     }
 
-    return postsQuery
-      .orderBy(field, 'desc')
-      .get()
-      .then((snap) => {
-        lastPost = snap.docs[snap.docs.length - 1];
-        return snap.docs.map((snap) => {
-          const data = snap.data() as DBPost;
-          return {
-            ...data,
-            postId: snap.id,
-            timestamp: data.timestamp.seconds,
-          };
-        }) as Post[];
-      });
+    const snap = await postsQuery.orderBy(field, 'desc').get();
+    lastPost = snap.docs[snap.docs.length - 1];
+    const posts = snap.docs.map((snap) => {
+      const data = snap.data() as DBPost;
+      return {
+        ...data,
+        postId: snap.id,
+        timestamp: data.timestamp.seconds,
+      };
+    }) as Post[];
+
+    return posts;
   }
 );
 
@@ -109,21 +107,21 @@ export const getMorePosts = createAsyncThunk(
       );
     }
 
-    return postsQuery
+    const snap = await postsQuery
       .orderBy(field, 'desc')
       .startAfter(lastPost)
-      .get()
-      .then((snap) => {
-        lastPost = snap.docs[snap.docs.length - 1];
-        return snap.docs.map((snap) => {
-          const data = snap.data() as DBPost;
-          return {
-            ...data,
-            postId: snap.id,
-            timestamp: data.timestamp.seconds,
-          };
-        }) as Post[];
-      });
+      .get();
+    lastPost = snap.docs[snap.docs.length - 1];
+    const posts = snap.docs.map((snap) => {
+      const data = snap.data() as DBPost;
+      return {
+        ...data,
+        postId: snap.id,
+        timestamp: data.timestamp.seconds,
+      };
+    }) as Post[];
+
+    return posts;
   }
 );
 
