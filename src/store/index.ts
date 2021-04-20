@@ -5,6 +5,7 @@ import createPost from './createPostSlice';
 import categoryPage from './categoryPageSlice';
 import homePage from './homePageSlice';
 import subscribedCategories from './subscribedCategoriesSlice';
+import ratingStatus from './ratingStatusSlice';
 
 const store = configureStore({
   reducer: {
@@ -14,6 +15,7 @@ const store = configureStore({
     categoryPage,
     homePage,
     subscribedCategories,
+    ratingStatus,
   },
 });
 

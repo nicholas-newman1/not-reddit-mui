@@ -22,6 +22,7 @@ const dummyPosts = [
     timestamp: 1614429965,
     categoryId: 'meditation',
     categoryHref: '/categories/meditation',
+    loadingRating: false,
   },
   {
     commentsHref: '/posts/3131fnu91h1e2#comments',
@@ -42,6 +43,7 @@ const dummyPosts = [
     timestamp: 1614429965,
     categoryId: 'meditation',
     categoryHref: '/categories/meditation',
+    loadingRating: false,
   },
   {
     commentsHref: '/posts/3131fnu91h1e3#comments',
@@ -62,6 +64,7 @@ const dummyPosts = [
     timestamp: 1614429965,
     categoryId: 'meditation',
     categoryHref: '/categories/meditation',
+    loadingRating: false,
   },
 ];
 

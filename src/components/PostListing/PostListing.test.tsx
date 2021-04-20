@@ -23,6 +23,7 @@ describe('<PostListing />', () => {
     timestamp: 1614429965,
     categoryId: 'meditation',
     categoryHref: '/categories/meditation',
+    loadingRating: false,
   };
 
   it('should render without crashing', () => {
@@ -39,7 +40,6 @@ describe('<PostListing />', () => {
         <PostListing {...props} />
       </MemoryRouter>
     );
-
     getByText(/143/);
   });
 
@@ -49,7 +49,6 @@ describe('<PostListing />', () => {
         <PostListing {...props} />
       </MemoryRouter>
     );
-
     getByText(/ovechking899/i);
   });
 
@@ -59,7 +58,6 @@ describe('<PostListing />', () => {
         <PostListing {...props} />
       </MemoryRouter>
     );
-
     getByText(/ago/i);
   });
 
@@ -69,7 +67,6 @@ describe('<PostListing />', () => {
         <PostListing {...props} />
       </MemoryRouter>
     );
-
     getByText(/meditation/i);
   });
 
@@ -79,7 +76,6 @@ describe('<PostListing />', () => {
         <PostListing {...props} />
       </MemoryRouter>
     );
-
     getByText(/Hello if i looked at/i);
   });
 
@@ -89,7 +85,6 @@ describe('<PostListing />', () => {
         <PostListing {...props} />
       </MemoryRouter>
     );
-
     getByText(/comments \(12\)/i);
   });
 
@@ -99,7 +94,6 @@ describe('<PostListing />', () => {
         <PostListing {...props} />
       </MemoryRouter>
     );
-
     getByText(/save/i);
   });
 
@@ -109,7 +103,6 @@ describe('<PostListing />', () => {
         <PostListing {...props} />
       </MemoryRouter>
     );
-
     getByText(/share/i);
   });
 
@@ -119,69 +112,56 @@ describe('<PostListing />', () => {
         <PostListing {...props} />
       </MemoryRouter>
     );
-
     getByText(/save/i);
   });
 
   it('should go to profile route', () => {
     const history = createMemoryHistory();
     history.push = jest.fn();
-
     const { getByText } = render(
       <Router history={history}>
         <PostListing {...props} />
       </Router>
     );
-
     const username = getByText(/ovechking899/i);
     fireEvent.click(username);
-
     expect(history.push).toBeCalledWith('/profiles/ovechking899');
   });
 
   it('should go to category route', () => {
     const history = createMemoryHistory();
     history.push = jest.fn();
-
     const { getByText } = render(
       <Router history={history}>
         <PostListing {...props} />
       </Router>
     );
-
     const category = getByText(/meditation/i);
     fireEvent.click(category);
-
     expect(history.push).toBeCalledWith('/categories/meditation');
   });
 
   it('should go to comments route', () => {
     const history = createMemoryHistory();
     history.push = jest.fn();
-
     const { getByText } = render(
       <Router history={history}>
         <PostListing {...props} />
       </Router>
     );
-
     const comments = getByText(/comments/i);
     fireEvent.click(comments);
-
     expect(history.push).toBeCalledWith('/posts/3131fnu91h1e#comments');
   });
 
   it('should call onUpVote after clicking up arrow', () => {
     const onUpVote = jest.fn();
-
     const { getByTestId } = render(
       <MemoryRouter>
         <PostListing {...props} onUpVote={onUpVote} />
       </MemoryRouter>
     );
-
     const upArrow = getByTestId('up-arrow');
-
     expect(onUpVote).not.toHaveBeenCalled();
     fireEvent.click(upArrow);
     expect(onUpVote).toHaveBeenCalledTimes(1);
@@ -189,31 +169,45 @@ describe('<PostListing />', () => {
 
   it('should call onDownVote after clicking down arrow', () => {
     const onDownVote = jest.fn();
-
     const { getByTestId } = render(
       <MemoryRouter>
         <PostListing {...props} onDownVote={onDownVote} />
       </MemoryRouter>
     );
-
     const downArrow = getByTestId('down-arrow');
-
     expect(onDownVote).not.toHaveBeenCalled();
     fireEvent.click(downArrow);
     expect(onDownVote).toHaveBeenCalledTimes(1);
   });
 
+  it('should disable down vote button while loadingRating', () => {
+    const { getByTestId } = render(
+      <MemoryRouter>
+        <PostListing {...props} loadingRating={true} />
+      </MemoryRouter>
+    );
+    const downArrow = getByTestId('down-arrow') as HTMLButtonElement;
+    expect(downArrow.disabled).toBe(true);
+  });
+
+  it('should disable up vote button while loadingRating', () => {
+    const { getByTestId } = render(
+      <MemoryRouter>
+        <PostListing {...props} loadingRating={true} />
+      </MemoryRouter>
+    );
+    const upArrow = getByTestId('up-arrow') as HTMLButtonElement;
+    expect(upArrow.disabled).toBe(true);
+  });
+
   it('should call onSave after clicking save button', () => {
     const onSave = jest.fn();
-
     const { getByText } = render(
       <MemoryRouter>
         <PostListing {...props} onSave={onSave} />
       </MemoryRouter>
     );
-
     const saveBtn = getByText(/save/i);
-
     expect(onSave).not.toHaveBeenCalled();
     fireEvent.click(saveBtn);
     expect(onSave).toHaveBeenCalledTimes(1);
@@ -221,15 +215,12 @@ describe('<PostListing />', () => {
 
   it('should call onShare after clicking share button', () => {
     const onShare = jest.fn();
-
     const { getByText } = render(
       <MemoryRouter>
         <PostListing {...props} onShare={onShare} />
       </MemoryRouter>
     );
-
     const shareBtn = getByText(/share/i);
-
     expect(onShare).not.toHaveBeenCalled();
     fireEvent.click(shareBtn);
     expect(onShare).toHaveBeenCalledTimes(1);
@@ -237,15 +228,12 @@ describe('<PostListing />', () => {
 
   it('should call onReport after clicking report button', () => {
     const onReport = jest.fn();
-
     const { getByText } = render(
       <MemoryRouter>
         <PostListing {...props} onReport={onReport} />
       </MemoryRouter>
     );
-
     const reportBtn = getByText(/report/i);
-
     expect(onReport).not.toHaveBeenCalled();
     fireEvent.click(reportBtn);
     expect(onReport).toHaveBeenCalledTimes(1);

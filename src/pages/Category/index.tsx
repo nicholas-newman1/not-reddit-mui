@@ -8,6 +8,7 @@ import PostOrder from '../../components/PostOrder';
 import { useAppDispatch } from '../../hooks/useAppDispatch';
 import { useAppSelector } from '../../hooks/useAppSelector';
 import { useIsFirstRender } from '../../hooks/useIsFirstRender';
+import useRatingStatus from '../../hooks/useRatingStatus';
 import useSubscribedCategoryIds from '../../hooks/useSubscribedCategoryIds';
 import {
   getCategoryMeta,
@@ -43,10 +44,10 @@ const Category: React.FC<Props> = ({ match }) => {
     subscribed,
   } = useSubscribedCategoryIds();
 
-  const posts = postList.map((post) => ({
+  const { postsWithRating } = useRatingStatus(postList);
+
+  const posts = postsWithRating.map((post) => ({
     ...post,
-    onUpVote: () => {},
-    onDownVote: () => {},
     onSave: () => {},
     onShare: () => {},
     onReport: () => {},

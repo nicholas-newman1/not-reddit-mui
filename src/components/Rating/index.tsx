@@ -6,6 +6,7 @@ interface Props {
   rating: number;
   onUpVote: () => void;
   onDownVote: () => void;
+  loading: boolean;
   status?: 'up' | 'down';
   className?: string;
 }
@@ -30,6 +31,7 @@ const Rating: React.FC<Props> = (props) => {
   return (
     <Grid data-testid='wrapper' className={classes.root}>
       <IconButton
+        disabled={props.loading}
         onClick={() => props.onUpVote()}
         aria-label='up vote'
         data-testid='up-arrow'
@@ -42,6 +44,7 @@ const Rating: React.FC<Props> = (props) => {
       <Typography itemProp='vote count'>{props.rating}</Typography>
 
       <IconButton
+        disabled={props.loading}
         onClick={() => props.onDownVote()}
         aria-label='down vote'
         data-testid='down-arrow'

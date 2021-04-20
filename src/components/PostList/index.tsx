@@ -30,6 +30,7 @@ interface Props {
     numOfComments: number;
     rating: number;
     ratingStatus?: 'up' | 'down';
+    loadingRating: boolean;
   }[];
   loading: boolean;
 }

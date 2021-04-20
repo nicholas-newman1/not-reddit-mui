@@ -28,6 +28,7 @@ interface Props {
   numOfComments: number;
   rating: number;
   ratingStatus?: 'up' | 'down';
+  loadingRating: boolean;
 }
 
 const useStyles = makeStyles((theme) => {
@@ -74,6 +75,7 @@ const PostListing: React.FC<Props> = (props) => {
       >
         <Grid item>
           <Rating
+            loading={props.loadingRating}
             rating={props.rating}
             onUpVote={props.onUpVote}
             onDownVote={props.onDownVote}

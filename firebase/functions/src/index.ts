@@ -141,7 +141,7 @@ exports.postUpdated = functions.firestore
     }
 
     /* if db admin changes timestamp, update daysWhenPostIsLessThanWeekOld */
-    if (before.timestamp != after.timestamp) {
+    if (before.timestamp != after.timestamp && before.rating == after.rating) {
       const firebaseTimestamp = after.timestamp as firebase.firestore.Timestamp;
       const timestamp = firebaseTimestamp.toMillis();
       db.doc(`posts/${id}`).set({

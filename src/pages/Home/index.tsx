@@ -19,10 +19,11 @@ import { displayCreateCategoryDialog } from '../../store/createCategorySlice';
 import { Link } from 'react-router-dom';
 import PostOrder from '../../components/PostOrder';
 import { useIsFirstRender } from '../../hooks/useIsFirstRender';
+import useRatingStatus from '../../hooks/useRatingStatus';
 
 const Home = () => {
   const dispatch = useAppDispatch();
-  const loadingUser = useAppSelector((state) => state.auth.loading);
+  const loadingUser = useAppSelector((state) => state.auth).loading;
   const {
     postList,
     postListLoading,
@@ -41,10 +42,10 @@ const Home = () => {
     subscribed,
   } = useSubscribedCategoryIds();
 
-  const posts = postList.map((post) => ({
+  const { postsWithRating } = useRatingStatus(postList);
+
+  const posts = postsWithRating.map((post) => ({
     ...post,
-    onUpVote: () => {},
-    onDownVote: () => {},
     onSave: () => {},
     onShare: () => {},
     onReport: () => {},
