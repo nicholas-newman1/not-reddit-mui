@@ -1,17 +1,15 @@
 import { Button, Container, Grid } from '@material-ui/core';
 import { useEffect } from 'react';
 import { RouteComponentProps } from 'react-router';
-import CategoryMeta from '../../components/CategoryMeta';
 import PostList from '../../components/PostList';
 import PostListLoading from '../../components/PostList/Loading';
 import PostOrder from '../../components/PostOrder';
+import CategoryMetaContainer from '../../containers/CategoryMetaContainer';
 import { useAppDispatch } from '../../hooks/useAppDispatch';
 import { useAppSelector } from '../../hooks/useAppSelector';
 import { useIsFirstRender } from '../../hooks/useIsFirstRender';
 import useRatingStatus from '../../hooks/useRatingStatus';
-import useSubscribedCategoryIds from '../../hooks/useSubscribedCategoryIds';
 import {
-  getCategoryMeta,
   getMorePosts,
   getPostList,
   setPostOrder,
@@ -34,15 +32,7 @@ const Category: React.FC<Props> = ({ match }) => {
     postOrder,
     morePostsLoading,
     morePostsExhausted,
-    categoryMeta,
-    categoryMetaLoading,
   } = useAppSelector((state) => state.categoryPage);
-
-  const {
-    onToggleSubscribe,
-    loading: loadingToggleSubscribe,
-    subscribed,
-  } = useSubscribedCategoryIds();
 
   const { postsWithRating } = useRatingStatus(postList);
 
@@ -51,10 +41,6 @@ const Category: React.FC<Props> = ({ match }) => {
     onSave: () => {},
     onShare: () => {},
     onReport: () => {},
-    postHref: `/categories/${post.categoryId}/${post.postId}`,
-    userProfileHref: `/users/${post.authorId}`,
-    categoryHref: `/categories/${post.categoryId}`,
-    numOfComments: 0,
   }));
 
   /* only load posts/meta if auth has been verified and there are not already
@@ -63,8 +49,6 @@ const Category: React.FC<Props> = ({ match }) => {
     if (!loadingUser) {
       (!postList.length || postList[0].categoryId !== categoryId) &&
         dispatch(getPostList({ categoryId, postOrder }));
-      (!categoryMeta || categoryMeta.categoryId !== categoryId) &&
-        dispatch(getCategoryMeta(categoryId));
     }
     //eslint-disable-next-line
   }, [categoryId, loadingUser]);
@@ -140,16 +124,7 @@ const Category: React.FC<Props> = ({ match }) => {
               </Button>
             </Grid>
             <Grid item>
-              <CategoryMeta
-                categoryName={categoryMeta.categoryId}
-                owner={categoryMeta.owner}
-                numOfModerators={categoryMeta.numOfModerators}
-                numOfSubscribers={categoryMeta.numOfSubscribers}
-                onToggleSubscribe={() => onToggleSubscribe(categoryId)}
-                loadingToggleSubscribe={loadingToggleSubscribe(categoryId)}
-                loading={categoryMetaLoading}
-                subscribed={subscribed(categoryId)}
-              />
+              <CategoryMetaContainer categoryId={categoryId} />
             </Grid>
           </Grid>
         </Grid>

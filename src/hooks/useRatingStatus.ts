@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { displaySignInDialog } from '../store/authSlice';
 import {
-  clearVotePostIds,
   getVotePostIds,
   removeUpVote,
   upVote,
@@ -21,6 +20,10 @@ interface Post {
   edited: boolean;
   rating: number;
   timestamp: number;
+  postHref: string;
+  userProfileHref: string;
+  categoryHref: string;
+  numOfComments: number;
 }
 
 interface PostWithRating extends Post {
@@ -109,8 +112,6 @@ const useRatingStatus = (posts: Post[]) => {
     if (posts.length) {
       const postIds = posts.map(({ postId }) => postId);
       dispatch(getVotePostIds(postIds));
-    } else {
-      dispatch(clearVotePostIds());
     }
     //eslint-disable-next-line
   }, [user, posts]);

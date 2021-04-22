@@ -23,7 +23,7 @@ import useRatingStatus from '../../hooks/useRatingStatus';
 
 const Home = () => {
   const dispatch = useAppDispatch();
-  const loadingUser = useAppSelector((state) => state.auth).loading;
+  const loadingUser = useAppSelector((state) => state.auth.loading);
   const {
     postList,
     postListLoading,
@@ -49,10 +49,6 @@ const Home = () => {
     onSave: () => {},
     onShare: () => {},
     onReport: () => {},
-    postHref: `/categories/${post.categoryId}/${post.postId}`,
-    userProfileHref: `/users/${post.authorId}`,
-    categoryHref: `/categories/${post.categoryId}`,
-    numOfComments: 0,
   }));
 
   const categories = categoryList.map((category) => ({

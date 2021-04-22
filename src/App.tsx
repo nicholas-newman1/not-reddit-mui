@@ -5,6 +5,7 @@ import Header from './components/Header';
 import Singletons from './components/Singletons';
 import Category from './pages/Category';
 import Home from './pages/Home';
+import Post from './pages/Post';
 import { theme } from './theme';
 
 const App = () => {
@@ -19,6 +20,11 @@ const App = () => {
           <Switch>
             <Route exact path='/' component={Home} />
             <Route exact path='/categories/:categoryId' component={Category} />
+            <Route
+              exact
+              path='/categories/:categoryId/:postId'
+              component={Post}
+            />
           </Switch>
         </main>
       </Router>

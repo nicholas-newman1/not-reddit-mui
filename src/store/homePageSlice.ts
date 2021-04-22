@@ -2,18 +2,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { db } from '../firebase/client';
 import { DocumentSnapshot, DBPost, DBCategory } from '../firebase/types';
 import { daysSinceEpoch } from '../utils';
-
-interface Post {
-  title: string;
-  body: string;
-  authorId: string;
-  authorUsername: string | null;
-  categoryId: string;
-  postId: string;
-  edited: boolean;
-  rating: number;
-  timestamp: number;
-}
+import { Post } from '../types/client';
 
 interface Category {
   ownerId: string;
@@ -24,7 +13,7 @@ interface Category {
 
 type PostOrder = 'new' | 'hot' | 'top';
 
-interface CategoryPageState {
+interface HomePageState {
   postList: Post[];
   postListLoading: boolean;
   postListError: string;
@@ -40,7 +29,7 @@ interface CategoryPageState {
   moreCategoriesExhausted: boolean;
 }
 
-const initialState: CategoryPageState = {
+const initialState: HomePageState = {
   postList: [],
   postListLoading: true,
   postListError: '',
@@ -85,6 +74,10 @@ export const getPostList = createAsyncThunk(
         ...data,
         postId: snap.id,
         timestamp: data.timestamp.seconds,
+        postHref: `/categories/${data.categoryId}/${snap.id}`,
+        userProfileHref: `/users/${data.authorId}`,
+        categoryHref: `/categories/${data.categoryId}`,
+        numOfComments: 0,
       };
     }) as Post[];
 
@@ -118,6 +111,10 @@ export const getMorePosts = createAsyncThunk(
         ...data,
         postId: snap.id,
         timestamp: data.timestamp.seconds,
+        postHref: `/categories/${data.categoryId}/${snap.id}`,
+        userProfileHref: `/users/${data.authorId}`,
+        categoryHref: `/categories/${data.categoryId}`,
+        numOfComments: 0,
       };
     }) as Post[];
 

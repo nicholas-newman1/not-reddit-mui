@@ -1,34 +1,8 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { db } from '../firebase/client';
-import {
-  DocumentSnapshot,
-  DBPost,
-  DBCategory,
-  DBUser,
-} from '../firebase/types';
+import { DocumentSnapshot, DBPost } from '../firebase/types';
 import { daysSinceEpoch } from '../utils';
-
-interface Post {
-  title: string;
-  body: string;
-  authorId: string;
-  authorUsername: string | null;
-  categoryId: string;
-  postId: string;
-  edited: boolean;
-  rating: number;
-  timestamp: number;
-}
-
-interface CategoryMeta {
-  categoryId: string;
-  owner: {
-    username: string;
-    uid: string;
-  };
-  numOfModerators: number;
-  numOfSubscribers: number;
-}
+import { Post } from '../types/client';
 
 type PostOrder = 'new' | 'hot' | 'top';
 
@@ -40,9 +14,6 @@ interface CategoryPageState {
   morePostsLoading: boolean;
   morePostsError: string;
   morePostsExhausted: boolean;
-  categoryMeta: CategoryMeta;
-  categoryMetaLoading: boolean;
-  categoryMetaError: string;
 }
 
 const initialState: CategoryPageState = {
@@ -53,17 +24,6 @@ const initialState: CategoryPageState = {
   morePostsLoading: false,
   morePostsError: '',
   morePostsExhausted: false,
-  categoryMeta: {
-    owner: {
-      username: '',
-      uid: '',
-    },
-    categoryId: '',
-    numOfModerators: 0,
-    numOfSubscribers: 0,
-  },
-  categoryMetaLoading: true,
-  categoryMetaError: '',
 };
 
 const postsPageLength = 10;
@@ -105,6 +65,10 @@ export const getPostList = createAsyncThunk(
             ...data,
             postId: snap.id,
             timestamp: data.timestamp.seconds,
+            postHref: `/categories/${data.categoryId}/${snap.id}`,
+            userProfileHref: `/users/${data.authorId}`,
+            categoryHref: `/categories/${data.categoryId}`,
+            numOfComments: 0,
           };
         }) as Post[];
       });
@@ -142,29 +106,13 @@ export const getMorePosts = createAsyncThunk(
             ...data,
             postId: snap.id,
             timestamp: data.timestamp.seconds,
+            postHref: `/categories/${data.categoryId}/${snap.id}`,
+            userProfileHref: `/users/${data.authorId}`,
+            categoryHref: `/categories/${data.categoryId}`,
+            numOfComments: 0,
           };
         }) as Post[];
       });
-  }
-);
-
-export const getCategoryMeta = createAsyncThunk(
-  'categoryPage/getCategoryMeta',
-  async (categoryId: string) => {
-    const categorySnap = await db.doc(`categories/${categoryId}`).get();
-    const categoryData = categorySnap.data() as DBCategory;
-
-    const userSnap = await db.doc(`users/${categoryData.ownerId}`).get();
-    const userData = userSnap.data() as DBUser;
-
-    return {
-      ...categoryData,
-      categoryId: categorySnap.id,
-      owner: {
-        username: userData.username,
-        uid: categoryData.ownerId,
-      },
-    };
   }
 );
 
@@ -209,18 +157,6 @@ export const categoryPageSlice = createSlice({
       .addCase(getMorePosts.rejected, (state) => {
         state.morePostsLoading = false;
         state.morePostsError = 'An error occurred';
-      })
-      .addCase(getCategoryMeta.pending, (state) => {
-        state.categoryMetaLoading = true;
-        state.categoryMetaError = '';
-      })
-      .addCase(getCategoryMeta.fulfilled, (state, action) => {
-        state.categoryMeta = action.payload;
-        state.categoryMetaLoading = false;
-      })
-      .addCase(getCategoryMeta.rejected, (state) => {
-        state.categoryMetaLoading = false;
-        state.categoryMetaError = 'An error occurred';
       });
   },
 });
