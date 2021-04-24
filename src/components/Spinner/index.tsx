@@ -3,7 +3,7 @@ import spinner from './spinner.gif';
 
 const Spinner = () => {
   return (
-    <div>
+    <div data-testid='loader'>
       <img src={spinner} alt='loading' />
     </div>
   );
