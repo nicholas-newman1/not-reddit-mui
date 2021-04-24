@@ -41,6 +41,9 @@ interface PostType extends ClientPost {
   loadingRating: boolean;
   onUpVote: () => void;
   onDownVote: () => void;
+  onSave: () => void;
+  onShare: () => void;
+  onReport: () => void;
   ratingStatus?: 'up' | 'down';
 }
 
@@ -108,15 +111,15 @@ const Post: React.FC<Props> = ({ loading, post }) => {
                   >
                     comments ({post.numOfComments})
                   </Button>
-                  {/* <Button className={classes.button} onClick={post.onSave}>
-              Save
-            </Button>
-            <Button className={classes.button} onClick={post.onShare}>
-              Share
-            </Button>
-            <Button className={classes.button} onClick={post.onReport}>
-              Report
-            </Button> */}
+                  <Button className={classes.button} onClick={post.onSave}>
+                    Save
+                  </Button>
+                  <Button className={classes.button} onClick={post.onShare}>
+                    Share
+                  </Button>
+                  <Button className={classes.button} onClick={post.onReport}>
+                    Report
+                  </Button>
                 </Grid>
               </Grid>
             </Grid>

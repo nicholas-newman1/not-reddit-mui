@@ -28,6 +28,9 @@ export const getPost = createAsyncThunk(
       userProfileHref: `/users/${data.authorId}`,
       categoryHref: `/categories/${data.categoryId}`,
       numOfComments: 0,
+      onSave: () => {},
+      onShare: () => {},
+      onReport: () => {},
     };
   }
 );

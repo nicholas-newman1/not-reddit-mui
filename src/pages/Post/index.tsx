@@ -36,7 +36,15 @@ const PostPage: React.FC<Props> = ({ match }) => {
     <Container>
       <Grid container spacing={2} wrap='wrap-reverse'>
         <Grid item xs={12} md={8}>
-          <Post post={postsWithRating[0]} loading={postLoading} />
+          <Post
+            post={{
+              ...postsWithRating[0],
+              onSave: () => {},
+              onShare: () => {},
+              onReport: () => {},
+            }}
+            loading={postLoading}
+          />
         </Grid>
 
         <Grid item xs={12} md={4}>
