@@ -193,54 +193,58 @@ service cloud.firestore {
         allow delete: if isVerified()
           && request.auth.uid == downVoteId
       }
+
+      match /comments/{document=**} {
+        allow read;
+      }
     }
 
-    match /comments/{commentId} {
-      function getCategory(postId) {
-        return get(/databases/$(database)/documents/posts/$(postId)).data.categoryId
-      }
+    // match /comments/{commentId} {
+    //   function getCategory(postId) {
+    //     return get(/databases/$(database)/documents/posts/$(postId)).data.categoryId
+    //   }
 
-      function commentExists(commentId) {
-        return exists(/databases/$(database)/documents/comments/$(commentId))
-      }
+    //   function commentExists(commentId) {
+    //     return exists(/databases/$(database)/documents/comments/$(commentId))
+    //   }
 
-      allow read;
+    //   allow read;
 
-      allow create: if isVerified()
-        && documentFieldsCheckOut(['authorId', 'postId', 'body'], ['repliesTo'])
-        && request.auth.uid == incomingData().authorId
-        && incomingData().body is string
-        && incomingData().body.size() > 0
-        && (
-          !('repliesTo' in incomingData().keys()) 
-          || commentExists(incomingData().repliesTo)
-        )
-        && (
-          isSubscriberOfCategory(request.auth.uid, getCategory(incomingData().postId))
-          || isModeratorOfCategory(request.auth.uid, getCategory(incomingData().postId))
-          || isOwnerOfCategory(request.auth.uid, getCategory(incomingData().postId))
-        )
-        && !isBannedFromCategory(request.auth.uid, getCategory(incomingData().postId));
+    //   allow create: if isVerified()
+    //     && documentFieldsCheckOut(['authorId', 'postId', 'body'], ['repliesTo'])
+    //     && request.auth.uid == incomingData().authorId
+    //     && incomingData().body is string
+    //     && incomingData().body.size() > 0
+    //     && (
+    //       !('repliesTo' in incomingData().keys()) 
+    //       || commentExists(incomingData().repliesTo)
+    //     )
+    //     && (
+    //       isSubscriberOfCategory(request.auth.uid, getCategory(incomingData().postId))
+    //       || isModeratorOfCategory(request.auth.uid, getCategory(incomingData().postId))
+    //       || isOwnerOfCategory(request.auth.uid, getCategory(incomingData().postId))
+    //     )
+    //     && !isBannedFromCategory(request.auth.uid, getCategory(incomingData().postId));
 
-      allow update: if isVerified()
-        && editChangesOnlyFields(['body'])
-        && incomingData().body is string
-        && incomingData().body.size() > 0
-        && (
-            request.auth.uid == existingData().authorId
-            || isModeratorOfCategory(request.auth.uid, getCategory(existingData().postId))
-            || isOwnerOfCategory(request.auth.uid, getCategory(existingData().postId))
-        )
-        && !isBannedFromCategory(request.auth.uid, getCategory(incomingData().postId));
+    //   allow update: if isVerified()
+    //     && editChangesOnlyFields(['body'])
+    //     && incomingData().body is string
+    //     && incomingData().body.size() > 0
+    //     && (
+    //         request.auth.uid == existingData().authorId
+    //         || isModeratorOfCategory(request.auth.uid, getCategory(existingData().postId))
+    //         || isOwnerOfCategory(request.auth.uid, getCategory(existingData().postId))
+    //     )
+    //     && !isBannedFromCategory(request.auth.uid, getCategory(incomingData().postId));
       
-      allow delete: if isVerified()
-        && (
-          request.auth.uid == existingData().authorId
-          || isModeratorOfCategory(request.auth.uid, getCategory(existingData().postId))
-          || isOwnerOfCategory(request.auth.uid, getCategory(existingData().postId))
-        )
-        && !isBannedFromCategory(request.auth.uid, getCategory(existingData().postId));
-    }
+    //   allow delete: if isVerified()
+    //     && (
+    //       request.auth.uid == existingData().authorId
+    //       || isModeratorOfCategory(request.auth.uid, getCategory(existingData().postId))
+    //       || isOwnerOfCategory(request.auth.uid, getCategory(existingData().postId))
+    //     )
+    //     && !isBannedFromCategory(request.auth.uid, getCategory(existingData().postId));
+    // }
 
     // collection group queries
     match /{path=**}/subscriberIds/{subscriberId} {
