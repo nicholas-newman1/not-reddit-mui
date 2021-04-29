@@ -70,6 +70,35 @@ const daysWhenPostIsLessThanWeekOld = (timestamp: number = Date.now()) => {
   return daysWhenPostIsLessThanWeekOld;
 };
 
+const updateNumOfComments = async (
+  snap: functions.firestore.QueryDocumentSnapshot,
+  decrease = false
+) => {
+  // update numOfComments on parent doc
+  const parentDocRef = snap.ref.parent.parent;
+  if (!parentDocRef) return;
+  const path = parentDocRef.path;
+  const data = (await parentDocRef.get()).data();
+  if (!data) return;
+  const numOfComments = decrease
+    ? data.numOfComments - 1
+    : data.numOfComments + 1;
+  db.doc(path).set({ ...data, numOfComments });
+
+  // if parent doc is not in posts collection, update the post's numOfComments
+  if (parentDocRef.parent.id !== 'posts') {
+    const postId = parentDocRef.path.split('/')[1];
+    const data = (await db.doc(`posts/${postId}`).get()).data();
+    if (!data) return;
+    const numOfComments = decrease
+      ? data.numOfComments - 1
+      : data.numOfComments + 1;
+    db.doc(`posts/${postId}`).update({
+      numOfComments,
+    });
+  }
+};
+
 exports.categoryCreated = functions.firestore
   .document('categories/{categoryId}')
   .onCreate((snap) => {
@@ -118,6 +147,7 @@ exports.postCreated = functions.firestore
       ...data,
       rating: 0,
       edited: false,
+      numOfComments: 0,
       timestamp: snap.createTime,
       daysWhenPostIsLessThanWeekOld: daysWhenPostIsLessThanWeekOld(),
       authorUsername:
@@ -176,22 +206,46 @@ exports.postDownVoteDeleted = functions.firestore
   });
 
 exports.commentCreated = functions.firestore
-  .document('comments/{commentId}')
+  .document('posts/{postId}/comments/{document=**}')
   .onCreate((snap) => {
+    const parentCollectionId = snap.ref.parent.id;
+    if (
+      parentCollectionId !== 'upVoteIds' &&
+      parentCollectionId !== 'downVoteIds'
+    ) {
+      updateNumOfComments(snap);
+    }
+
     const data = snap.data();
-    const id = snap.id;
-    db.doc(`comments/${id}`).set({ ...data, rating: 0, edited: false });
+    db.doc(snap.ref.path).set({
+      ...data,
+      rating: 0,
+      edited: false,
+      numOfComments: 0,
+      timestamp: snap.createTime,
+    });
   });
 
 exports.commentUpdated = functions.firestore
-  .document('comments/{commentId}')
+  .document('posts/{postId}/comments/{document=**}')
   .onUpdate((snap) => {
     const before = snap.before.data();
     const after = snap.after.data();
-    const id = snap.after.id;
 
     if (before.body != after.body) {
-      db.doc(`comments/${id}`).set({ ...after, edited: true });
+      db.doc(snap.after.ref.path).set({ ...after, edited: true });
+    }
+  });
+
+exports.commentDeleted = functions.firestore
+  .document('posts/{postId}/comments/{document=**}')
+  .onDelete((snap) => {
+    const parentCollectionId = snap.ref.parent.id;
+    if (
+      parentCollectionId !== 'upVoteIds' &&
+      parentCollectionId !== 'downVoteIds'
+    ) {
+      updateNumOfComments(snap, true);
     }
   });
 
