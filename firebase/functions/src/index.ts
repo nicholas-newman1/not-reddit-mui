@@ -15,7 +15,7 @@ const updateNumOfSubscribers = async (
     const numOfSubscribers = decrease
       ? data.numOfSubscribers - 1
       : data.numOfSubscribers + 1;
-    db.doc(`categories/${id}`).set({ ...data, numOfSubscribers });
+    db.doc(`categories/${id}`).update({ numOfSubscribers });
   }
 };
 
@@ -30,7 +30,7 @@ const updateNumOfModerators = async (
     const numOfModerators = decrease
       ? data.numOfModerators - 1
       : data.numOfModerators + 1;
-    db.doc(`categories/${id}`).set({ ...data, numOfModerators });
+    db.doc(`categories/${id}`).update({ numOfModerators });
   }
 };
 
@@ -43,7 +43,7 @@ const updatePostRating = async (
   const data = (await post?.get())?.data();
   if (id && data) {
     const rating = decrease ? data.rating - 1 : data.rating + 1;
-    db.doc(`posts/${id}`).set({ ...data, rating });
+    db.doc(`posts/${id}`).update({ rating });
   }
 };
 
@@ -56,7 +56,7 @@ const updateCommentRating = async (
   const data = (await comment?.get())?.data();
   if (id && data) {
     const rating = decrease ? data.rating - 1 : data.rating + 1;
-    db.doc(`comments/${id}`).set({ ...data, rating });
+    db.doc(`comments/${id}`).update({ rating });
   }
 };
 
@@ -83,7 +83,7 @@ const updateNumOfComments = async (
   const numOfComments = decrease
     ? data.numOfComments - 1
     : data.numOfComments + 1;
-  db.doc(path).set({ ...data, numOfComments });
+  db.doc(path).update({ numOfComments });
 
   // if parent doc is not in posts collection, update the post's numOfComments
   if (parentDocRef.parent.id !== 'posts') {
@@ -93,22 +93,14 @@ const updateNumOfComments = async (
     const numOfComments = decrease
       ? data.numOfComments - 1
       : data.numOfComments + 1;
-    db.doc(`posts/${postId}`).update({
-      numOfComments,
-    });
+    db.doc(`posts/${postId}`).update({ numOfComments });
   }
 };
 
 exports.categoryCreated = functions.firestore
   .document('categories/{categoryId}')
   .onCreate((snap) => {
-    const data = snap.data();
-    const id = snap.id;
-    db.doc(`categories/${id}`).set({
-      ...data,
-      numOfSubscribers: 0,
-      numOfModerators: 0,
-    });
+    db.doc(snap.ref.path).update({ numOfSubscribers: 0, numOfModerators: 0 });
   });
 
 exports.subscriberCreated = functions.firestore
@@ -139,23 +131,16 @@ exports.postCreated = functions.firestore
   .document('posts/{postId}')
   .onCreate(async (snap) => {
     const data = snap.data();
-
-    const id = snap.id;
-    const authorUsername = (await db.doc(`users/${data.authorId}`).get()).data()
-      ?.username;
-    const postData = {
-      ...data,
+    const authorDoc = await db.doc(`users/${data.authorId}`).get();
+    const authorUsername = authorDoc.data()?.username;
+    db.doc(snap.ref.path).update({
       rating: 0,
       edited: false,
       numOfComments: 0,
       timestamp: snap.createTime,
       daysWhenPostIsLessThanWeekOld: daysWhenPostIsLessThanWeekOld(),
-      authorUsername:
-        authorUsername && typeof authorUsername === 'string'
-          ? authorUsername
-          : null,
-    };
-    db.doc(`posts/${id}`).set(postData);
+      authorUsername: authorUsername || '',
+    });
   });
 
 exports.postUpdated = functions.firestore
@@ -167,15 +152,14 @@ exports.postUpdated = functions.firestore
 
     /* if title or body is updated, set edited to true */
     if (before.title != after.title || before.body != after.body) {
-      db.doc(`posts/${id}`).set({ ...after, edited: true });
+      db.doc(`posts/${id}`).update({ edited: true });
     }
 
     /* if db admin changes timestamp, update daysWhenPostIsLessThanWeekOld */
     if (before.timestamp != after.timestamp && before.rating == after.rating) {
       const firebaseTimestamp = after.timestamp as firebase.firestore.Timestamp;
       const timestamp = firebaseTimestamp.toMillis();
-      db.doc(`posts/${id}`).set({
-        ...after,
+      db.doc(`posts/${id}`).update({
         daysWhenPostIsLessThanWeekOld: daysWhenPostIsLessThanWeekOld(timestamp),
       });
     }
@@ -216,9 +200,7 @@ exports.commentCreated = functions.firestore
       updateNumOfComments(snap);
     }
 
-    const data = snap.data();
-    db.doc(snap.ref.path).set({
-      ...data,
+    db.doc(snap.ref.path).update({
       rating: 0,
       edited: false,
       numOfComments: 0,
@@ -233,7 +215,7 @@ exports.commentUpdated = functions.firestore
     const after = snap.after.data();
 
     if (before.body != after.body) {
-      db.doc(snap.after.ref.path).set({ ...after, edited: true });
+      db.doc(snap.after.ref.path).update({ edited: true });
     }
   });
 
