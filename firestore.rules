@@ -202,7 +202,8 @@ service cloud.firestore {
         allow read;
 
         allow create: if isVerified()
-          && documentFieldsCheckOut(['body'], [])
+          && documentFieldsCheckOut(['body', 'authorId'], [])
+          && incomingData().authorId == request.auth.uid
           && incomingData().body is string
           && incomingData().body.size() > 0
           && (

@@ -14,10 +14,9 @@ const postPath = `posts/${postId}`;
 const post = { authorId: myId, categoryId };
 const theirPost = { ...post, authorId: theirId };
 const commentPath = `${postPath}/comments/comment1`;
-const comment = { body: 'This is a really important comment' };
 const otherComment = { body: 'This is a different comment!' };
-const myComment = { ...comment, authorId: myId };
-const theirComment = { ...comment, authorId: theirId };
+const myComment = { body: 'comment', authorId: myId };
+const theirComment = { body: 'comment', authorId: theirId };
 
 let db: firebaseApp.firestore.Firestore;
 let admin: firebaseApp.firestore.Firestore;
@@ -47,20 +46,20 @@ describe('comments', () => {
       admin.doc(categoryPath).set({ ownerId: theirId });
       admin.doc(postPath).set(theirPost);
       admin.doc(`${categoryPath}/subscriberIds/${myId}`).set({ exists: true });
-      await firebase.assertSucceeds(db.doc(commentPath).set(comment));
+      await firebase.assertSucceeds(db.doc(commentPath).set(myComment));
     });
 
     it('should allow moderators of category of post', async () => {
       admin.doc(categoryPath).set({ ownerId: theirId });
       admin.doc(postPath).set(theirPost);
       admin.doc(`${categoryPath}/moderatorIds/${myId}`).set({ exists: true });
-      await firebase.assertSucceeds(db.doc(commentPath).set(comment));
+      await firebase.assertSucceeds(db.doc(commentPath).set(myComment));
     });
 
     it('should allow owner of category of post', async () => {
       admin.doc(categoryPath).set({ ownerId: myId });
       admin.doc(postPath).set(theirPost);
-      await firebase.assertSucceeds(db.doc(commentPath).set(comment));
+      await firebase.assertSucceeds(db.doc(commentPath).set(myComment));
     });
 
     it('should not allow users banned from category of post', async () => {
@@ -68,20 +67,20 @@ describe('comments', () => {
       admin.doc(postPath).set(theirPost);
       admin.doc(`${categoryPath}/subscriberIds/${myId}`).set({ exists: true });
       admin.doc(`${categoryPath}/bannedIds/${myId}`).set({ exists: true });
-      await firebase.assertFails(db.doc(commentPath).set(comment));
+      await firebase.assertFails(db.doc(commentPath).set(myComment));
     });
 
     it('should not allow a user who is not a subscriber, moderator, or owner of category of post', async () => {
       admin.doc(categoryPath).set({ ownerId: theirId });
       admin.doc(postPath).set(theirPost);
-      await firebase.assertFails(db.doc(commentPath).set(comment));
+      await firebase.assertFails(db.doc(commentPath).set(myComment));
     });
 
     it('should not allow a postId that does not exist', async () => {
       admin.doc(categoryPath).set({ ownerId: theirId });
       admin.doc(postPath).set(theirPost);
       admin.doc(`${categoryPath}/subscriberIds/${myId}`).set({ exists: true });
-      await firebase.assertFails(db.doc(`posts/1/comments/1`).set(comment));
+      await firebase.assertFails(db.doc(`posts/1/comments/1`).set(myComment));
     });
 
     it('should not allow unverified users', async () => {
@@ -89,14 +88,14 @@ describe('comments', () => {
       admin.doc(postPath).set(theirPost);
       admin.doc(`${categoryPath}/subscriberIds/${myId}`).set({ exists: true });
       const db = getFirestore(myUnverifiedAuth);
-      await firebase.assertFails(db.doc(commentPath).set(comment));
+      await firebase.assertFails(db.doc(commentPath).set(myComment));
     });
 
     it('should check for required fields', async () => {
       admin.doc(categoryPath).set({ ownerId: theirId });
       admin.doc(postPath).set(theirPost);
       admin.doc(`${categoryPath}/subscriberIds/${myId}`).set({ exists: true });
-      const { body, ...missingBody } = comment;
+      const { body, ...missingBody } = myComment;
       await firebase.assertFails(db.doc(commentPath).set(missingBody));
     });
 
@@ -105,7 +104,7 @@ describe('comments', () => {
       admin.doc(postPath).set(theirPost);
       admin.doc(`${categoryPath}/subscriberIds/${myId}`).set({ exists: true });
       await firebase.assertFails(
-        db.doc(commentPath).set({ ...comment, badField: true })
+        db.doc(commentPath).set({ ...myComment, badField: true })
       );
     });
 
@@ -113,7 +112,7 @@ describe('comments', () => {
       admin.doc(categoryPath).set({ ownerId: theirId });
       admin.doc(postPath).set(theirPost);
       admin.doc(`${categoryPath}/subscriberIds/${myId}`).set({ exists: true });
-      const invalidBody = { ...comment, body: { i: 'am not a string' } };
+      const invalidBody = { ...myComment, body: { i: 'am not a string' } };
       await firebase.assertFails(db.doc(commentPath).set(invalidBody));
     });
 
@@ -121,7 +120,7 @@ describe('comments', () => {
       admin.doc(categoryPath).set({ ownerId: theirId });
       admin.doc(postPath).set(theirPost);
       admin.doc(`${categoryPath}/subscriberIds/${myId}`).set({ exists: true });
-      const invalidBody = { ...comment, body: '' };
+      const invalidBody = { ...myComment, body: '' };
       await firebase.assertFails(db.doc(commentPath).set(invalidBody));
     });
   });
@@ -181,7 +180,7 @@ describe('comments', () => {
       admin.doc(postPath).set(theirPost);
       admin.doc(`${categoryPath}/subscriberIds/${myId}`).set({ exists: true });
       admin.doc(commentPath).set(myComment);
-      const invalidBody = { ...comment, body: false };
+      const invalidBody = { ...myComment, body: false };
       await firebase.assertFails(db.doc(commentPath).update(invalidBody));
     });
 
@@ -190,7 +189,7 @@ describe('comments', () => {
       admin.doc(postPath).set(theirPost);
       admin.doc(`${categoryPath}/subscriberIds/${myId}`).set({ exists: true });
       admin.doc(commentPath).set(myComment);
-      const invalidBody = { ...comment, body: '' };
+      const invalidBody = { ...myComment, body: '' };
       await firebase.assertFails(db.doc(commentPath).update(invalidBody));
     });
   });
