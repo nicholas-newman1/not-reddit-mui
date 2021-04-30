@@ -1,5 +1,6 @@
 import * as firebase from 'firebase-admin';
 import * as functions from 'firebase-functions';
+import { Post, User } from './types';
 const admin = firebase.initializeApp();
 const db = admin.firestore();
 
@@ -191,7 +192,7 @@ exports.postDownVoteDeleted = functions.firestore
 
 exports.commentCreated = functions.firestore
   .document('posts/{postId}/comments/{document=**}')
-  .onCreate((snap) => {
+  .onCreate(async (snap, context) => {
     const parentCollectionId = snap.ref.parent.id;
     if (
       parentCollectionId !== 'upVoteIds' &&
@@ -200,7 +201,16 @@ exports.commentCreated = functions.firestore
       updateNumOfComments(snap);
     }
 
+    const uid = snap.data().authorId;
+    const user = (await db.doc(`users/${uid}`).get()).data() as User;
+    const postId = snap.ref.path.split('/')[1];
+    const post = (await db.doc(`posts/${postId}`).get()).data() as Post;
+
     db.doc(snap.ref.path).update({
+      authorId: uid,
+      authorUsername: user.username,
+      categoryId: post.categoryId,
+      postId,
       rating: 0,
       edited: false,
       numOfComments: 0,
