@@ -1,6 +1,7 @@
 import * as firebase from '@firebase/rules-unit-testing';
 import firebaseApp from 'firebase/app';
 
+process.env.FIRESTORE_EMULATOR_HOST = 'localhost:8080';
 const PROJECT_ID = 'not-reddit-5a7e3';
 const myId = 'user_mine';
 const myAuth = { uid: myId, email_verified: true };
