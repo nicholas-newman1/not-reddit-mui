@@ -106,7 +106,7 @@ const PostListing: React.FC<Props> = (props) => {
             <Button
               className={classes.button}
               component={Link}
-              to={props.postHref + '#comments'}
+              to={props.postHref}
             >
               comments ({props.numOfComments})
             </Button>

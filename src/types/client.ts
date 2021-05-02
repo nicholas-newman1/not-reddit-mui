@@ -13,3 +13,20 @@ export interface Post {
   categoryHref: string;
   numOfComments: number;
 }
+
+export interface Comment {
+  authorId: string;
+  authorUsername: string;
+  body: string;
+  edited: boolean;
+  rating: number;
+  timestamp: number;
+  replies: Comment[];
+  path: string;
+  userProfileHref: string;
+  numOfComments: number;
+  postId: string;
+  categoryId: string;
+  isAuthor: boolean;
+  deleted: boolean;
+}

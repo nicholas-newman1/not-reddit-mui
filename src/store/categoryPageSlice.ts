@@ -68,7 +68,6 @@ export const getPostList = createAsyncThunk(
             postHref: `/categories/${data.categoryId}/${snap.id}`,
             userProfileHref: `/users/${data.authorId}`,
             categoryHref: `/categories/${data.categoryId}`,
-            numOfComments: 0,
           };
         }) as Post[];
       });
@@ -109,7 +108,6 @@ export const getMorePosts = createAsyncThunk(
             postHref: `/categories/${data.categoryId}/${snap.id}`,
             userProfileHref: `/users/${data.authorId}`,
             categoryHref: `/categories/${data.categoryId}`,
-            numOfComments: 0,
           };
         }) as Post[];
       });

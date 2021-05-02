@@ -214,7 +214,13 @@ service cloud.firestore {
           && !isBannedFromCategory(request.auth.uid, getCategory(postId));
 
         allow update: if isVerified()
-          && editChangesOnlyFields(['body'])
+          && (
+            (
+              request.auth.uid == existingData().authorId 
+              && editChangesOnlyFields(['body', 'deleted'])
+            ) 
+            || editChangesOnlyFields(['body'])
+          )
           && incomingData().body is string
           && incomingData().body.size() > 0
           && (

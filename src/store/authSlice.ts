@@ -135,6 +135,7 @@ interface AuthState {
   isSignUpSuccessToastOpen: boolean;
   isResetPasswordSentToastOpen: boolean;
   isSentEmailVerificationDialogOpen: boolean;
+  loadingSendEmailVerification: boolean;
 }
 
 const initialState: AuthState = {
@@ -147,6 +148,7 @@ const initialState: AuthState = {
   isSignUpSuccessToastOpen: false,
   isResetPasswordSentToastOpen: false,
   isSentEmailVerificationDialogOpen: false,
+  loadingSendEmailVerification: false,
 };
 
 export const authSlice = createSlice({
@@ -275,6 +277,15 @@ export const authSlice = createSlice({
         } else {
           state.error = action.error.message || 'Unknown error';
         }
+      })
+      .addCase(sendEmailVerification.pending, (state) => {
+        state.loadingSendEmailVerification = true;
+      })
+      .addCase(sendEmailVerification.fulfilled, (state) => {
+        state.loadingSendEmailVerification = false;
+      })
+      .addCase(sendEmailVerification.rejected, (state) => {
+        state.loadingSendEmailVerification = false;
       });
   },
 });

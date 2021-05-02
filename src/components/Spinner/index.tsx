@@ -1,9 +1,13 @@
 import React from 'react';
 import spinner from './spinner.gif';
 
-const Spinner = () => {
+interface Props {
+  className?: string;
+}
+
+const Spinner: React.FC<Props> = ({ className = '' }) => {
   return (
-    <div data-testid='loader'>
+    <div data-testid='loader' className={className}>
       <img src={spinner} alt='loading' />
     </div>
   );

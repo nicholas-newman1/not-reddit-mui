@@ -1,18 +1,24 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { db } from '../firebase/client';
-import { DBPost } from '../firebase/types';
-import { Post } from '../types/client';
+import { auth, db } from '../firebase/client';
+import { DBComment, DBPost } from '../firebase/types';
+import { Comment, Post } from '../types/client';
 
 interface PostPageState {
   post: Post | null;
   postLoading: boolean;
   postError: string;
+  comments: Comment[];
+  commentsLoading: boolean;
+  commentsError: string;
 }
 
 const initialState: PostPageState = {
   post: null,
   postLoading: true,
   postError: '',
+  comments: [],
+  commentsLoading: true,
+  commentsError: '',
 };
 
 export const getPost = createAsyncThunk(
@@ -27,11 +33,28 @@ export const getPost = createAsyncThunk(
       postHref: `/categories/${data.categoryId}/${snap.id}`,
       userProfileHref: `/users/${data.authorId}`,
       categoryHref: `/categories/${data.categoryId}`,
-      numOfComments: 0,
-      onSave: () => {},
-      onShare: () => {},
-      onReport: () => {},
     };
+  }
+);
+
+export const getComments = createAsyncThunk(
+  'postPage/getComments',
+  async (postId: string) => {
+    const snap = await db
+      .collection(`/posts/${postId}/comments`)
+      .orderBy('timestamp', 'desc')
+      .get();
+    return snap.docs.map((doc) => {
+      const data = doc.data() as DBComment;
+      return {
+        ...data,
+        timestamp: data.timestamp.seconds,
+        replies: [] as Comment[],
+        path: doc.ref.path,
+        userProfileHref: `/profiles/${data.authorId}`,
+        isAuthor: auth.currentUser?.uid === data.authorId,
+      };
+    });
   }
 );
 
@@ -55,6 +78,22 @@ export const postPageSlice = createSlice({
         state.post = null;
         state.postLoading = false;
         state.postError = 'An error occured';
+      })
+      .addCase(getComments.pending, (state) => {
+        state.comments = [];
+        state.commentsLoading = true;
+        state.commentsError = '';
+      })
+      .addCase(getComments.fulfilled, (state, action) => {
+        state.comments = action.payload;
+        state.commentsLoading = false;
+        state.commentsError = '';
+      })
+      .addCase(getComments.rejected, (state, action) => {
+        console.log(action.error);
+        state.comments = [];
+        state.commentsLoading = false;
+        state.commentsError = 'An error occured';
       });
   },
 });

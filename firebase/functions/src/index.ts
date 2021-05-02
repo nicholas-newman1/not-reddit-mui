@@ -75,7 +75,6 @@ const updateNumOfComments = async (
   snap: functions.firestore.QueryDocumentSnapshot,
   decrease = false
 ) => {
-  // update numOfComments on parent doc
   const parentDocRef = snap.ref.parent.parent;
   if (!parentDocRef) return;
   const path = parentDocRef.path;
@@ -85,17 +84,6 @@ const updateNumOfComments = async (
     ? data.numOfComments - 1
     : data.numOfComments + 1;
   db.doc(path).update({ numOfComments });
-
-  // if parent doc is not in posts collection, update the post's numOfComments
-  if (parentDocRef.parent.id !== 'posts') {
-    const postId = parentDocRef.path.split('/')[1];
-    const data = (await db.doc(`posts/${postId}`).get()).data();
-    if (!data) return;
-    const numOfComments = decrease
-      ? data.numOfComments - 1
-      : data.numOfComments + 1;
-    db.doc(`posts/${postId}`).update({ numOfComments });
-  }
 };
 
 exports.categoryCreated = functions.firestore
@@ -192,7 +180,7 @@ exports.postDownVoteDeleted = functions.firestore
 
 exports.commentCreated = functions.firestore
   .document('posts/{postId}/comments/{document=**}')
-  .onCreate(async (snap, context) => {
+  .onCreate(async (snap) => {
     const parentCollectionId = snap.ref.parent.id;
     if (
       parentCollectionId !== 'upVoteIds' &&
@@ -215,6 +203,7 @@ exports.commentCreated = functions.firestore
       edited: false,
       numOfComments: 0,
       timestamp: snap.createTime,
+      deleted: false,
     });
   });
 

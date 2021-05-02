@@ -1,6 +1,5 @@
 import { Button, Grid, makeStyles, Paper, Typography } from '@material-ui/core';
 import React from 'react';
-import { Link } from 'react-router-dom';
 import PostMeta from '../PostMeta';
 import Rating from '../Rating';
 import Spinner from '../Spinner';
@@ -15,7 +14,6 @@ const useStyles = makeStyles((theme) => {
       width: '100%',
     },
     title: {
-      // padding: '0.5rem 0',
       display: 'inline-block',
       fontWeight: theme.typography.fontWeightBold,
 
@@ -104,11 +102,7 @@ const Post: React.FC<Props> = ({ loading, post }) => {
                 </Grid>
 
                 <Grid item xs={12} container className={classes.buttonGroup}>
-                  <Button
-                    className={classes.button}
-                    component={Link}
-                    to={'#comments'}
-                  >
+                  <Button className={classes.button}>
                     comments ({post.numOfComments})
                   </Button>
                   <Button className={classes.button} onClick={post.onSave}>

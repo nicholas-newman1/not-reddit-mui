@@ -39,7 +39,8 @@ export const subscribeToCategory = createAsyncThunk(
         categoryId,
         uid,
       })
-      .then(() => categoryId);
+      .then(() => categoryId)
+      .catch(() => categoryId);
   }
 );
 
@@ -50,7 +51,8 @@ export const unsubscribeFromCategory = createAsyncThunk(
     return db
       .doc(`categories/${categoryId}/subscriberIds/${uid}`)
       .delete()
-      .then(() => categoryId);
+      .then(() => categoryId)
+      .catch(() => categoryId);
   }
 );
 

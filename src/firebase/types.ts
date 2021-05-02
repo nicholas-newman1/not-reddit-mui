@@ -22,10 +22,24 @@ export interface DBPost {
   rating: number;
   timestamp: Timestamp;
   daysWhenPostIsLessThanWeekOld: string[];
+  numOfComments: number;
 }
 
 export interface DBCategory {
   ownerId: string;
   numOfModerators: number;
   numOfSubscribers: number;
+}
+
+export interface DBComment {
+  authorId: string;
+  authorUsername: string;
+  body: string;
+  edited: boolean;
+  rating: number;
+  timestamp: Timestamp;
+  numOfComments: number;
+  postId: string;
+  categoryId: string;
+  deleted: boolean;
 }
