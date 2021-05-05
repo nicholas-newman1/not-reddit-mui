@@ -13,14 +13,12 @@ import CustomDialog from '../CustomDialog';
 import ReactHookFormSelect from '../ReactHookFormSelect';
 import Spinner from '../Spinner';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles({
   form: {
     width: '100%',
-    marginTop: '2rem',
     marginBottom: '1rem',
   },
-  select: {},
-}));
+});
 
 interface FormDetails {
   title: string;
@@ -141,7 +139,6 @@ const CreatePostDialog: React.FC<Props> = ({
                 label='Category'
                 control={control}
                 defaultValue={defaultCategoryId}
-                className={classes.select}
                 rules={{
                   required:
                     'Category is required. If none are available, subscribe to one first!',
@@ -191,7 +188,6 @@ const CreatePostDialog: React.FC<Props> = ({
                 variant='contained'
                 color='primary'
                 type='submit'
-                fullWidth
               >
                 Create Post
               </Button>

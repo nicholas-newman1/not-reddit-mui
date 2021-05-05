@@ -17,13 +17,12 @@ interface Props {
   error: string;
 }
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles({
   form: {
     width: '100%',
-    // marginTop: '2rem',
     marginBottom: '1rem',
   },
-}));
+});
 
 const ResetPasswordDialog: React.FC<Props> = ({
   handleResetPassword,
@@ -79,7 +78,6 @@ const ResetPasswordDialog: React.FC<Props> = ({
               variant='contained'
               color='primary'
               type='submit'
-              fullWidth
             >
               Send Password Reset Email
             </Button>

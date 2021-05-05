@@ -10,13 +10,12 @@ import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import CustomDialog from '../CustomDialog';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles({
   form: {
     width: '100%',
-    marginTop: '2rem',
     marginBottom: '1rem',
   },
-}));
+});
 
 interface FormDetails {
   email: string;
@@ -118,7 +117,6 @@ const SignInDialog: React.FC<Props> = ({
               variant='contained'
               color='primary'
               type='submit'
-              fullWidth
             >
               Log In
             </Button>
