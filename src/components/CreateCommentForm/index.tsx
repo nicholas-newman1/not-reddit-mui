@@ -45,7 +45,6 @@ interface Props {
   onSubscribe: (clearErrors: () => void) => void;
   loadingSendVerification: boolean;
   loadingSubscribe: boolean;
-  error: string;
 }
 
 const CreateCommentForm: React.FC<Props> = ({
@@ -57,7 +56,6 @@ const CreateCommentForm: React.FC<Props> = ({
   onSubscribe,
   loadingSendVerification,
   loadingSubscribe,
-  error,
 }) => {
   const classes = useStyles();
   const { register, handleSubmit, errors, setError, clearErrors } = useForm();
