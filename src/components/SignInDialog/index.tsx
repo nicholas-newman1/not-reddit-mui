@@ -49,7 +49,7 @@ const SignInDialog: React.FC<Props> = ({
     error
       ? setError('password', { message: error, shouldFocus: false })
       : clearErrors();
-  }, [error, setError]);
+  }, [error, setError, clearErrors]);
 
   return (
     <CustomDialog

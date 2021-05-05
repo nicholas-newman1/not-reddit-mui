@@ -55,7 +55,7 @@ const SignUpDialog: React.FC<Props> = ({
     error
       ? setError('confirmPassword', { message: error, shouldFocus: false })
       : clearErrors();
-  }, [error, setError]);
+  }, [error, setError, clearErrors]);
 
   return (
     <CustomDialog

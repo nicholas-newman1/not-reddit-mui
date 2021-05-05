@@ -6,7 +6,6 @@ import {
   TextField,
   Link,
 } from '@material-ui/core';
-import { useEffect } from 'react';
 import { ErrorOption, useForm } from 'react-hook-form';
 
 const useStyles = makeStyles((theme) => ({
