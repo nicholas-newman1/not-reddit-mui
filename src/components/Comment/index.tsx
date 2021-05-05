@@ -25,7 +25,7 @@ export interface CommentProps {
   onSubscribe: (clearErrors: () => void) => void;
   onDelete: () => void;
   body: string;
-  userProfileHref: string;
+  authorProfileHref: string;
   authorId: string;
   path: string;
   edited: boolean;
@@ -131,7 +131,7 @@ const Comment: React.FC<CommentProps> = (props) => {
             <>
               <Meta
                 timestamp={props.timestamp}
-                userProfileHref={props.userProfileHref}
+                authorProfileHref={props.authorProfileHref}
                 authorUsername={props.authorUsername}
               />
 

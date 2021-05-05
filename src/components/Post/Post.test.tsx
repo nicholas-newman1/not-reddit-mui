@@ -15,7 +15,7 @@ const post = {
   rating: 143,
   timestamp: 1614429965,
   postHref: '/posts/3131fnu91h1e',
-  userProfileHref: '/profiles/ovechking899',
+  authorProfileHref: '/profiles/ovechking899',
   categoryHref: '/categories/meditation',
   numOfComments: 12,
   loadingRating: false,

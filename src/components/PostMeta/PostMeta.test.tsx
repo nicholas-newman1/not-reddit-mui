@@ -5,7 +5,7 @@ import PostMeta from '.';
 
 const props = {
   authorUsername: 'ovechking899',
-  userProfileHref: '/profiles/ovechking899',
+  authorProfileHref: '/profiles/ovechking899',
   timestamp: 1614429965,
   categoryId: 'meditation',
   categoryHref: '/categories/meditation',
@@ -61,7 +61,7 @@ describe('<PostMeta />', () => {
     );
 
     fireEvent.click(getByText(/ovechking899/i));
-    expect(history.push).toHaveBeenCalledWith(props.userProfileHref);
+    expect(history.push).toHaveBeenCalledWith(props.authorProfileHref);
   });
 
   it('category link goes to correct route', async () => {

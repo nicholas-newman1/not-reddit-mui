@@ -21,7 +21,7 @@ interface Post {
   rating: number;
   timestamp: number;
   postHref: string;
-  userProfileHref: string;
+  authorProfileHref: string;
   categoryHref: string;
   numOfComments: number;
 }

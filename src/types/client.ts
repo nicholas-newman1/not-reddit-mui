@@ -9,7 +9,7 @@ export interface Post {
   rating: number;
   timestamp: number;
   postHref: string;
-  userProfileHref: string;
+  authorProfileHref: string;
   categoryHref: string;
   numOfComments: number;
 }
@@ -23,7 +23,7 @@ export interface Comment {
   timestamp: number;
   replies: Comment[];
   path: string;
-  userProfileHref: string;
+  authorProfileHref: string;
   numOfComments: number;
   postId: string;
   categoryId: string;

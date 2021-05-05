@@ -21,7 +21,7 @@ interface Props {
     onReport: () => void;
     postHref: string;
     postId: string;
-    userProfileHref: string;
+    authorProfileHref: string;
     categoryHref: string;
     title: string;
     authorUsername: string | null;

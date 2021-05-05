@@ -6,7 +6,7 @@ import { getTimeAgoString } from '../../utils';
 
 interface Props {
   authorUsername: string | null;
-  userProfileHref: string;
+  authorProfileHref: string;
   timestamp: number;
   categoryId: string;
   categoryHref: string;
@@ -46,7 +46,7 @@ const PostMeta: React.FC<Props> = (props) => {
       <Button
         component={Link}
         className={clsx(classes.username, classes.item)}
-        to={props.userProfileHref}
+        to={props.authorProfileHref}
       >
         {props.authorUsername ? props.authorUsername : <em>Unknown</em>}
       </Button>

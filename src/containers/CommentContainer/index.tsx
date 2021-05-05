@@ -47,7 +47,7 @@ const CommentContainer: React.FC<Props> = ({ comment, isReply }) => {
         timestamp: data.timestamp.seconds,
         replies: [] as CommentType[],
         path: doc.ref.path,
-        userProfileHref: `/profiles/${data.authorId}`,
+        authorProfileHref: `/profiles/${data.authorId}`,
         isAuthor: user?.uid === data.authorId,
       };
     });
@@ -84,7 +84,7 @@ const CommentContainer: React.FC<Props> = ({ comment, isReply }) => {
           timestamp: data.timestamp.seconds,
           replies: [] as CommentType[],
           path: doc.ref.path,
-          userProfileHref: `/profiles/${data.authorId}`,
+          authorProfileHref: `/profiles/${data.authorId}`,
           isAuthor: true,
         },
         ...prev,

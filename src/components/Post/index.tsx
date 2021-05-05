@@ -82,7 +82,7 @@ const Post: React.FC<Props> = ({ loading, post }) => {
                     categoryId={post.categoryId}
                     categoryHref={post.categoryHref}
                     timestamp={post.timestamp}
-                    userProfileHref={post.userProfileHref}
+                    authorProfileHref={post.authorProfileHref}
                     authorUsername={post.authorUsername}
                   />
                 </Grid>

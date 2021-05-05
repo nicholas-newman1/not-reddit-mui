@@ -19,7 +19,7 @@ interface Props {
   onReport: () => void;
   postHref: string;
   postId: string;
-  userProfileHref: string;
+  authorProfileHref: string;
   categoryHref: string;
   title: string;
   authorUsername: string | null;
@@ -87,7 +87,7 @@ const PostListing: React.FC<Props> = (props) => {
             categoryId={props.categoryId}
             categoryHref={props.categoryHref}
             timestamp={props.timestamp}
-            userProfileHref={props.userProfileHref}
+            authorProfileHref={props.authorProfileHref}
             authorUsername={props.authorUsername}
           />
 

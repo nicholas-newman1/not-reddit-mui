@@ -31,7 +31,7 @@ export const getPost = createAsyncThunk(
       postId: snap.id,
       timestamp: data.timestamp.seconds,
       postHref: `/categories/${data.categoryId}/${snap.id}`,
-      userProfileHref: `/users/${data.authorId}`,
+      authorProfileHref: `/users/${data.authorId}`,
       categoryHref: `/categories/${data.categoryId}`,
     };
   }
@@ -51,7 +51,7 @@ export const getComments = createAsyncThunk(
         timestamp: data.timestamp.seconds,
         replies: [] as Comment[],
         path: doc.ref.path,
-        userProfileHref: `/profiles/${data.authorId}`,
+        authorProfileHref: `/profiles/${data.authorId}`,
         isAuthor: auth.currentUser?.uid === data.authorId,
       };
     });

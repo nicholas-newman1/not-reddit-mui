@@ -19,7 +19,7 @@ describe('<PostListing />', () => {
     title:
       'Hello if i looked at the sun I would see how beautiful it is, and then go blind',
     authorUsername: 'ovechking899',
-    userProfileHref: '/profiles/ovechking899',
+    authorProfileHref: '/profiles/ovechking899',
     timestamp: 1614429965,
     categoryId: 'meditation',
     categoryHref: '/categories/meditation',

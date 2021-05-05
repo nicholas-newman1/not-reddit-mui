@@ -75,7 +75,7 @@ export const getPostList = createAsyncThunk(
         postId: snap.id,
         timestamp: data.timestamp.seconds,
         postHref: `/categories/${data.categoryId}/${snap.id}`,
-        userProfileHref: `/users/${data.authorId}`,
+        authorProfileHref: `/users/${data.authorId}`,
         categoryHref: `/categories/${data.categoryId}`,
       };
     }) as Post[];
@@ -111,7 +111,7 @@ export const getMorePosts = createAsyncThunk(
         postId: snap.id,
         timestamp: data.timestamp.seconds,
         postHref: `/categories/${data.categoryId}/${snap.id}`,
-        userProfileHref: `/users/${data.authorId}`,
+        authorProfileHref: `/users/${data.authorId}`,
         categoryHref: `/categories/${data.categoryId}`,
       };
     }) as Post[];

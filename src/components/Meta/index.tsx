@@ -6,7 +6,7 @@ import { getTimeAgoString } from '../../utils';
 
 interface Props {
   authorUsername?: string;
-  userProfileHref?: string;
+  authorProfileHref?: string;
   timestamp?: number;
   category?: {
     categoryId: string;
@@ -45,11 +45,11 @@ const Meta: React.FC<Props> = (props) => {
   const classes = useStyles();
   return (
     <Grid container alignItems='center' className={classes.root}>
-      {props.authorUsername && props.userProfileHref && (
+      {props.authorUsername && props.authorProfileHref && (
         <Button
           component={Link}
           className={clsx(classes.username, classes.item)}
-          to={props.userProfileHref}
+          to={props.authorProfileHref}
         >
           {props.authorUsername ? props.authorUsername : <em>Unknown</em>}
         </Button>
