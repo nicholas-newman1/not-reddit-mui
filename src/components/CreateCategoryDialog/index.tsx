@@ -3,24 +3,14 @@ import {
   Typography,
   Grid,
   Button,
-  Dialog,
-  Card,
   TextField,
   Link,
 } from '@material-ui/core';
 import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
+import CustomDialog from '../CustomDialog';
 
 const useStyles = makeStyles((theme) => ({
-  card: {
-    width: '100%',
-    padding: theme.spacing(3),
-    margin: '0 auto',
-    overflow: 'auto',
-  },
-  info: {
-    marginTop: '1rem',
-  },
   form: {
     width: '100%',
     marginTop: '2rem',
@@ -66,80 +56,79 @@ const CreateCategoryDialog: React.FC<Props> = ({
   }, [error, setError, clearErrors]);
 
   return (
-    <Dialog open={open} onClose={hideDialog} fullWidth maxWidth='xs'>
-      <Card className={classes.card}>
-        <Typography component='h1' variant='h4' align='center'>
-          Create Category
-        </Typography>
-
-        {!user ? (
-          <Typography component='h2' align='center' className={classes.info}>
-            You must{' '}
-            <Link
-              variant='body1'
-              underline='always'
-              component='button'
-              onClick={onLogin}
-            >
-              log in
-            </Link>{' '}
-            before you can create a category
-          </Typography>
-        ) : (
-          <form
-            aria-label='create category'
-            className={classes.form}
-            onSubmit={handleSubmit((data: FormDetails) =>
-              handleCreateCategory(data)
-            )}
+    <CustomDialog
+      heading='Create Category'
+      open={open}
+      onClose={hideDialog}
+      maxWidth='xs'
+    >
+      {!user ? (
+        <Typography component='h2' align='center'>
+          You must{' '}
+          <Link
+            variant='body1'
+            underline='always'
+            component='button'
+            onClick={onLogin}
           >
-            <Grid container direction='column' spacing={3}>
-              <Grid item>
-                <TextField
-                  inputRef={register({
-                    required: 'Category name is required',
-                    minLength: 3,
-                    pattern: /^[a-z0-9]+$/i,
-                  })}
-                  id='categoryName'
-                  label='Category Name'
-                  fullWidth
-                  autoFocus
-                  name='categoryName'
-                  aria-invalid={errors.categoryName ? 'true' : 'false'}
-                />
-              </Grid>
-
-              {errors.categoryName && (
-                <Grid item>
-                  <Typography role='alert' variant='subtitle2' color='error'>
-                    {(errors.categoryName.type === 'required' ||
-                      errors.categoryName.type === 'prop') &&
-                      errors.categoryName.message}
-                    {errors.categoryName.type === 'minLength' &&
-                      'Must be at least 3 characters'}
-                    {errors.categoryName.type === 'pattern' &&
-                      'Only letters and numbers allowed'}
-                  </Typography>
-                </Grid>
-              )}
-
-              <Grid item container justify='center'>
-                <Button
-                  disabled={loading}
-                  variant='contained'
-                  color='primary'
-                  type='submit'
-                  fullWidth
-                >
-                  Create Category
-                </Button>
-              </Grid>
+            log in
+          </Link>{' '}
+          before you can create a category
+        </Typography>
+      ) : (
+        <form
+          aria-label='create category'
+          className={classes.form}
+          onSubmit={handleSubmit((data: FormDetails) =>
+            handleCreateCategory(data)
+          )}
+        >
+          <Grid container direction='column' spacing={3}>
+            <Grid item>
+              <TextField
+                inputRef={register({
+                  required: 'Category name is required',
+                  minLength: 3,
+                  pattern: /^[a-z0-9]+$/i,
+                })}
+                id='categoryName'
+                label='Category Name'
+                fullWidth
+                autoFocus
+                name='categoryName'
+                aria-invalid={errors.categoryName ? 'true' : 'false'}
+              />
             </Grid>
-          </form>
-        )}
-      </Card>
-    </Dialog>
+
+            {errors.categoryName && (
+              <Grid item>
+                <Typography role='alert' variant='subtitle2' color='error'>
+                  {(errors.categoryName.type === 'required' ||
+                    errors.categoryName.type === 'prop') &&
+                    errors.categoryName.message}
+                  {errors.categoryName.type === 'minLength' &&
+                    'Must be at least 3 characters'}
+                  {errors.categoryName.type === 'pattern' &&
+                    'Only letters and numbers allowed'}
+                </Typography>
+              </Grid>
+            )}
+
+            <Grid item container justify='center'>
+              <Button
+                disabled={loading}
+                variant='contained'
+                color='primary'
+                type='submit'
+                fullWidth
+              >
+                Create Category
+              </Button>
+            </Grid>
+          </Grid>
+        </form>
+      )}
+    </CustomDialog>
   );
 };
 
