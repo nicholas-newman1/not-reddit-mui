@@ -48,11 +48,20 @@ const SignUpDialog: React.FC<Props> = ({
   hideDialog,
   error,
 }) => {
-  const { register, handleSubmit, errors, setError, watch } = useForm();
+  const {
+    register,
+    handleSubmit,
+    errors,
+    setError,
+    watch,
+    clearErrors,
+  } = useForm();
   const classes = useStyles();
 
   useEffect(() => {
-    setError('confirmPassword', { message: error, shouldFocus: false });
+    error
+      ? setError('confirmPassword', { message: error, shouldFocus: false })
+      : clearErrors();
   }, [error, setError]);
 
   return (

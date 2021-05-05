@@ -49,11 +49,12 @@ const SignInDialog: React.FC<Props> = ({
   error,
 }) => {
   const classes = useStyles();
-
-  const { register, handleSubmit, errors, setError } = useForm();
+  const { register, handleSubmit, errors, setError, clearErrors } = useForm();
 
   useEffect(() => {
-    setError('password', { message: error, shouldFocus: false });
+    error
+      ? setError('password', { message: error, shouldFocus: false })
+      : clearErrors();
   }, [error, setError]);
 
   return (

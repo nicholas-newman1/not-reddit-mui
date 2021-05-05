@@ -78,11 +78,9 @@ const CreatePostDialog: React.FC<Props> = ({
   } = useForm();
 
   useEffect(() => {
-    if (error) {
-      setError('body', { type: 'prop', message: error, shouldFocus: false });
-    } else {
-      clearErrors();
-    }
+    error
+      ? setError('body', { type: 'prop', message: error, shouldFocus: false })
+      : clearErrors();
   }, [error, setError, clearErrors]);
 
   return (

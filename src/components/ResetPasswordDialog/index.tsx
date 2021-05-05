@@ -39,11 +39,11 @@ const ResetPasswordDialog: React.FC<Props> = ({
   error,
 }) => {
   const classes = useStyles();
-  const { register, handleSubmit, errors, setError } = useForm();
+  const { register, handleSubmit, errors, setError, clearErrors } = useForm();
 
   useEffect(() => {
-    setError('email', { message: error });
-  }, [error, setError]);
+    error ? setError('email', { message: error }) : clearErrors();
+  }, [error, setError, clearErrors]);
 
   return (
     <Dialog open={open} onClose={hideDialog} fullWidth maxWidth='xs'>

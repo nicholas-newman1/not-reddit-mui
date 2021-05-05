@@ -6,6 +6,7 @@ import {
   TextField,
   Link,
 } from '@material-ui/core';
+import { useEffect } from 'react';
 import { ErrorOption, useForm } from 'react-hook-form';
 
 const useStyles = makeStyles((theme) => ({
@@ -44,6 +45,7 @@ interface Props {
   onSubscribe: (clearErrors: () => void) => void;
   loadingSendVerification: boolean;
   loadingSubscribe: boolean;
+  error: string;
 }
 
 const CreateCommentForm: React.FC<Props> = ({
@@ -55,6 +57,7 @@ const CreateCommentForm: React.FC<Props> = ({
   onSubscribe,
   loadingSendVerification,
   loadingSubscribe,
+  error,
 }) => {
   const classes = useStyles();
   const { register, handleSubmit, errors, setError, clearErrors } = useForm();

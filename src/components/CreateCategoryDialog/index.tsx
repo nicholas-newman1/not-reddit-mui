@@ -52,15 +52,17 @@ const CreateCategoryDialog: React.FC<Props> = ({
 }) => {
   const classes = useStyles();
 
-  const { register, handleSubmit, errors, setError } = useForm();
+  const { register, handleSubmit, errors, setError, clearErrors } = useForm();
 
   useEffect(() => {
-    setError('categoryName', {
-      type: 'prop',
-      message: error,
-      shouldFocus: false,
-    });
-  }, [error, setError]);
+    error
+      ? setError('categoryName', {
+          type: 'prop',
+          message: error,
+          shouldFocus: false,
+        })
+      : clearErrors();
+  }, [error, setError, clearErrors]);
 
   return (
     <Dialog open={open} onClose={hideDialog} fullWidth maxWidth='xs'>
