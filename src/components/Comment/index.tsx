@@ -9,7 +9,7 @@ import Meta from '../Meta';
 import Rating from '../Rating';
 import Spinner from '../Spinner';
 
-interface Props {
+export interface CommentProps {
   onUpVote: () => void;
   onDownVote: () => void;
   onReport: () => void;
@@ -90,7 +90,7 @@ const useStyles = makeStyles((theme) => {
   };
 });
 
-const Comment: React.FC<Props> = (props) => {
+const Comment: React.FC<CommentProps> = (props) => {
   const classes = useStyles();
 
   return (

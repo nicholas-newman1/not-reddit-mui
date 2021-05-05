@@ -8,8 +8,7 @@ import { displayCreatePostDialog } from '../../store/createPostSlice';
 import { useAppSelector } from '../../hooks/useAppSelector';
 import { getComments, getPost } from '../../store/postPageSlice';
 import useRatingStatus from '../../hooks/useRatingStatus';
-import CommentContainer from '../../containers/CommentContainer';
-import PostListLoading from '../../components/PostList/Loading';
+import CommentList from '../../components/CommentList';
 
 interface MatchProps {
   categoryId: string;
@@ -63,15 +62,9 @@ const PostPage: React.FC<Props> = ({ match }) => {
               </Typography>
             </Grid>
 
-            {commentsLoading ? (
-              <PostListLoading />
-            ) : (
-              comments.map((comment, i) => (
-                <Grid key={i} item xs={12}>
-                  <CommentContainer comment={comment} />
-                </Grid>
-              ))
-            )}
+            <Grid item xs={12}>
+              <CommentList loading={commentsLoading} comments={comments} />
+            </Grid>
           </Grid>
         </Grid>
 
