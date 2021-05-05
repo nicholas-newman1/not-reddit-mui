@@ -21,6 +21,7 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
     marginTop: '2rem',
     marginBottom: '1rem',
+    overflow: 'auto',
   },
 }));
 

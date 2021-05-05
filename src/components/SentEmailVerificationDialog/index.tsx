@@ -12,6 +12,7 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
     padding: theme.spacing(3),
     margin: '0 auto',
+    overflow: 'auto',
   },
   form: {
     width: '100%',
