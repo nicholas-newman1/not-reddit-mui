@@ -49,7 +49,6 @@ export const signUp = createAsyncThunk(
       .then((cred): User | null => {
         dispatch(signOut());
         dispatch(hideSignUpDialog());
-        dispatch(displaySignUpSuccessToast());
 
         if (cred.user) {
           cred.user.updateProfile({
@@ -130,7 +129,6 @@ interface AuthState {
   isSignInDialogOpen: boolean;
   isSignUpDialogOpen: boolean;
   isResetPasswordDialogOpen: boolean;
-  isSignUpSuccessToastOpen: boolean;
   isResetPasswordSentToastOpen: boolean;
   isSentEmailVerificationDialogOpen: boolean;
   isVerifyEmailDialogOpen: boolean;
@@ -144,7 +142,6 @@ const initialState: AuthState = {
   isSignInDialogOpen: false,
   isSignUpDialogOpen: false,
   isResetPasswordDialogOpen: false,
-  isSignUpSuccessToastOpen: false,
   isResetPasswordSentToastOpen: false,
   isSentEmailVerificationDialogOpen: false,
   isVerifyEmailDialogOpen: false,
@@ -180,12 +177,6 @@ export const authSlice = createSlice({
     hideResetPasswordDialog: (state) => {
       state.isResetPasswordDialogOpen = false;
       state.error = '';
-    },
-    displaySignUpSuccessToast: (state) => {
-      state.isSignUpSuccessToastOpen = true;
-    },
-    hideSignUpSuccessToast: (state) => {
-      state.isSignUpSuccessToastOpen = false;
     },
     displayResetPasswordSentToast: (state) => {
       state.isResetPasswordSentToastOpen = true;
@@ -304,8 +295,6 @@ export const {
   hideSignUpDialog,
   displayResetPasswordDialog,
   hideResetPasswordDialog,
-  displaySignUpSuccessToast,
-  hideSignUpSuccessToast,
   displayResetPasswordSentToast,
   hideResetPasswordSentToast,
   displaySentEmailVerificationDialog,

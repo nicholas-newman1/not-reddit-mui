@@ -8,7 +8,6 @@ import SentEmailVerificationDialogContainer from '../../containers/SentEmailVeri
 import VerifyEmailDialogContainer from '../../containers/VerifyEmailDialogContainer';
 import SignInDialogContainer from '../../containers/SignInDialogContainer';
 import SignUpDialogContainer from '../../containers/SignUpDialogContainer';
-import SignUpSuccessToastContainer from '../../containers/SignUpSuccessToastContainer';
 
 const Singletons = () => {
   return (
@@ -16,7 +15,6 @@ const Singletons = () => {
       <SignInDialogContainer />
       <SignUpDialogContainer />
       <ResetPasswordDialogContainer />
-      <SignUpSuccessToastContainer />
       <ResetPasswordSentToastContainer />
       <SentEmailVerificationDialogContainer />
       <VerifyEmailDialogContainer />
