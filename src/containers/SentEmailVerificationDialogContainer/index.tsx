@@ -12,7 +12,7 @@ const SentEmailVerificationDialogContainer = () => {
   return (
     <SentEmailVerificationDialog
       open={open}
-      handleClose={() => dispatch(hideSentEmailVerificationDialog())}
+      onClose={() => dispatch(hideSentEmailVerificationDialog())}
     />
   );
 };

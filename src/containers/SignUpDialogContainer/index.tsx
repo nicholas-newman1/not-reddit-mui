@@ -24,7 +24,7 @@ const SignUpDialogContainer = () => {
     (state) => state.auth
   );
 
-  const handleSignUp = (data: FormDetails) => {
+  const onSubmit = (data: FormDetails) => {
     dispatch(signUp(data));
   };
 
@@ -33,7 +33,7 @@ const SignUpDialogContainer = () => {
       switchToSignInDialog={switchToSignInDialog}
       loading={loading}
       open={isSignUpDialogOpen}
-      handleSignUp={handleSignUp}
+      onSubmit={onSubmit}
       hideDialog={hideDialog}
       error={error}
     />

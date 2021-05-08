@@ -3,16 +3,16 @@ import { Alert, Color } from '@material-ui/lab';
 
 interface Props {
   open: boolean;
-  handleClose: () => void;
+  onClose: () => void;
   message: string;
   severity?: Color;
 }
 
-const Toast: React.FC<Props> = ({ open, handleClose, message, severity }) => {
+const Toast: React.FC<Props> = ({ open, onClose, message, severity }) => {
   return (
-    <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+    <Snackbar open={open} autoHideDuration={6000} onClose={onClose}>
       <Alert
-        onClose={handleClose}
+        onClose={onClose}
         severity={severity}
         variant='filled'
         elevation={6}

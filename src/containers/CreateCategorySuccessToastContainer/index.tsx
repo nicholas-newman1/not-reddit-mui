@@ -14,7 +14,7 @@ const CreateCategorySuccessToastContainer = () => {
       message='Category successfully created!'
       severity='success'
       open={open}
-      handleClose={() => dispatch(hideCreateCategorySuccessToast())}
+      onClose={() => dispatch(hideCreateCategorySuccessToast())}
     />
   );
 };

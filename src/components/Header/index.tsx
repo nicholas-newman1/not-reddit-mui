@@ -56,11 +56,11 @@ const Header = () => {
   const [openMenu, setOpenMenu] = useState(false);
   const menuIconRef = useRef<HTMLButtonElement>(null);
 
-  const handleOpenMenu = () => {
+  const onOpenMenu = () => {
     setOpenMenu(true);
   };
 
-  const handleCloseMenu = () => {
+  const onCloseMenu = () => {
     setOpenMenu(false);
   };
 
@@ -98,7 +98,7 @@ const Header = () => {
             <>
               <IconButton
                 ref={menuIconRef}
-                onClick={handleOpenMenu}
+                onClick={onOpenMenu}
                 aria-label='account of current user'
                 aria-controls='menu-appbar'
                 aria-haspopup='true'
@@ -118,19 +118,19 @@ const Header = () => {
                   horizontal: 'right',
                 }}
                 open={openMenu}
-                onClose={handleCloseMenu}
+                onClose={onCloseMenu}
               >
                 {/* <MenuItem
                   component={Link}
                   to={`/profile/${user.uid}`}
-                  onClick={handleCloseMenu}
+                  onClick={onCloseMenu}
                 >
                   Profile
                 </MenuItem> */}
                 <MenuItem
                   onClick={() => {
                     dispatch(signOut());
-                    handleCloseMenu();
+                    onCloseMenu();
                   }}
                 >
                   Log Out

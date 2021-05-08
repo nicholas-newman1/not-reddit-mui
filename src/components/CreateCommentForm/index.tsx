@@ -33,7 +33,7 @@ interface FormDetails {
 }
 
 interface Props {
-  handleReply: (
+  onReply: (
     body: string,
     setError: (name: string, error: ErrorOption) => void
   ) => void;
@@ -47,7 +47,7 @@ interface Props {
 }
 
 const CreateCommentForm: React.FC<Props> = ({
-  handleReply,
+  onReply,
   loading,
   isReply,
   onSignIn,
@@ -64,7 +64,7 @@ const CreateCommentForm: React.FC<Props> = ({
       aria-label='create comment'
       className={classes.form}
       onSubmit={handleSubmit((data: FormDetails) =>
-        handleReply(data.body, setError)
+        onReply(data.body, setError)
       )}
     >
       <Grid container direction='column' spacing={3}>

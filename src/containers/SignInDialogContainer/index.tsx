@@ -27,13 +27,13 @@ const SignInDialogContainer = () => {
     (state) => state.auth
   );
 
-  const handleSignIn = ({ email, password }: FormDetails) => {
+  const onSubmit = ({ email, password }: FormDetails) => {
     dispatch(signIn({ email, password }));
   };
 
   return (
     <SignInDialog
-      handleSignIn={handleSignIn}
+      onSubmit={onSubmit}
       switchToSignUpDialog={switchToSignUpDialog}
       switchToResetPasswordDialog={switchToResetPasswordDialog}
       open={isSignInDialogOpen}

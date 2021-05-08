@@ -10,7 +10,7 @@ import { useForm } from 'react-hook-form';
 import CustomDialog from '../CustomDialog';
 
 interface Props {
-  handleResetPassword: (email: string) => void;
+  onSubmit: (email: string) => void;
   open: boolean;
   hideDialog: () => void;
   loading: boolean;
@@ -25,7 +25,7 @@ const useStyles = makeStyles({
 });
 
 const ResetPasswordDialog: React.FC<Props> = ({
-  handleResetPassword,
+  onSubmit,
   open,
   hideDialog,
   loading,
@@ -48,7 +48,7 @@ const ResetPasswordDialog: React.FC<Props> = ({
       <form
         aria-label='reset password form'
         className={classes.form}
-        onSubmit={handleSubmit((data) => handleResetPassword(data.email))}
+        onSubmit={handleSubmit((data) => onSubmit(data.email))}
       >
         <Grid container direction='column' spacing={3}>
           <Grid item>

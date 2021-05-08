@@ -3,7 +3,7 @@ import { act } from 'react-dom/test-utils';
 import CreateCategoryDialog from '.';
 
 const props = {
-  handleCreateCategory: () => {},
+  onSubmit: () => {},
   open: true,
   hideDialog: () => {},
   loading: false,
@@ -39,10 +39,10 @@ describe('<CreateCategoryDialog />', () => {
     expect(input.value).toBe('a');
   });
 
-  it('should call handleCreateCategory on submit', async () => {
+  it('should call onSubmit on submit', async () => {
     const fn = jest.fn();
     const { getByRole } = render(
-      <CreateCategoryDialog {...props} handleCreateCategory={fn} />
+      <CreateCategoryDialog {...props} onSubmit={fn} />
     );
     await act(async () => {
       fireEvent.change(getByRole('textbox'), { target: { value: 'hockey' } });
@@ -51,10 +51,10 @@ describe('<CreateCategoryDialog />', () => {
     expect(fn).toHaveBeenCalled();
   });
 
-  it('should call handleCreateCategory with given category name', async () => {
+  it('should call onSubmit with given category name', async () => {
     const fn = jest.fn();
     const { getByRole } = render(
-      <CreateCategoryDialog {...props} handleCreateCategory={fn} />
+      <CreateCategoryDialog {...props} onSubmit={fn} />
     );
     await act(async () => {
       fireEvent.change(getByRole('textbox'), { target: { value: 'hockey' } });
@@ -63,10 +63,10 @@ describe('<CreateCategoryDialog />', () => {
     expect(fn).toHaveBeenCalledWith({ categoryName: 'hockey' });
   });
 
-  it('should not call handleCreateCategory if category name is empty', async () => {
+  it('should not call onSubmit if category name is empty', async () => {
     const fn = jest.fn();
     const { getByRole } = render(
-      <CreateCategoryDialog {...props} handleCreateCategory={fn} />
+      <CreateCategoryDialog {...props} onSubmit={fn} />
     );
     await act(async () => {
       fireEvent.submit(getByRole('form'));
@@ -77,7 +77,7 @@ describe('<CreateCategoryDialog />', () => {
   it('should display error if categoryName is empty', async () => {
     const fn = jest.fn();
     const { getByRole, getByText } = render(
-      <CreateCategoryDialog {...props} handleCreateCategory={fn} />
+      <CreateCategoryDialog {...props} onSubmit={fn} />
     );
     await act(async () => {
       fireEvent.submit(getByRole('form'));
@@ -88,7 +88,7 @@ describe('<CreateCategoryDialog />', () => {
   it('should display error if categoryName length < 3', async () => {
     const fn = jest.fn();
     const { getByRole, getByText } = render(
-      <CreateCategoryDialog {...props} handleCreateCategory={fn} />
+      <CreateCategoryDialog {...props} onSubmit={fn} />
     );
     await act(async () => {
       fireEvent.change(getByRole('textbox'), { target: { value: 'ab' } });
@@ -100,7 +100,7 @@ describe('<CreateCategoryDialog />', () => {
   it('should display error if categoryName is not alphanumeric', async () => {
     const fn = jest.fn();
     const { getByRole, getByText } = render(
-      <CreateCategoryDialog {...props} handleCreateCategory={fn} />
+      <CreateCategoryDialog {...props} onSubmit={fn} />
     );
     await act(async () => {
       fireEvent.change(getByRole('textbox'), { target: { value: 'abc!@#' } });

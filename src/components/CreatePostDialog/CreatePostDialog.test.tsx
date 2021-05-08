@@ -3,7 +3,7 @@ import { act } from 'react-dom/test-utils';
 import CreatePostDialog from '.';
 
 const props = {
-  handleCreatePost: () => {},
+  onSubmit: () => {},
   open: true,
   hideDialog: () => {},
   loading: false,
@@ -48,10 +48,10 @@ describe('<CreatePostDialog />', () => {
     });
   });
 
-  it('should call handleCreatePost on submit', async () => {
+  it('should call onSubmit on submit', async () => {
     const fn = jest.fn();
     const { getByRole, getByLabelText, getByText } = render(
-      <CreatePostDialog {...props} handleCreatePost={fn} />
+      <CreatePostDialog {...props} onSubmit={fn} />
     );
     const title = getByLabelText(/title/i);
     const category = getByLabelText(/category/i);
@@ -124,10 +124,10 @@ describe('<CreatePostDialog />', () => {
     getByText(/category is required/i);
   });
 
-  it('should call handleCreatePost with given data', async () => {
+  it('should call onSubmit with given data', async () => {
     const fn = jest.fn();
     const { getByRole, getByLabelText, getByText } = render(
-      <CreatePostDialog {...props} handleCreatePost={fn} />
+      <CreatePostDialog {...props} onSubmit={fn} />
     );
     const title = getByLabelText(/title/i);
     const category = getByLabelText(/category/i);

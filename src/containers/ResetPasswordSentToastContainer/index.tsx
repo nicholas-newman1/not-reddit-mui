@@ -14,7 +14,7 @@ const ResetPasswordSentToastContainer = () => {
       message='An email has been sent with further instructions'
       severity='success'
       open={open}
-      handleClose={() => dispatch(hideResetPasswordSentToast())}
+      onClose={() => dispatch(hideResetPasswordSentToast())}
     />
   );
 };

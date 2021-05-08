@@ -4,7 +4,7 @@ import SignInDialog from '.';
 
 describe('<SignInDialog />', () => {
   const props = {
-    handleSignIn: () => {},
+    onSubmit: () => {},
     switchToResetPasswordDialog: () => {},
     switchToSignUpDialog: () => {},
     open: true,
@@ -78,10 +78,10 @@ describe('<SignInDialog />', () => {
   });
 
   describe('Actions', () => {
-    it('should call handleSignIn on submit', async () => {
+    it('should call onSubmit on submit', async () => {
       const fn = jest.fn();
       const { getByRole, getByLabelText } = render(
-        <SignInDialog {...props} handleSignIn={fn} />
+        <SignInDialog {...props} onSubmit={fn} />
       );
 
       await act(async () => {
@@ -97,10 +97,10 @@ describe('<SignInDialog />', () => {
       expect(fn).toHaveBeenCalled();
     });
 
-    it('should call handleSignIn with given email and password', async () => {
+    it('should call onSubmit with given email and password', async () => {
       const fn = jest.fn();
       const { getByRole, getByLabelText } = render(
-        <SignInDialog {...props} handleSignIn={fn} />
+        <SignInDialog {...props} onSubmit={fn} />
       );
 
       await act(async () => {
@@ -160,10 +160,10 @@ describe('<SignInDialog />', () => {
   });
 
   describe('Validation', () => {
-    it('should not call handleSignIn on submit if email is empty', async () => {
+    it('should not call onSubmit on submit if email is empty', async () => {
       const fn = jest.fn();
       const { getByRole, getByLabelText } = render(
-        <SignInDialog {...props} handleSignIn={fn} />
+        <SignInDialog {...props} onSubmit={fn} />
       );
 
       await act(async () => {
@@ -179,7 +179,7 @@ describe('<SignInDialog />', () => {
     it('should give an error on submit if email is empty', async () => {
       const fn = jest.fn();
       const { getByRole, getByText } = render(
-        <SignInDialog {...props} handleSignIn={fn} />
+        <SignInDialog {...props} onSubmit={fn} />
       );
 
       await act(async () => {
@@ -189,10 +189,10 @@ describe('<SignInDialog />', () => {
       getByText(/email is required/i);
     });
 
-    it('should not call handleSignIn on submit if password is empty', async () => {
+    it('should not call onSubmit on submit if password is empty', async () => {
       const fn = jest.fn();
       const { getByRole, getByLabelText } = render(
-        <SignInDialog {...props} handleSignIn={fn} />
+        <SignInDialog {...props} onSubmit={fn} />
       );
 
       await act(async () => {
@@ -208,7 +208,7 @@ describe('<SignInDialog />', () => {
     it('should give an error on submit if password is empty', async () => {
       const fn = jest.fn();
       const { getByRole, getByText, getByLabelText } = render(
-        <SignInDialog {...props} handleSignIn={fn} />
+        <SignInDialog {...props} onSubmit={fn} />
       );
 
       await act(async () => {
@@ -221,10 +221,10 @@ describe('<SignInDialog />', () => {
       getByText(/password is required/i);
     });
 
-    it('should not call handleSignIn on submit if password is less than 6 characters', async () => {
+    it('should not call onSubmit on submit if password is less than 6 characters', async () => {
       const fn = jest.fn();
       const { getByRole, getByLabelText } = render(
-        <SignInDialog {...props} handleSignIn={fn} />
+        <SignInDialog {...props} onSubmit={fn} />
       );
 
       await act(async () => {
@@ -243,7 +243,7 @@ describe('<SignInDialog />', () => {
     it('should give an error on submit if password is less than 6 characters', async () => {
       const fn = jest.fn();
       const { getByRole, getByText, getByLabelText } = render(
-        <SignInDialog {...props} handleSignIn={fn} />
+        <SignInDialog {...props} onSubmit={fn} />
       );
 
       await act(async () => {

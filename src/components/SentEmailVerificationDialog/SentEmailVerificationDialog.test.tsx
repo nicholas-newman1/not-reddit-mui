@@ -3,12 +3,12 @@ import SentEmailVerificationDialog from '.';
 
 describe('<SentEmailVerificationDialog />', () => {
   it('renders without crashing', () => {
-    render(<SentEmailVerificationDialog open={true} handleClose={() => {}} />);
+    render(<SentEmailVerificationDialog open={true} onClose={() => {}} />);
   });
 
   it('should have a heading', () => {
     const { getByRole } = render(
-      <SentEmailVerificationDialog open={true} handleClose={() => {}} />
+      <SentEmailVerificationDialog open={true} onClose={() => {}} />
     );
 
     getByRole('heading');
@@ -16,7 +16,7 @@ describe('<SentEmailVerificationDialog />', () => {
 
   it('should not render when open is false', () => {
     const { queryByRole } = render(
-      <SentEmailVerificationDialog open={false} handleClose={() => {}} />
+      <SentEmailVerificationDialog open={false} onClose={() => {}} />
     );
 
     expect(queryByRole('heading')).not.toBeInTheDocument();
@@ -24,26 +24,26 @@ describe('<SentEmailVerificationDialog />', () => {
 
   it('should have a close button', () => {
     const { getByRole } = render(
-      <SentEmailVerificationDialog open={true} handleClose={() => {}} />
+      <SentEmailVerificationDialog open={true} onClose={() => {}} />
     );
 
     getByRole('button');
   });
 
-  it('should call handleClose on click close button', () => {
+  it('should call onClose on click close button', () => {
     const fn = jest.fn();
     const { getByRole } = render(
-      <SentEmailVerificationDialog open={true} handleClose={fn} />
+      <SentEmailVerificationDialog open={true} onClose={fn} />
     );
 
     fireEvent.click(getByRole('button'));
     expect(fn).toBeCalled();
   });
 
-  it('should call handleClose on backdropClick', () => {
+  it('should call onClose on backdropClick', () => {
     const fn = jest.fn();
     const { getByRole } = render(
-      <SentEmailVerificationDialog open={true} handleClose={fn} />
+      <SentEmailVerificationDialog open={true} onClose={fn} />
     );
 
     const backdrop = getByRole('presentation').firstChild!;

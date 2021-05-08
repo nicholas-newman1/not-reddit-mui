@@ -170,7 +170,7 @@ const Comment: React.FC<CommentProps> = (props) => {
 
               {props.replying && (
                 <CreateCommentForm
-                  handleReply={props.onReply}
+                  onReply={props.onReply}
                   loading={props.loadingReply}
                   isReply={true}
                   onSignIn={props.onSignIn}

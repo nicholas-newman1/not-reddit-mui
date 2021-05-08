@@ -22,7 +22,7 @@ interface FormDetails {
 }
 
 interface Props {
-  handleCreateCategory: (data: FormDetails) => void;
+  onSubmit: (data: FormDetails) => void;
   open: boolean;
   hideDialog: () => void;
   loading: boolean;
@@ -32,7 +32,7 @@ interface Props {
 }
 
 const CreateCategoryDialog: React.FC<Props> = ({
-  handleCreateCategory,
+  onSubmit,
   open,
   hideDialog,
   loading,
@@ -78,9 +78,7 @@ const CreateCategoryDialog: React.FC<Props> = ({
         <form
           aria-label='create category'
           className={classes.form}
-          onSubmit={handleSubmit((data: FormDetails) =>
-            handleCreateCategory(data)
-          )}
+          onSubmit={handleSubmit((data: FormDetails) => onSubmit(data))}
         >
           <Grid container direction='column' spacing={3}>
             <Grid item>

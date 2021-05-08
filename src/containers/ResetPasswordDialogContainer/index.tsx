@@ -9,13 +9,13 @@ const ResetPasswordDialogContainer = () => {
     (state) => state.auth
   );
 
-  const handleResetPassword = (email: string) => {
+  const onSubmit = (email: string) => {
     dispatch(resetPassword({ email }));
   };
 
   return (
     <ResetPasswordDialog
-      handleResetPassword={handleResetPassword}
+      onSubmit={onSubmit}
       open={isResetPasswordDialogOpen}
       hideDialog={() => dispatch(hideResetPasswordDialog())}
       loading={false}

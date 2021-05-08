@@ -20,13 +20,13 @@ const CreateCategoryDialogContainer = () => {
     categoryName: string;
   }
 
-  const handleCreateCategory = (data: createCategoryData) => {
+  const onSubmit = (data: createCategoryData) => {
     dispatch(createCategory(data));
   };
 
   return (
     <CreateCategoryDialog
-      handleCreateCategory={handleCreateCategory}
+      onSubmit={onSubmit}
       open={isCreateCategoryDialogOpen}
       hideDialog={hideDialog}
       loading={loading}

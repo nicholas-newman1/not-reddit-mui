@@ -27,7 +27,7 @@ interface FormDetails {
 }
 
 interface Props {
-  handleCreatePost: (data: FormDetails) => void;
+  onSubmit: (data: FormDetails) => void;
   open: boolean;
   hideDialog: () => void;
   loading: boolean;
@@ -42,7 +42,7 @@ interface Props {
 }
 
 const CreatePostDialog: React.FC<Props> = ({
-  handleCreatePost,
+  onSubmit,
   open,
   hideDialog,
   loading,
@@ -103,7 +103,7 @@ const CreatePostDialog: React.FC<Props> = ({
         <form
           aria-label='create post'
           className={classes.form}
-          onSubmit={handleSubmit((data: FormDetails) => handleCreatePost(data))}
+          onSubmit={handleSubmit((data: FormDetails) => onSubmit(data))}
         >
           <Grid container direction='column' spacing={3}>
             <Grid item>

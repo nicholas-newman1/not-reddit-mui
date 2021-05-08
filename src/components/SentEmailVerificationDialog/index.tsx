@@ -3,26 +3,18 @@ import CustomDialog from '../CustomDialog';
 
 interface Props {
   open: boolean;
-  handleClose: () => void;
+  onClose: () => void;
 }
 
-const SentEmailVerificationDialog: React.FC<Props> = ({
-  open,
-  handleClose,
-}) => {
+const SentEmailVerificationDialog: React.FC<Props> = ({ open, onClose }) => {
   return (
     <CustomDialog
       open={open}
-      onClose={handleClose}
+      onClose={onClose}
       maxWidth='xs'
       heading='Email Verification Sent'
     >
-      <Button
-        variant='contained'
-        color='primary'
-        onClick={handleClose}
-        fullWidth
-      >
+      <Button variant='contained' color='primary' onClick={onClose} fullWidth>
         Close
       </Button>
     </CustomDialog>

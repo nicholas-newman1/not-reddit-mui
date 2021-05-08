@@ -30,13 +30,13 @@ const CreatePostDialogContainer = () => {
     body: string;
   }
 
-  const handleCreatePost = (data: createPostData) => {
+  const onSubmit = (data: createPostData) => {
     dispatch(createPost(data));
   };
 
   return (
     <CreatePostDialog
-      handleCreatePost={handleCreatePost}
+      onSubmit={onSubmit}
       open={isCreatePostDialogOpen}
       hideDialog={hideDialog}
       loading={loading}

@@ -23,7 +23,7 @@ interface FormDetails {
 }
 
 interface Props {
-  handleSignIn: (data: FormDetails) => void;
+  onSubmit: (data: FormDetails) => void;
   switchToSignUpDialog: () => void;
   switchToResetPasswordDialog: () => void;
   open: boolean;
@@ -33,7 +33,7 @@ interface Props {
 }
 
 const SignInDialog: React.FC<Props> = ({
-  handleSignIn,
+  onSubmit,
   switchToSignUpDialog,
   switchToResetPasswordDialog,
   open,
@@ -60,7 +60,7 @@ const SignInDialog: React.FC<Props> = ({
       <form
         aria-label='log in form'
         className={classes.form}
-        onSubmit={handleSubmit((data: FormDetails) => handleSignIn(data))}
+        onSubmit={handleSubmit((data: FormDetails) => onSubmit(data))}
       >
         <Grid container direction='column' spacing={3}>
           <Grid item>

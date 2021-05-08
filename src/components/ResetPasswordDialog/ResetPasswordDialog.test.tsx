@@ -6,7 +6,7 @@ describe('<ResetPasswordDialog />', () => {
   it('renders without crashing', () => {
     render(
       <ResetPasswordDialog
-        handleResetPassword={() => {}}
+        onSubmit={() => {}}
         open={true}
         hideDialog={() => {}}
         loading={false}
@@ -18,7 +18,7 @@ describe('<ResetPasswordDialog />', () => {
   it('has a title', () => {
     const { getByRole } = render(
       <ResetPasswordDialog
-        handleResetPassword={() => {}}
+        onSubmit={() => {}}
         open={true}
         hideDialog={() => {}}
         loading={false}
@@ -32,7 +32,7 @@ describe('<ResetPasswordDialog />', () => {
   it('has an input', () => {
     const { getByRole } = render(
       <ResetPasswordDialog
-        handleResetPassword={() => {}}
+        onSubmit={() => {}}
         open={true}
         hideDialog={() => {}}
         loading={false}
@@ -46,7 +46,7 @@ describe('<ResetPasswordDialog />', () => {
   it('has a button', () => {
     const { getByRole } = render(
       <ResetPasswordDialog
-        handleResetPassword={() => {}}
+        onSubmit={() => {}}
         open={true}
         hideDialog={() => {}}
         loading={false}
@@ -60,7 +60,7 @@ describe('<ResetPasswordDialog />', () => {
   it("should change text input's value", () => {
     const { getByRole } = render(
       <ResetPasswordDialog
-        handleResetPassword={() => {}}
+        onSubmit={() => {}}
         open={true}
         hideDialog={() => {}}
         loading={false}
@@ -74,11 +74,11 @@ describe('<ResetPasswordDialog />', () => {
     expect(input.value).toBe('a');
   });
 
-  it('should call handleResetPassword on submit', async () => {
+  it('should call onSubmit on submit', async () => {
     const fn = jest.fn();
     const { getByRole } = render(
       <ResetPasswordDialog
-        handleResetPassword={fn}
+        onSubmit={fn}
         open={true}
         hideDialog={() => {}}
         loading={false}
@@ -94,11 +94,11 @@ describe('<ResetPasswordDialog />', () => {
     expect(fn).toHaveBeenCalled();
   });
 
-  it('should call handleResetPassword with given email', async () => {
+  it('should call onSubmit with given email', async () => {
     const fn = jest.fn();
     const { getByRole } = render(
       <ResetPasswordDialog
-        handleResetPassword={fn}
+        onSubmit={fn}
         open={true}
         hideDialog={() => {}}
         loading={false}
@@ -114,12 +114,12 @@ describe('<ResetPasswordDialog />', () => {
     expect(fn).toHaveBeenCalledWith('a');
   });
 
-  it('should not call handleResetPassword on submit if email is empty', async () => {
+  it('should not call onSubmit on submit if email is empty', async () => {
     const fn = jest.fn();
 
     const { getByRole } = render(
       <ResetPasswordDialog
-        handleResetPassword={fn}
+        onSubmit={fn}
         open={true}
         hideDialog={() => {}}
         loading={false}
@@ -139,7 +139,7 @@ describe('<ResetPasswordDialog />', () => {
 
     const { getByRole, getByText } = render(
       <ResetPasswordDialog
-        handleResetPassword={fn}
+        onSubmit={fn}
         open={true}
         hideDialog={() => {}}
         loading={false}
@@ -157,7 +157,7 @@ describe('<ResetPasswordDialog />', () => {
   it('should not render dialog when open is false', () => {
     const { queryByRole } = render(
       <ResetPasswordDialog
-        handleResetPassword={() => {}}
+        onSubmit={() => {}}
         open={false}
         hideDialog={() => {}}
         loading={false}
@@ -173,7 +173,7 @@ describe('<ResetPasswordDialog />', () => {
 
     const { getByRole } = render(
       <ResetPasswordDialog
-        handleResetPassword={() => {}}
+        onSubmit={() => {}}
         open={true}
         hideDialog={fn}
         loading={false}
@@ -191,7 +191,7 @@ describe('<ResetPasswordDialog />', () => {
   it('should disable submit button while loading', () => {
     const { getByRole } = render(
       <ResetPasswordDialog
-        handleResetPassword={() => {}}
+        onSubmit={() => {}}
         open={true}
         hideDialog={() => {}}
         loading={true}
@@ -207,7 +207,7 @@ describe('<ResetPasswordDialog />', () => {
   it('should display given error', () => {
     const { getByText } = render(
       <ResetPasswordDialog
-        handleResetPassword={() => {}}
+        onSubmit={() => {}}
         open={true}
         hideDialog={() => {}}
         loading={false}

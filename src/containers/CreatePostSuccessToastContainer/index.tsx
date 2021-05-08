@@ -14,7 +14,7 @@ const CreatePostSuccessToastContainer = () => {
       message='Post successfully created!'
       severity='success'
       open={open}
-      handleClose={() => dispatch(hideCreatePostSuccessToast())}
+      onClose={() => dispatch(hideCreatePostSuccessToast())}
     />
   );
 };

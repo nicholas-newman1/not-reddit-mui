@@ -27,7 +27,7 @@ interface Props {
   switchToSignInDialog: () => void;
   loading: boolean;
   open: boolean;
-  handleSignUp: (data: FormDetails) => void;
+  onSubmit: (data: FormDetails) => void;
   hideDialog: () => void;
   error: string;
 }
@@ -36,7 +36,7 @@ const SignUpDialog: React.FC<Props> = ({
   switchToSignInDialog,
   loading,
   open,
-  handleSignUp,
+  onSubmit,
   hideDialog,
   error,
 }) => {
@@ -68,7 +68,7 @@ const SignUpDialog: React.FC<Props> = ({
         aria-label='sign up form'
         className={classes.form}
         onSubmit={handleSubmit(({ email, password, username }: FormDetails) =>
-          handleSignUp({ email, password, username })
+          onSubmit({ email, password, username })
         )}
       >
         <Grid container direction='column' spacing={3}>
