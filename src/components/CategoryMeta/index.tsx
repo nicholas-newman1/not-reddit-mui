@@ -15,8 +15,8 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(3),
   },
   heading: {
-    textAlign: 'center',
     textTransform: 'capitalize',
+    color: theme.palette.text.primary,
   },
   subHeading: {
     fontWeight: theme.typography.fontWeightBold,
@@ -26,6 +26,7 @@ const useStyles = makeStyles((theme) => ({
 
 interface Props {
   categoryName: string;
+  categoryHref: string;
   owner: {
     username: string;
     uid: string;
@@ -40,6 +41,7 @@ interface Props {
 
 const CategoryMeta: React.FC<Props> = ({
   categoryName,
+  categoryHref,
   owner,
   numOfModerators,
   numOfSubscribers,
@@ -55,8 +57,13 @@ const CategoryMeta: React.FC<Props> = ({
   ) : (
     <Card className={classes.root}>
       <Grid container spacing={3} direction='column'>
-        <Grid item>
-          <Typography className={classes.heading} component='h1' variant='h4'>
+        <Grid item container justify='center'>
+          <Typography
+            className={classes.heading}
+            component={Link}
+            to={categoryHref}
+            variant='h4'
+          >
             {categoryName}
           </Typography>
         </Grid>

@@ -32,6 +32,7 @@ const CategoryMetaContainer: React.FC<Props> = ({ categoryId }) => {
 
   return (
     <CategoryMeta
+      categoryHref={`/categories/${categoryMeta.categoryId}`}
       categoryName={categoryMeta.categoryId}
       owner={categoryMeta.owner}
       numOfModerators={categoryMeta.numOfModerators}
