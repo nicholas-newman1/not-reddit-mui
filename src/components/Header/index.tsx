@@ -9,7 +9,6 @@ import {
   IconButton,
   Menu,
   MenuItem,
-  Typography,
 } from '@material-ui/core';
 import { AccountCircle } from '@material-ui/icons';
 import clsx from 'clsx';
@@ -21,7 +20,6 @@ import {
   signOut,
   displaySignInDialog,
   displaySignUpDialog,
-  sendEmailVerification,
 } from '../../store/authSlice';
 
 const useStyles = makeStyles((theme) => ({
@@ -85,34 +83,6 @@ const Header = () => {
       // color='default'
       className={clsx(classes.root, classes.rootAnimate)}
     >
-      {user && !user.emailVerified && (
-        <Grid container>
-          <Typography
-            align='center'
-            variant='subtitle2'
-            className={classes.info}
-          >
-            Please verify your email address.{' '}
-            <StyledLink
-              component='span'
-              role='button'
-              color='textPrimary'
-              onClick={() => dispatch(sendEmailVerification())}
-            >
-              Resend
-            </StyledLink>{' '}
-            {/* or{' '}
-            <StyledLink
-              component='span'
-              role='button'
-              color='textPrimary'
-              onClick={() => {}}
-            >
-              contact support.
-            </StyledLink> */}
-          </Typography>
-        </Grid>
-      )}
       <Toolbar>
         <Grid container justify='space-between' alignItems='center'>
           <StyledLink

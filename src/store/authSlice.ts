@@ -13,6 +13,11 @@ export const signIn = createAsyncThunk(
     return auth
       .signInWithEmailAndPassword(email, password)
       .then((cred): User | null => {
+        if (!cred.user?.emailVerified) {
+          dispatch(sendEmailVerification());
+          dispatch(signOut());
+          dispatch(displayVerifyEmailDialog());
+        }
         dispatch(hideSignInDialog());
 
         return cred.user
@@ -43,6 +48,7 @@ export const signUp = createAsyncThunk(
     return auth
       .createUserWithEmailAndPassword(email, password)
       .then((cred): User | null => {
+        dispatch(signOut());
         dispatch(hideSignUpDialog());
         dispatch(displaySignUpSuccessToast());
 
@@ -51,7 +57,9 @@ export const signUp = createAsyncThunk(
             displayName: username,
           });
 
-          dispatch(sendEmailVerification());
+          dispatch(sendEmailVerification()).then(() =>
+            dispatch(displaySentEmailVerificationDialog())
+          );
 
           db.collection('users').doc(cred.user.uid).set({
             username,
@@ -118,11 +126,7 @@ export const resetPassword = createAsyncThunk(
 
 export const sendEmailVerification = createAsyncThunk(
   'auth/sendEmailVerification',
-  (x, { dispatch }) => {
-    return auth.currentUser?.sendEmailVerification().then(() => {
-      dispatch(displaySentEmailVerificationDialog());
-    });
-  }
+  () => auth.currentUser?.sendEmailVerification()
 );
 
 interface AuthState {
@@ -135,6 +139,7 @@ interface AuthState {
   isSignUpSuccessToastOpen: boolean;
   isResetPasswordSentToastOpen: boolean;
   isSentEmailVerificationDialogOpen: boolean;
+  isVerifyEmailDialogOpen: boolean;
   loadingSendEmailVerification: boolean;
 }
 
@@ -148,6 +153,7 @@ const initialState: AuthState = {
   isSignUpSuccessToastOpen: false,
   isResetPasswordSentToastOpen: false,
   isSentEmailVerificationDialogOpen: false,
+  isVerifyEmailDialogOpen: false,
   loadingSendEmailVerification: false,
 };
 
@@ -198,6 +204,12 @@ export const authSlice = createSlice({
     },
     hideSentEmailVerificationDialog: (state) => {
       state.isSentEmailVerificationDialogOpen = false;
+    },
+    displayVerifyEmailDialog: (state) => {
+      state.isVerifyEmailDialogOpen = true;
+    },
+    hideVerifyEmailDialog: (state) => {
+      state.isVerifyEmailDialogOpen = false;
     },
   },
   extraReducers: (builder) => {
@@ -304,6 +316,8 @@ export const {
   hideResetPasswordSentToast,
   displaySentEmailVerificationDialog,
   hideSentEmailVerificationDialog,
+  displayVerifyEmailDialog,
+  hideVerifyEmailDialog,
 } = authSlice.actions;
 
 export default authSlice.reducer;

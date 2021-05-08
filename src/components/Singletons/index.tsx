@@ -5,6 +5,7 @@ import CreatePostSuccessToastContainer from '../../containers/CreatePostSuccessT
 import ResetPasswordDialogContainer from '../../containers/ResetPasswordDialogContainer';
 import ResetPasswordSentToastContainer from '../../containers/ResetPasswordSentToastContainer';
 import SentEmailVerificationDialogContainer from '../../containers/SentEmailVerificationDialogContainer';
+import VerifyEmailDialogContainer from '../../containers/VerifyEmailDialogContainer';
 import SignInDialogContainer from '../../containers/SignInDialogContainer';
 import SignUpDialogContainer from '../../containers/SignUpDialogContainer';
 import SignUpSuccessToastContainer from '../../containers/SignUpSuccessToastContainer';
@@ -18,6 +19,7 @@ const Singletons = () => {
       <SignUpSuccessToastContainer />
       <ResetPasswordSentToastContainer />
       <SentEmailVerificationDialogContainer />
+      <VerifyEmailDialogContainer />
       <CreatePostDialogContainer />
       <CreatePostSuccessToastContainer />
       <CreateCategoryDialogContainer />

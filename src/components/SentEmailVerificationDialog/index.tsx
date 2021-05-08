@@ -17,7 +17,12 @@ const SentEmailVerificationDialog: React.FC<Props> = ({
       maxWidth='xs'
       heading='Email Verification Sent'
     >
-      <Button variant='contained' color='primary' onClick={handleClose}>
+      <Button
+        variant='contained'
+        color='primary'
+        onClick={handleClose}
+        fullWidth
+      >
         Close
       </Button>
     </CustomDialog>
