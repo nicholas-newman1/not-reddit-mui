@@ -1,10 +1,9 @@
 import React, { useEffect, useMemo } from 'react';
-import { Button, Container, Grid, Typography } from '@material-ui/core';
+import { Container, Grid, Hidden, Typography } from '@material-ui/core';
 import { RouteComponentProps } from 'react-router';
 import Post from '../../components/Post';
 import CategoryMetaContainer from '../../containers/CategoryMetaContainer';
 import { useAppDispatch } from '../../hooks/useAppDispatch';
-import { displayCreatePostDialog } from '../../store/createPostSlice';
 import { useAppSelector } from '../../hooks/useAppSelector';
 import { getComments, getPost } from '../../store/postPageSlice';
 import useRatingStatus from '../../hooks/useRatingStatus';
@@ -68,22 +67,11 @@ const PostPage: React.FC<Props> = ({ match }) => {
           </Grid>
         </Grid>
 
-        <Grid item xs={12} md={4}>
-          <Grid container direction='column' spacing={2}>
-            <Grid item>
-              <Button
-                variant='contained'
-                onClick={() => dispatch(displayCreatePostDialog(categoryId))}
-                fullWidth
-              >
-                Create Post
-              </Button>
-            </Grid>
-            <Grid item>
-              <CategoryMetaContainer categoryId={categoryId} />
-            </Grid>
+        <Hidden smDown>
+          <Grid item md={4}>
+            <CategoryMetaContainer categoryId={categoryId} />
           </Grid>
-        </Grid>
+        </Hidden>
       </Grid>
     </Container>
   );
