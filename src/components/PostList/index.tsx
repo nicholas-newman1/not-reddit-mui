@@ -24,7 +24,7 @@ interface Props {
     authorProfileHref: string;
     categoryHref: string;
     title: string;
-    authorUsername: string | null;
+    authorUsername: string;
     timestamp: number;
     categoryId: string;
     numOfComments: number;

@@ -16,7 +16,7 @@ export interface DBPost {
   title: string;
   body: string;
   authorId: string;
-  authorUsername: string | null;
+  authorUsername: string;
   categoryId: string;
   edited: boolean;
   rating: number;

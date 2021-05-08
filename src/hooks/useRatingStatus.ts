@@ -14,7 +14,7 @@ interface Post {
   title: string;
   body: string;
   authorId: string;
-  authorUsername: string | null;
+  authorUsername: string;
   categoryId: string;
   postId: string;
   edited: boolean;

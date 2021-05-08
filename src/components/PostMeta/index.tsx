@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import { getTimeAgoString } from '../../utils';
 
 interface Props {
-  authorUsername: string | null;
+  authorUsername: string;
   authorProfileHref: string;
   timestamp: number;
   categoryId: string;
