@@ -104,7 +104,6 @@ const CommentContainer: React.FC<Props> = ({ comment, isReply }) => {
         setLoadingDelete(false);
       })
       .catch((err) => {
-        console.log(err);
         setLoadingDelete(false);
       });
   };

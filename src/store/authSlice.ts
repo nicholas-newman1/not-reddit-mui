@@ -1,6 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { auth, db } from '../firebase/client';
-import { FirebaseError } from '../firebase/types';
 
 interface SignInParams {
   email: string;
@@ -82,12 +81,7 @@ export const signUp = createAsyncThunk(
   }
 );
 
-export const signOut = createAsyncThunk(
-  'auth/signOut',
-  (x, { rejectWithValue }) => {
-    return auth.signOut().catch((err: FirebaseError) => rejectWithValue(err));
-  }
-);
+export const signOut = createAsyncThunk('auth/signOut', () => auth.signOut());
 
 export const verifyAuth = createAsyncThunk('auth/verifyAuth', (x, thunkAPI) => {
   auth.onAuthStateChanged((user) => {

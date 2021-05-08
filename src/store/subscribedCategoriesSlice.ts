@@ -31,7 +31,7 @@ export const getSubscribedCategoryIds = createAsyncThunk(
 
 export const subscribeToCategory = createAsyncThunk(
   'subscribedCategories/subscribeToCategory',
-  async (categoryId: string) => {
+  async (categoryId: string, { rejectWithValue }) => {
     const uid = auth.currentUser?.uid;
     return db
       .doc(`categories/${categoryId}/subscriberIds/${uid}`)
@@ -40,19 +40,19 @@ export const subscribeToCategory = createAsyncThunk(
         uid,
       })
       .then(() => categoryId)
-      .catch(() => categoryId);
+      .catch(() => rejectWithValue(categoryId));
   }
 );
 
 export const unsubscribeFromCategory = createAsyncThunk(
   'subscribedCategories/unsubscribeFromCategory',
-  async (categoryId: string) => {
+  async (categoryId: string, { rejectWithValue }) => {
     const uid = auth.currentUser?.uid;
     return db
       .doc(`categories/${categoryId}/subscriberIds/${uid}`)
       .delete()
       .then(() => categoryId)
-      .catch(() => categoryId);
+      .catch(() => rejectWithValue(categoryId));
   }
 );
 
