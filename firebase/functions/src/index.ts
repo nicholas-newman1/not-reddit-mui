@@ -1,6 +1,6 @@
 import * as firebase from 'firebase-admin';
 import * as functions from 'firebase-functions';
-import { Post, User } from './types';
+import { DBPost, DBUser } from '../../../src/types/db';
 const admin = firebase.initializeApp();
 const db = admin.firestore();
 
@@ -190,9 +190,9 @@ exports.commentCreated = functions.firestore
     }
 
     const uid = snap.data().authorId;
-    const user = (await db.doc(`users/${uid}`).get()).data() as User;
+    const user = (await db.doc(`users/${uid}`).get()).data() as DBUser;
     const postId = snap.ref.path.split('/')[1];
-    const post = (await db.doc(`posts/${postId}`).get()).data() as Post;
+    const post = (await db.doc(`posts/${postId}`).get()).data() as DBPost;
 
     db.doc(snap.ref.path).update({
       authorId: uid,

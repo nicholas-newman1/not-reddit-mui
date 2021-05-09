@@ -1,6 +1,6 @@
 import { List, ListItem, Typography, makeStyles } from '@material-ui/core';
 import CommentContainer from '../../containers/CommentContainer';
-import { Comment as CommentType } from '../../types/client';
+import { Comment } from '../../types/client';
 import CommentListLoading from './Loading';
 
 const useStyles = makeStyles((theme) => ({
@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 interface Props {
-  comments: CommentType[];
+  comments: Comment[];
   loading: boolean;
 }
 

@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { db } from '../firebase/client';
-import { DBCategory, DBUser } from '../firebase/types';
+import { DBCategory, DBUser } from '../types/db';
 
 interface CategoryMeta {
   categoryId: string;

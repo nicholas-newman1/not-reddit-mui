@@ -9,7 +9,7 @@ import Meta from '../Meta';
 import Rating from '../Rating';
 import Spinner from '../Spinner';
 
-export interface CommentProps {
+export interface CommentProps extends CommentType {
   onUpVote: () => void;
   onDownVote: () => void;
   onReport: () => void;
@@ -24,20 +24,8 @@ export interface CommentProps {
   onSendVerification: () => void;
   onSubscribe: (clearErrors: () => void) => void;
   onDelete: () => void;
-  body: string;
-  authorProfileHref: string;
-  authorId: string;
-  path: string;
-  edited: boolean;
-  authorUsername: string;
-  timestamp: number;
-  replies: CommentType[];
-  numOfComments: number;
   isReply?: boolean;
   gotReplies: boolean;
-  isAuthor: boolean;
-  deleted: boolean;
-  rating: number;
   loadingReplies: boolean;
   loadingReply: boolean;
   loadingRating: boolean;

@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { auth, db } from '../firebase/client';
-import { DBComment, DBPost } from '../firebase/types';
+import { DBComment, DBPost } from '../types/db';
 import { Comment, Post } from '../types/client';
 
 interface PostPageState {
