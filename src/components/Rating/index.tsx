@@ -1,6 +1,6 @@
 import { Grid, IconButton, makeStyles, Typography } from '@material-ui/core';
 import { ExpandLess, ExpandMore } from '@material-ui/icons';
-import React from 'react';
+import React, { useState } from 'react';
 
 interface Props {
   rating: number;
@@ -27,12 +27,19 @@ const useStyles = makeStyles({
 
 const Rating: React.FC<Props> = (props) => {
   const classes = useStyles();
+  const [rating, setRating] = useState(props.rating);
 
   return (
     <Grid data-testid='wrapper' className={classes.root}>
       <IconButton
         disabled={props.loading}
-        onClick={() => props.onUpVote()}
+        onClick={() => {
+          let change = 1;
+          if (props.status === 'up') change = -1;
+          if (props.status === 'down') change = 2;
+          setRating((prev) => prev + change);
+          props.onUpVote();
+        }}
         aria-label='up vote'
         data-testid='up-arrow'
         color={props.status === 'up' ? 'secondary' : 'inherit'}
@@ -41,11 +48,17 @@ const Rating: React.FC<Props> = (props) => {
         <ExpandLess className={classes.svgIcon} />
       </IconButton>
 
-      <Typography itemProp='vote count'>{props.rating}</Typography>
+      <Typography itemProp='vote count'>{rating}</Typography>
 
       <IconButton
         disabled={props.loading}
-        onClick={() => props.onDownVote()}
+        onClick={() => {
+          let change = -1;
+          if (props.status === 'up') change = -2;
+          if (props.status === 'down') change = 1;
+          setRating((prev) => prev + change);
+          props.onDownVote();
+        }}
         aria-label='down vote'
         data-testid='down-arrow'
         color={props.status === 'down' ? 'secondary' : 'inherit'}
