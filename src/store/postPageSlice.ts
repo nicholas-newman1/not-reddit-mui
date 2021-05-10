@@ -10,6 +10,9 @@ interface PostPageState {
   comments: Comment[];
   commentsLoading: boolean;
   commentsError: string;
+  isCreateCommentDialogOpen: boolean;
+  createCommentLoading: boolean;
+  createCommentError: string;
 }
 
 const initialState: PostPageState = {
@@ -19,6 +22,9 @@ const initialState: PostPageState = {
   comments: [],
   commentsLoading: true,
   commentsError: '',
+  isCreateCommentDialogOpen: false,
+  createCommentLoading: false,
+  createCommentError: '',
 };
 
 export const getPost = createAsyncThunk(
@@ -58,10 +64,36 @@ export const getComments = createAsyncThunk(
   }
 );
 
+export const createComment = createAsyncThunk(
+  'postPage/createComment',
+  async ({ body, postId }: { body: string; postId: string }) => {
+    const ref = await db
+      .collection(`posts/${postId}/comments`)
+      .add({ body, authorId: auth.currentUser?.uid });
+    const doc = await db.doc(`posts/${postId}/comments/${ref.id}`).get();
+    const data = doc.data() as DBComment;
+    return {
+      ...data,
+      timestamp: data.timestamp.seconds,
+      replies: [] as Comment[],
+      path: doc.ref.path,
+      authorProfileHref: `/profiles/${data.authorId}`,
+      isAuthor: true,
+    };
+  }
+);
+
 export const postPageSlice = createSlice({
   name: 'postPage',
   initialState,
-  reducers: {},
+  reducers: {
+    displayCreateCommentDialog: (state) => {
+      state.isCreateCommentDialogOpen = true;
+    },
+    hideCreateCommentDialog: (state) => {
+      state.isCreateCommentDialogOpen = false;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(getPost.pending, (state) => {
@@ -90,12 +122,30 @@ export const postPageSlice = createSlice({
         state.commentsError = '';
       })
       .addCase(getComments.rejected, (state, action) => {
-        console.log(action.error);
         state.comments = [];
         state.commentsLoading = false;
         state.commentsError = 'An error occured';
+      })
+      .addCase(createComment.pending, (state) => {
+        state.createCommentLoading = true;
+        state.createCommentError = '';
+      })
+      .addCase(createComment.fulfilled, (state, action) => {
+        state.comments.push(action.payload);
+        state.createCommentLoading = false;
+        state.createCommentError = '';
+        state.isCreateCommentDialogOpen = false;
+      })
+      .addCase(createComment.rejected, (state, action) => {
+        state.createCommentLoading = false;
+        state.createCommentError = 'An error occured';
       });
   },
 });
+
+export const {
+  displayCreateCommentDialog,
+  hideCreateCommentDialog,
+} = postPageSlice.actions;
 
 export default postPageSlice.reducer;

@@ -1,13 +1,18 @@
 import React, { useEffect, useMemo } from 'react';
-import { Container, Grid, Hidden, Typography } from '@material-ui/core';
+import { Button, Container, Grid, Hidden, Typography } from '@material-ui/core';
 import { RouteComponentProps } from 'react-router';
 import Post from '../../components/Post';
 import CategoryMetaContainer from '../../containers/CategoryMetaContainer';
 import { useAppDispatch } from '../../hooks/useAppDispatch';
 import { useAppSelector } from '../../hooks/useAppSelector';
-import { getComments, getPost } from '../../store/postPageSlice';
+import {
+  displayCreateCommentDialog,
+  getComments,
+  getPost,
+} from '../../store/postPageSlice';
 import useRatingStatus from '../../hooks/useRatingStatus';
 import CommentList from '../../components/CommentList';
+import CreateCommentDialogContainer from '../../containers/CreateCommentDialogContainer';
 
 interface MatchProps {
   categoryId: string;
@@ -16,8 +21,7 @@ interface MatchProps {
 
 interface Props extends RouteComponentProps<MatchProps> {}
 const PostPage: React.FC<Props> = ({ match }) => {
-  const categoryId = match.params.categoryId;
-  const postId = match.params.postId;
+  const { categoryId, postId } = match.params;
   const dispatch = useAppDispatch();
   const loadingUser = useAppSelector((state) => state.auth.loading);
   const { post, postLoading, comments, commentsLoading } = useAppSelector(
@@ -39,6 +43,7 @@ const PostPage: React.FC<Props> = ({ match }) => {
 
   return (
     <Container>
+      <CreateCommentDialogContainer {...match.params} />
       <Grid container spacing={2} wrap='wrap-reverse'>
         <Grid item xs={12} md={8}>
           <Grid container spacing={2}>
@@ -59,6 +64,15 @@ const PostPage: React.FC<Props> = ({ match }) => {
               <Typography component='h2' variant='h5' id='comments'>
                 Comments
               </Typography>
+            </Grid>
+
+            <Grid item xs={12}>
+              <Button
+                variant='contained'
+                onClick={() => dispatch(displayCreateCommentDialog())}
+              >
+                Create Comment
+              </Button>
             </Grid>
 
             <Grid item xs={12}>

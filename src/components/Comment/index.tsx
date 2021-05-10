@@ -5,7 +5,7 @@ import { ErrorOption } from 'react-hook-form';
 import CommentContainer from '../../containers/CommentContainer';
 import { Comment as CommentType } from '../../types/client';
 import CreateCommentForm from '../CreateCommentForm';
-import Meta from '../Meta';
+import CommentMeta from '../CommentMeta';
 import Rating from '../Rating';
 import Spinner from '../Spinner';
 
@@ -21,7 +21,6 @@ export interface CommentProps extends CommentType {
   replying: boolean;
   setReplying: React.Dispatch<React.SetStateAction<boolean>>;
   onSignIn: () => void;
-  onSendVerification: () => void;
   onSubscribe: (clearErrors: () => void) => void;
   onDelete: () => void;
   isReply?: boolean;
@@ -29,7 +28,6 @@ export interface CommentProps extends CommentType {
   loadingReplies: boolean;
   loadingReply: boolean;
   loadingRating: boolean;
-  loadingSendVerification: boolean;
   loadingSubscribe: boolean;
   loadingDelete: boolean;
   ratingStatus?: 'up' | 'down';
@@ -97,7 +95,7 @@ const Comment: React.FC<CommentProps> = (props) => {
         <Grid item xs={12}>
           {props.deleted ? (
             <div className={classes.deleted}>
-              <Meta timestamp={props.timestamp} />
+              <CommentMeta timestamp={props.timestamp} />
               <Typography component='p' variant='subtitle2'>
                 Deleted comment
               </Typography>
@@ -117,7 +115,7 @@ const Comment: React.FC<CommentProps> = (props) => {
             </div>
           ) : (
             <>
-              <Meta
+              <CommentMeta
                 timestamp={props.timestamp}
                 authorProfileHref={props.authorProfileHref}
                 authorUsername={props.authorUsername}
@@ -162,9 +160,7 @@ const Comment: React.FC<CommentProps> = (props) => {
                   loading={props.loadingReply}
                   isReply={true}
                   onSignIn={props.onSignIn}
-                  onSendVerification={props.onSendVerification}
                   onSubscribe={props.onSubscribe}
-                  loadingSendVerification={props.loadingSendVerification}
                   loadingSubscribe={props.loadingSubscribe}
                 />
               )}

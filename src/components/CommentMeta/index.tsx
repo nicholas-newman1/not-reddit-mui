@@ -7,11 +7,7 @@ import { getTimeAgoString } from '../../utils';
 interface Props {
   authorUsername?: string;
   authorProfileHref?: string;
-  timestamp?: number;
-  category?: {
-    categoryId: string;
-    categoryHref: string;
-  };
+  timestamp: number;
 }
 
 const useStyles = makeStyles((theme) => {
@@ -41,7 +37,7 @@ const useStyles = makeStyles((theme) => {
   };
 });
 
-const Meta: React.FC<Props> = (props) => {
+const CommentMeta: React.FC<Props> = (props) => {
   const classes = useStyles();
   return (
     <Grid container alignItems='center' className={classes.root}>
@@ -63,18 +59,8 @@ const Meta: React.FC<Props> = (props) => {
           {getTimeAgoString(props.timestamp)}
         </Typography>
       )}
-
-      {props.category && (
-        <Button
-          component={Link}
-          className={clsx(classes.category, classes.item)}
-          to={props.category.categoryHref}
-        >
-          {props.category.categoryId}
-        </Button>
-      )}
     </Grid>
   );
 };
 
-export default Meta;
+export default CommentMeta;

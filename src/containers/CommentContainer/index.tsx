@@ -6,10 +6,7 @@ import { DBComment } from '../../types/db';
 import { useAppDispatch } from '../../hooks/useAppDispatch';
 import { useAppSelector } from '../../hooks/useAppSelector';
 import useSubscribedCategoryIds from '../../hooks/useSubscribedCategoryIds';
-import {
-  displaySignInDialog,
-  sendEmailVerification,
-} from '../../store/authSlice';
+import { displaySignInDialog } from '../../store/authSlice';
 import { subscribeToCategory } from '../../store/subscribedCategoriesSlice';
 import { Comment as CommentType } from '../../types/client';
 
@@ -21,9 +18,6 @@ interface Props {
 const CommentContainer: React.FC<Props> = ({ comment, isReply }) => {
   const dispatch = useAppDispatch();
   const user = useAppSelector((state) => state.auth.user);
-  const { loadingSendEmailVerification } = useAppSelector(
-    (state) => state.auth
-  );
   const [replying, setReplying] = useState(false);
   const [replies, setReplies] = useState<CommentType[]>(comment.replies);
   const [gotReplies, setGotReplies] = useState(false);
@@ -66,8 +60,6 @@ const CommentContainer: React.FC<Props> = ({ comment, isReply }) => {
     setError: (name: string, error: ErrorOption) => void
   ) => {
     if (!user) return setError('body', { type: 'auth', shouldFocus: false });
-    if (!user?.emailVerified || false)
-      return setError('body', { type: 'verify', shouldFocus: false });
     if (!subscribed(comment.categoryId))
       return setError('body', { type: 'subscribe', shouldFocus: false });
 
@@ -128,13 +120,11 @@ const CommentContainer: React.FC<Props> = ({ comment, isReply }) => {
       gotReplies={gotReplies}
       isReply={isReply}
       onSignIn={() => dispatch(displaySignInDialog())}
-      onSendVerification={() => dispatch(sendEmailVerification())}
       onSubscribe={(clearErrors: () => void) =>
         dispatch(subscribeToCategory(comment.categoryId)).then(() =>
           clearErrors()
         )
       }
-      loadingSendVerification={loadingSendEmailVerification}
       loadingSubscribe={loading(comment.categoryId)}
     />
   );

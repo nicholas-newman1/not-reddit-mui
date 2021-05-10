@@ -40,9 +40,7 @@ interface Props {
   loading: boolean;
   isReply?: boolean;
   onSignIn: () => void;
-  onSendVerification: () => void;
   onSubscribe: (clearErrors: () => void) => void;
-  loadingSendVerification: boolean;
   loadingSubscribe: boolean;
 }
 
@@ -51,9 +49,7 @@ const CreateCommentForm: React.FC<Props> = ({
   loading,
   isReply,
   onSignIn,
-  onSendVerification,
   onSubscribe,
-  loadingSendVerification,
   loadingSubscribe,
 }) => {
   const classes = useStyles();
@@ -105,23 +101,6 @@ const CreateCommentForm: React.FC<Props> = ({
                     </Link>
                   }
                   first
-                </>
-              ) : errors.body.type === 'verify' ? (
-                <>
-                  You must verify your email and refresh the page first.{' '}
-                  {
-                    <Link
-                      component='button'
-                      variant='subtitle2'
-                      color='inherit'
-                      underline='always'
-                      onClick={onSendVerification}
-                      disabled={loadingSendVerification}
-                      className={classes.link}
-                    >
-                      Resend.
-                    </Link>
-                  }
                 </>
               ) : errors.body.type === 'subscribe' ? (
                 <>
