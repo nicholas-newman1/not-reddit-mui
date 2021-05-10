@@ -1,3 +1,4 @@
+import { useHistory } from 'react-router';
 import CreatePostDialog from '../../components/CreatePostDialog';
 import { useAppDispatch } from '../../hooks/useAppDispatch';
 import { useAppSelector } from '../../hooks/useAppSelector';
@@ -30,8 +31,12 @@ const CreatePostDialogContainer = () => {
     body: string;
   }
 
+  const history = useHistory();
+
   const onSubmit = (data: createPostData) => {
-    dispatch(createPost(data));
+    dispatch(createPost({ ...data, history })).then(() => {
+      dispatch(hideCreatePostDialog());
+    });
   };
 
   return (

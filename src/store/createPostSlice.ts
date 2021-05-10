@@ -1,9 +1,9 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { RouteComponentProps } from 'react-router';
 import { auth, db } from '../services/firebase';
 
 interface CreatePostState {
   isCreatePostDialogOpen: boolean;
-  isCreatePostSuccessToastOpen: boolean;
   loading: boolean;
   error: string;
   subscribedCategoryIds: string[];
@@ -13,7 +13,6 @@ interface CreatePostState {
 
 const initialState: CreatePostState = {
   isCreatePostDialogOpen: false,
-  isCreatePostSuccessToastOpen: false,
   loading: false,
   error: '',
   subscribedCategoryIds: [],
@@ -25,25 +24,23 @@ interface CreatePostData {
   title: string;
   category: string;
   body: string;
+  history: RouteComponentProps['history'];
 }
 
 export const createPost = createAsyncThunk(
   'createPost/createPost',
-  async ({ title, category, body }: CreatePostData, { dispatch }) => {
-    return db
+  async ({ title, category, body, history }: CreatePostData) =>
+    db
       .collection('posts')
-      .doc()
-      .set({
+      .add({
         title,
         categoryId: category.toLowerCase(),
         authorId: auth.currentUser?.uid,
         body,
       })
-      .then(() => {
-        dispatch(hideCreatePostDialog());
-        dispatch(displayCreatePostSuccessToast());
-      });
-  }
+      .then((ref) => {
+        history.push(`/categories/${category}/${ref.id}`);
+      })
 );
 
 export const createPostSlice = createSlice({
@@ -54,7 +51,6 @@ export const createPostSlice = createSlice({
       state,
       action: { type: string; payload: string | undefined }
     ) => {
-      state.isCreatePostSuccessToastOpen = false;
       state.isCreatePostDialogOpen = true;
       state.error = '';
       state.loading = false;
@@ -66,16 +62,6 @@ export const createPostSlice = createSlice({
       state.error = '';
       state.defaultCategoryId = '';
     },
-    displayCreatePostSuccessToast: (state) => {
-      state.isCreatePostDialogOpen = false;
-      state.isCreatePostSuccessToastOpen = true;
-      state.loading = false;
-      state.error = '';
-      state.subscribedCategoryIds = [];
-    },
-    hideCreatePostSuccessToast: (state) => {
-      state.isCreatePostSuccessToastOpen = false;
-    },
   },
   extraReducers: (builder) => {
     builder
@@ -85,7 +71,6 @@ export const createPostSlice = createSlice({
       })
       .addCase(createPost.fulfilled, (state) => {
         state.isCreatePostDialogOpen = false;
-        state.isCreatePostSuccessToastOpen = true;
         state.loading = false;
         state.subscribedCategoryIds = [];
       })
@@ -99,8 +84,6 @@ export const createPostSlice = createSlice({
 export const {
   displayCreatePostDialog,
   hideCreatePostDialog,
-  displayCreatePostSuccessToast,
-  hideCreatePostSuccessToast,
 } = createPostSlice.actions;
 
 export default createPostSlice.reducer;
