@@ -75,7 +75,6 @@ const Home = () => {
   useEffect(() => {
     if (!isFirstRender) {
       dispatch(getPostList(postOrder));
-      dispatch(getCategoryList());
     }
     // eslint-disable-next-line
   }, [postOrder]);
