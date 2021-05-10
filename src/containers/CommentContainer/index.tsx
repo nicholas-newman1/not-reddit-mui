@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { ErrorOption } from 'react-hook-form';
 import Comment from '../../components/Comment';
-import { db } from '../../firebase/client';
+import { db } from '../../services/firebase';
 import { DBComment } from '../../types/db';
 import { useAppDispatch } from '../../hooks/useAppDispatch';
 import { useAppSelector } from '../../hooks/useAppSelector';
