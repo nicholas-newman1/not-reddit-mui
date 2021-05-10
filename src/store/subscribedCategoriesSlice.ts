@@ -33,14 +33,15 @@ export const subscribeToCategory = createAsyncThunk(
   'subscribedCategories/subscribeToCategory',
   async (categoryId: string, { rejectWithValue }) => {
     const uid = auth.currentUser?.uid;
-    return db
-      .doc(`categories/${categoryId}/subscriberIds/${uid}`)
-      .set({
+    try {
+      await db.doc(`categories/${categoryId}/subscriberIds/${uid}`).set({
         categoryId,
         uid,
-      })
-      .then(() => categoryId)
-      .catch(() => rejectWithValue(categoryId));
+      });
+      return categoryId;
+    } catch (err) {
+      return rejectWithValue(categoryId);
+    }
   }
 );
 
@@ -48,11 +49,12 @@ export const unsubscribeFromCategory = createAsyncThunk(
   'subscribedCategories/unsubscribeFromCategory',
   async (categoryId: string, { rejectWithValue }) => {
     const uid = auth.currentUser?.uid;
-    return db
-      .doc(`categories/${categoryId}/subscriberIds/${uid}`)
-      .delete()
-      .then(() => categoryId)
-      .catch(() => rejectWithValue(categoryId));
+    try {
+      await db.doc(`categories/${categoryId}/subscriberIds/${uid}`).delete();
+      return categoryId;
+    } catch (err) {
+      return rejectWithValue(categoryId);
+    }
   }
 );
 
@@ -93,6 +95,7 @@ export const subscribedCategoriesSlice = createSlice({
         );
       })
       .addCase(subscribeToCategory.rejected, (state, action) => {
+        console.log(action);
         state.error = 'An error occurred';
         state.loadingIds = state.loadingIds.filter(
           (id) => id !== action.payload

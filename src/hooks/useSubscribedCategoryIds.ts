@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { displaySignInDialog } from '../store/authSlice';
 import {
   clearSubscribedCategoryIds,
   getSubscribedCategoryIds,
@@ -21,6 +22,7 @@ const useSubscribedCategoryIds = () => {
     (state) => state.subscribedCategories.loadingIds
   );
   const onToggleSubscribe = (categoryId: string) => {
+    if (!user) return dispatch(displaySignInDialog());
     subscribedCategoryIds.includes(categoryId)
       ? dispatch(unsubscribeFromCategory(categoryId))
       : dispatch(subscribeToCategory(categoryId));
