@@ -79,7 +79,7 @@ const CreatePostDialog: React.FC<Props> = ({
       maxWidth='md'
     >
       {loadingSubscribedCategoryIds ? (
-        <Grid container justify='center' data-testid='loader'>
+        <Grid container justify='center'>
           <Spinner />
         </Grid>
       ) : !user || (defaultCategoryId && !isSubscribed) ? (
