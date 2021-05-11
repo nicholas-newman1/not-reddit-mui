@@ -37,8 +37,8 @@ const useStyles = makeStyles((theme) => {
 
 interface PostType extends ClientPost {
   loadingRating: boolean;
-  onUpVote: () => void;
-  onDownVote: () => void;
+  onUpVote: (setRating: (a: number) => void) => void;
+  onDownVote: (setRating: (a: number) => void) => void;
   onSave: () => void;
   onShare: () => void;
   onReport: () => void;

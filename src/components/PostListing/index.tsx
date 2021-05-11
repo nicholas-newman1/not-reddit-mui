@@ -12,8 +12,8 @@ import PostMeta from '../PostMeta';
 import Rating from '../Rating';
 
 interface Props {
-  onUpVote: () => void;
-  onDownVote: () => void;
+  onUpVote: (setRating: (a: number) => void) => void;
+  onDownVote: (setRating: (a: number) => void) => void;
   onSave: () => void;
   onShare: () => void;
   onReport: () => void;

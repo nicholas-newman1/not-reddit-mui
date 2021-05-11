@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { displaySignInDialog } from '../store/authSlice';
 import {
   getVotePostIds,
@@ -6,6 +6,7 @@ import {
   upVote,
   downVote,
   removeDownVote,
+  setIsFirstFetch,
 } from '../store/ratingStatusSlice';
 import { useAppDispatch } from './useAppDispatch';
 import { useAppSelector } from './useAppSelector';
@@ -29,8 +30,8 @@ interface Post {
 interface PostWithRating extends Post {
   loadingRating: boolean;
   ratingStatus?: 'up' | 'down';
-  onUpVote: () => void;
-  onDownVote: () => void;
+  onUpVote: (setRating: (a: number) => void) => void;
+  onDownVote: (setRating: (a: number) => void) => void;
 }
 
 const useRatingStatus = (posts: Post[]) => {
@@ -43,15 +44,38 @@ const useRatingStatus = (posts: Post[]) => {
     loadingUpVotePostIds,
     loadingDownVotePostIds,
     loading,
+    isFirstFetch,
   } = useAppSelector((state) => state.ratingStatus);
 
+  // used to store the users up/down vote ids upon first load
+  // used to calculate baseRating (the rating of the post stripped of the user's vote)
+  // baseRating is used to update rating upon voting without having to fetch again
+  const baseUpVotePostIds = useRef<string[]>([]);
+  const baseDownVotePostIds = useRef<string[]>([]);
+
   useEffect(() => {
-    setPostsWithRating(
-      posts.map((post) => {
+    dispatch(setIsFirstFetch(true));
+    if (isFirstFetch) baseUpVotePostIds.current = [...upVotePostIds];
+    if (isFirstFetch) baseDownVotePostIds.current = [...downVotePostIds];
+    !loading && dispatch(setIsFirstFetch(false));
+    //eslint-disable-next-line
+  }, [loading]);
+
+  useEffect(() => {
+    setPostsWithRating((prev) => {
+      return posts.map((post, i) => {
         const { postId, title } = post;
         const loadingRating =
           loading ||
           [...loadingUpVotePostIds, ...loadingDownVotePostIds].includes(postId);
+
+        const baseRating =
+          post.rating +
+          (baseUpVotePostIds.current.includes(postId)
+            ? -1
+            : baseDownVotePostIds.current.includes(postId)
+            ? 1
+            : 0);
 
         if (!user) {
           return {
@@ -67,10 +91,14 @@ const useRatingStatus = (posts: Post[]) => {
             ...post,
             ratingStatus: 'up',
             loadingRating,
-            onUpVote: () => dispatch(removeUpVote(postId)),
-            onDownVote: () => {
+            onUpVote: (setRating) => {
+              dispatch(removeUpVote(postId));
+              setRating(baseRating + 0);
+            },
+            onDownVote: (setRating) => {
               dispatch(removeUpVote(postId));
               dispatch(downVote({ postId, title }));
+              setRating(baseRating + -1);
             },
           };
         }
@@ -80,11 +108,15 @@ const useRatingStatus = (posts: Post[]) => {
             ...post,
             ratingStatus: 'down',
             loadingRating,
-            onUpVote: () => {
+            onUpVote: (setRating) => {
               dispatch(removeDownVote(postId));
               dispatch(upVote({ postId, title }));
+              setRating(baseRating + 1);
             },
-            onDownVote: () => dispatch(removeDownVote(postId)),
+            onDownVote: (setRating) => {
+              dispatch(removeDownVote(postId));
+              setRating(baseRating + 0);
+            },
           };
         }
 
@@ -92,11 +124,17 @@ const useRatingStatus = (posts: Post[]) => {
           ...post,
           ratingStatus: undefined,
           loadingRating,
-          onUpVote: () => dispatch(upVote({ postId, title })),
-          onDownVote: () => dispatch(downVote({ postId, title })),
+          onUpVote: (setRating) => {
+            dispatch(upVote({ postId, title }));
+            setRating(baseRating + 1);
+          },
+          onDownVote: (setRating) => {
+            dispatch(downVote({ postId, title }));
+            setRating(baseRating + -1);
+          },
         };
-      })
-    );
+      });
+    });
 
     //eslint-disable-next-line
   }, [

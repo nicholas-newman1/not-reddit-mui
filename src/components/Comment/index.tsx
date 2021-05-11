@@ -10,8 +10,8 @@ import Rating from '../Rating';
 import Spinner from '../Spinner';
 
 export interface CommentProps extends CommentType {
-  onUpVote: () => void;
-  onDownVote: () => void;
+  onUpVote: (setRating: (a: number) => void) => void;
+  onDownVote: (setRating: (a: number) => void) => void;
   onReport: () => void;
   onReplies: () => void;
   onReply: (

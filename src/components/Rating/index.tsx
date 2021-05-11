@@ -4,8 +4,8 @@ import React, { useState } from 'react';
 
 interface Props {
   rating: number;
-  onUpVote: () => void;
-  onDownVote: () => void;
+  onUpVote: (setRating: (a: number) => void) => void;
+  onDownVote: (setRating: (a: number) => void) => void;
   loading: boolean;
   status?: 'up' | 'down';
   className?: string;
@@ -33,13 +33,7 @@ const Rating: React.FC<Props> = (props) => {
     <Grid data-testid='wrapper' className={classes.root}>
       <IconButton
         disabled={props.loading}
-        onClick={() => {
-          let change = 1;
-          if (props.status === 'up') change = -1;
-          if (props.status === 'down') change = 2;
-          setRating((prev) => prev + change);
-          props.onUpVote();
-        }}
+        onClick={() => props.onUpVote(setRating)}
         aria-label='up vote'
         data-testid='up-arrow'
         color={props.status === 'up' ? 'secondary' : 'inherit'}
@@ -52,13 +46,7 @@ const Rating: React.FC<Props> = (props) => {
 
       <IconButton
         disabled={props.loading}
-        onClick={() => {
-          let change = -1;
-          if (props.status === 'up') change = -2;
-          if (props.status === 'down') change = 1;
-          setRating((prev) => prev + change);
-          props.onDownVote();
-        }}
+        onClick={() => props.onDownVote(setRating)}
         aria-label='down vote'
         data-testid='down-arrow'
         color={props.status === 'down' ? 'secondary' : 'inherit'}

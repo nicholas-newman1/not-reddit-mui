@@ -107,9 +107,9 @@ const CommentContainer: React.FC<Props> = ({ comment, isReply }) => {
       replying={replying}
       setReplying={setReplying}
       replies={replies}
-      onUpVote={() => {}}
+      onUpVote={(setRating: (a: number) => void) => {}}
+      onDownVote={(setRating: (a: number) => void) => {}}
       onReplies={() => (gotReplies ? hideReplies() : getReplies())}
-      onDownVote={() => {}}
       onReport={() => {}}
       onReply={onReply}
       onDelete={onDelete}

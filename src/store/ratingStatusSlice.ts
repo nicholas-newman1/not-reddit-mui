@@ -8,6 +8,7 @@ interface RatingStatusState {
   loadingDownVotePostIds: string[];
   loading: boolean;
   error: string;
+  isFirstFetch: boolean;
 }
 
 const initialState: RatingStatusState = {
@@ -15,8 +16,9 @@ const initialState: RatingStatusState = {
   downVotePostIds: [],
   loadingUpVotePostIds: [],
   loadingDownVotePostIds: [],
-  loading: false,
+  loading: true,
   error: '',
+  isFirstFetch: false,
 };
 
 export const getVotePostIds = createAsyncThunk(
@@ -103,6 +105,9 @@ export const ratingStatusSlice = createSlice({
       state.downVotePostIds = [];
       state.loading = false;
       state.error = '';
+    },
+    setIsFirstFetch: (state, action: { payload: boolean }) => {
+      state.isFirstFetch = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -193,6 +198,6 @@ export const ratingStatusSlice = createSlice({
   },
 });
 
-export const { clearVotePostIds } = ratingStatusSlice.actions;
+export const { clearVotePostIds, setIsFirstFetch } = ratingStatusSlice.actions;
 
 export default ratingStatusSlice.reducer;

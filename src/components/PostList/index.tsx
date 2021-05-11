@@ -14,8 +14,8 @@ const useStyles = makeStyles((theme) => ({
 
 interface Props {
   posts: {
-    onUpVote: () => void;
-    onDownVote: () => void;
+    onUpVote: (setRating: (a: number) => void) => void;
+    onDownVote: (setRating: (a: number) => void) => void;
     onSave: () => void;
     onShare: () => void;
     onReport: () => void;
