@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { auth, db } from '../services/firebase';
-import { DBComment, DBPost } from '../types/db';
+import { DBComment, DBPost, DocumentSnapshot } from '../types/db';
 import { Comment, Post } from '../types/client';
 
 interface PostPageState {
@@ -10,6 +10,9 @@ interface PostPageState {
   comments: Comment[];
   commentsLoading: boolean;
   commentsError: string;
+  moreCommentsLoading: boolean;
+  moreCommentsError: string;
+  moreCommentsExhausted: boolean;
   isCreateCommentDialogOpen: boolean;
   createCommentLoading: boolean;
   createCommentError: string;
@@ -22,10 +25,16 @@ const initialState: PostPageState = {
   comments: [],
   commentsLoading: true,
   commentsError: '',
+  moreCommentsLoading: false,
+  moreCommentsError: '',
+  moreCommentsExhausted: false,
   isCreateCommentDialogOpen: false,
   createCommentLoading: false,
   createCommentError: '',
 };
+
+const commentsPageLength = 10;
+let lastComment: DocumentSnapshot | null = null;
 
 export const getPost = createAsyncThunk(
   'postPage/getPost',
@@ -49,7 +58,35 @@ export const getComments = createAsyncThunk(
     const snap = await db
       .collection(`/posts/${postId}/comments`)
       .orderBy('timestamp', 'desc')
+      .limit(commentsPageLength)
       .get();
+
+    lastComment = snap.docs[snap.docs.length - 1];
+    return snap.docs.map((doc) => {
+      const data = doc.data() as DBComment;
+      return {
+        ...data,
+        timestamp: data.timestamp.seconds,
+        replies: [] as Comment[],
+        path: doc.ref.path,
+        authorProfileHref: `/profiles/${data.authorId}`,
+        isAuthor: auth.currentUser?.uid === data.authorId,
+      };
+    });
+  }
+);
+
+export const getMoreComments = createAsyncThunk(
+  'postPage/getMoreComments',
+  async (postId: string) => {
+    const snap = await db
+      .collection(`/posts/${postId}/comments`)
+      .orderBy('timestamp', 'desc')
+      .limit(commentsPageLength)
+      .startAfter(lastComment)
+      .get();
+
+    lastComment = snap.docs[snap.docs.length - 1];
     return snap.docs.map((doc) => {
       const data = doc.data() as DBComment;
       return {
@@ -125,6 +162,20 @@ export const postPageSlice = createSlice({
         state.comments = [];
         state.commentsLoading = false;
         state.commentsError = 'An error occured';
+      })
+      .addCase(getMoreComments.pending, (state) => {
+        state.moreCommentsLoading = true;
+        state.moreCommentsError = '';
+      })
+      .addCase(getMoreComments.fulfilled, (state, action) => {
+        state.comments = [...state.comments, ...action.payload];
+        state.moreCommentsLoading = false;
+        if (action.payload.length < commentsPageLength)
+          state.moreCommentsExhausted = true;
+      })
+      .addCase(getMoreComments.rejected, (state) => {
+        state.moreCommentsLoading = false;
+        state.moreCommentsError = 'An error occurred';
       })
       .addCase(createComment.pending, (state) => {
         state.createCommentLoading = true;
