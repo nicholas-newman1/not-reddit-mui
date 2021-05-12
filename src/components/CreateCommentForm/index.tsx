@@ -6,7 +6,8 @@ import {
   TextField,
   Link,
 } from '@material-ui/core';
-import { ErrorOption, useForm } from 'react-hook-form';
+import { useEffect } from 'react';
+import { useForm } from 'react-hook-form';
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -33,15 +34,18 @@ interface FormDetails {
 }
 
 interface Props {
-  onReply: (
-    body: string,
-    setError: (name: string, error: ErrorOption) => void
-  ) => void;
+  onReply: (body: string) => void;
   loading: boolean;
   isReply?: boolean;
   onSignIn: () => void;
   onSubscribe: (clearErrors: () => void) => void;
   loadingSubscribe: boolean;
+  error:
+    | {
+        type?: string;
+        message?: string;
+      }
+    | undefined;
 }
 
 const CreateCommentForm: React.FC<Props> = ({
@@ -51,17 +55,25 @@ const CreateCommentForm: React.FC<Props> = ({
   onSignIn,
   onSubscribe,
   loadingSubscribe,
+  error,
 }) => {
   const classes = useStyles();
   const { register, handleSubmit, errors, setError, clearErrors } = useForm();
+
+  useEffect(() => {
+    error &&
+      setError('body', {
+        type: error.type,
+        message: error.message,
+        shouldFocus: false,
+      });
+  }, [error, setError]);
 
   return (
     <form
       aria-label='create comment'
       className={classes.form}
-      onSubmit={handleSubmit((data: FormDetails) =>
-        onReply(data.body, setError)
-      )}
+      onSubmit={handleSubmit((data: FormDetails) => onReply(data.body))}
     >
       <Grid container direction='column' spacing={3}>
         <Grid item>

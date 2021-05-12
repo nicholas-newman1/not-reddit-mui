@@ -143,9 +143,7 @@ export const postPageSlice = createSlice({
   },
 });
 
-export const {
-  displayCreateCommentDialog,
-  hideCreateCommentDialog,
-} = postPageSlice.actions;
+export const { displayCreateCommentDialog, hideCreateCommentDialog } =
+  postPageSlice.actions;
 
 export default postPageSlice.reducer;

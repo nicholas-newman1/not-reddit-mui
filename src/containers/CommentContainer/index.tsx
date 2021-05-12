@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { ErrorOption } from 'react-hook-form';
 import Comment from '../../components/Comment';
 import { db } from '../../services/firebase';
 import { DBComment } from '../../types/db';
@@ -25,6 +24,8 @@ const CommentContainer: React.FC<Props> = ({ comment, isReply }) => {
   const [loadingReply, setLoadingReply] = useState(false);
   const [numOfComments, setNumOfComments] = useState(comment.numOfComments);
   const [loadingDelete, setLoadingDelete] = useState(false);
+  const [error, setError] =
+    useState<undefined | { type?: string; message?: string }>();
 
   const { subscribed, loading } = useSubscribedCategoryIds();
 
@@ -55,13 +56,9 @@ const CommentContainer: React.FC<Props> = ({ comment, isReply }) => {
     setGotReplies(false);
   };
 
-  const onReply = async (
-    body: string,
-    setError: (name: string, error: ErrorOption) => void
-  ) => {
-    if (!user) return setError('body', { type: 'auth', shouldFocus: false });
-    if (!subscribed(comment.categoryId))
-      return setError('body', { type: 'subscribe', shouldFocus: false });
+  const onReply = async (body: string) => {
+    if (!user) return setError({ type: 'auth' });
+    if (!subscribed(comment.categoryId)) return setError({ type: 'subscribe' });
 
     setLoadingReply(true);
     try {
@@ -126,6 +123,7 @@ const CommentContainer: React.FC<Props> = ({ comment, isReply }) => {
         )
       }
       loadingSubscribe={loading(comment.categoryId)}
+      error={error}
     />
   );
 };

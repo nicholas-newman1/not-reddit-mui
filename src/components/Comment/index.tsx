@@ -1,7 +1,6 @@
 import { makeStyles, Grid, Typography, Button, Paper } from '@material-ui/core';
 import clsx from 'clsx';
 import React from 'react';
-import { ErrorOption } from 'react-hook-form';
 import CommentContainer from '../../containers/CommentContainer';
 import { Comment as CommentType } from '../../types/client';
 import CreateCommentForm from '../CreateCommentForm';
@@ -14,10 +13,7 @@ export interface CommentProps extends CommentType {
   onDownVote: (setRating: (a: number) => void) => void;
   onReport: () => void;
   onReplies: () => void;
-  onReply: (
-    body: string,
-    setError: (name: string, error: ErrorOption) => void
-  ) => void;
+  onReply: (body: string) => void;
   replying: boolean;
   setReplying: React.Dispatch<React.SetStateAction<boolean>>;
   onSignIn: () => void;
@@ -31,6 +27,7 @@ export interface CommentProps extends CommentType {
   loadingSubscribe: boolean;
   loadingDelete: boolean;
   ratingStatus?: 'up' | 'down';
+  error?: { type?: string; message?: string };
 }
 
 const useStyles = makeStyles((theme) => {
@@ -162,6 +159,7 @@ const Comment: React.FC<CommentProps> = (props) => {
                   onSignIn={props.onSignIn}
                   onSubscribe={props.onSubscribe}
                   loadingSubscribe={props.loadingSubscribe}
+                  error={props.error}
                 />
               )}
             </>

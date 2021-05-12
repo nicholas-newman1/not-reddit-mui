@@ -1,5 +1,4 @@
-import React from 'react';
-import { ErrorOption } from 'react-hook-form';
+import React, { useEffect, useState } from 'react';
 import CreateCommentForm from '../../components/CreateCommentForm';
 import CustomDialog from '../../components/CustomDialog';
 import { useAppDispatch } from '../../hooks/useAppDispatch';
@@ -24,20 +23,24 @@ const CreateCommentDialogContainer: React.FC<Props> = ({
   const dispatch = useAppDispatch();
   const { subscribed, loading } = useSubscribedCategoryIds();
   const user = useAppSelector((state) => state.auth.user);
-  const { createCommentLoading, isCreateCommentDialogOpen } = useAppSelector(
-    (state) => state.postPage
-  );
+  const {
+    createCommentLoading,
+    isCreateCommentDialogOpen,
+    createCommentError,
+  } = useAppSelector((state) => state.postPage);
+  const [error, setError] =
+    useState<undefined | { type?: string; message?: string }>();
 
-  const onReply = async (
-    body: string,
-    setError: (name: string, error: ErrorOption) => void
-  ) => {
-    if (!user) return setError('body', { type: 'auth', shouldFocus: false });
-    if (!subscribed(categoryId))
-      return setError('body', { type: 'subscribe', shouldFocus: false });
-
+  const onReply = async (body: string) => {
+    if (!user) return setError({ type: 'auth' });
+    if (!subscribed(categoryId)) return setError({ type: 'subscribe' });
     dispatch(createComment({ body, postId }));
   };
+
+  useEffect(() => {
+    createCommentError && setError({ message: createCommentError });
+  }, [createCommentError]);
+
   return (
     <CustomDialog
       heading='Create Comment'
@@ -52,6 +55,7 @@ const CreateCommentDialogContainer: React.FC<Props> = ({
         }
         loading={createCommentLoading}
         loadingSubscribe={loading(categoryId)}
+        error={error}
       />
     </CustomDialog>
   );
