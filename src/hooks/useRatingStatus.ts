@@ -62,8 +62,8 @@ const useRatingStatus = (posts: Post[]) => {
   }, [loading]);
 
   useEffect(() => {
-    setPostsWithRating((prev) => {
-      return posts.map((post, i) => {
+    setPostsWithRating(
+      posts.map((post, i) => {
         const { postId, title } = post;
         const loadingRating =
           loading ||
@@ -133,11 +133,12 @@ const useRatingStatus = (posts: Post[]) => {
             setRating(baseRating + -1);
           },
         };
-      });
-    });
+      })
+    );
 
     //eslint-disable-next-line
   }, [
+    posts,
     upVotePostIds,
     downVotePostIds,
     loading,
@@ -154,7 +155,17 @@ const useRatingStatus = (posts: Post[]) => {
     //eslint-disable-next-line
   }, [user, posts]);
 
-  return { postsWithRating };
+  return {
+    postsWithRating: postsWithRating.length
+      ? postsWithRating
+      : posts.map((post) => ({
+          ...post,
+          ratingStatus: undefined,
+          loadingRating: true,
+          onUpVote: () => {},
+          onDownVote: () => {},
+        })),
+  };
 };
 
 export default useRatingStatus;
