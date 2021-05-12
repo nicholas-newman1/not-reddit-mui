@@ -131,7 +131,7 @@ export const postPageSlice = createSlice({
         state.createCommentError = '';
       })
       .addCase(createComment.fulfilled, (state, action) => {
-        state.comments.push(action.payload);
+        state.comments.unshift(action.payload);
         state.createCommentLoading = false;
         state.createCommentError = '';
         state.isCreateCommentDialogOpen = false;
