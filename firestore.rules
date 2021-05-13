@@ -230,13 +230,13 @@ service cloud.firestore {
           )
           && !isBannedFromCategory(request.auth.uid, getCategory(postId));
 
-        // allow delete: if isVerified()
-        //   && (
-        //     request.auth.uid == existingData().authorId
-        //     || isModeratorOfCategory(request.auth.uid, getCategory(postId))
-        //     || isOwnerOfCategory(request.auth.uid, getCategory(postId))
-        //   )
-        //   && !isBannedFromCategory(request.auth.uid, getCategory(postId));
+        allow delete: if isVerified()
+          && (
+            request.auth.uid == existingData().authorId
+            || isModeratorOfCategory(request.auth.uid, getCategory(postId))
+            || isOwnerOfCategory(request.auth.uid, getCategory(postId))
+          )
+          && !isBannedFromCategory(request.auth.uid, getCategory(postId));
       }
     }
 

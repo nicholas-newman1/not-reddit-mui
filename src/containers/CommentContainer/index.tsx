@@ -24,6 +24,7 @@ const CommentContainer: React.FC<Props> = ({ comment, isReply }) => {
   const [loadingReply, setLoadingReply] = useState(false);
   const [numOfComments, setNumOfComments] = useState(comment.numOfComments);
   const [loadingDelete, setLoadingDelete] = useState(false);
+  const [deleted, setDeleted] = useState(comment.deleted);
   const [error, setError] =
     useState<undefined | { type?: string; message?: string }>();
 
@@ -87,14 +88,27 @@ const CommentContainer: React.FC<Props> = ({ comment, isReply }) => {
 
   const onDelete = () => {
     setLoadingDelete(true);
-    db.doc(comment.path)
-      .update({ deleted: true })
-      .then(() => {
-        setLoadingDelete(false);
-      })
-      .catch((err) => {
-        setLoadingDelete(false);
-      });
+    comment.numOfComments
+      ? db
+          .doc(comment.path)
+          .update({ deleted: true })
+          .then(() => {
+            setLoadingDelete(false);
+            setDeleted(true);
+          })
+          .catch((err) => {
+            setLoadingDelete(false);
+          })
+      : db
+          .doc(comment.path)
+          .delete()
+          .then(() => {
+            setLoadingDelete(false);
+            setDeleted(true);
+          })
+          .catch((err) => {
+            setLoadingDelete(false);
+          });
   };
 
   return (
@@ -104,8 +118,8 @@ const CommentContainer: React.FC<Props> = ({ comment, isReply }) => {
       replying={replying}
       setReplying={setReplying}
       replies={replies}
-      onUpVote={(setRating: (a: number) => void) => {}}
-      onDownVote={(setRating: (a: number) => void) => {}}
+      onUpVote={() => {}}
+      onDownVote={() => {}}
       onReplies={() => (gotReplies ? hideReplies() : getReplies())}
       onReport={() => {}}
       onReply={onReply}
@@ -124,6 +138,7 @@ const CommentContainer: React.FC<Props> = ({ comment, isReply }) => {
       }
       loadingSubscribe={loading(comment.categoryId)}
       error={error}
+      deleted={deleted}
     />
   );
 };

@@ -25,8 +25,8 @@ const CommentList: React.FC<Props> = ({ comments, loading }) => {
     <CommentListLoading />
   ) : comments.length ? (
     <List disablePadding>
-      {comments.map((comment, i) => (
-        <ListItem disableGutters className={classes.item} key={i}>
+      {comments.map((comment) => (
+        <ListItem disableGutters className={classes.item} key={comment.path}>
           <CommentContainer comment={comment} />
         </ListItem>
       ))}

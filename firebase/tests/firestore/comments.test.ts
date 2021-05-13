@@ -195,48 +195,48 @@ describe('comments', () => {
   });
 
   describe('delete', () => {
-    // it('should allow author', async () => {
-    //   admin.doc(categoryPath).set({ ownerId: theirId });
-    //   admin.doc(postPath).set(theirPost);
-    //   admin.doc(`${categoryPath}/subscriberIds/${myId}`).set({ exists: true });
-    //   admin.doc(commentPath).set(comment);
-    //   await firebase.assertSucceeds(db.doc(commentPath).delete());
-    // });
-    // it('should allow moderators of category of post', async () => {
-    //   admin.doc(categoryPath).set({ ownerId: theirId });
-    //   admin.doc(postPath).set(theirPost);
-    //   admin.doc(commentPath).set(theirComment);
-    //   admin.doc(`${categoryPath}/moderatorIds/${myId}`).set({ exists: true });
-    //   await firebase.assertSucceeds(db.doc(commentPath).delete());
-    // });
-    // it('should allow owner of category of post', async () => {
-    //   admin.doc(categoryPath).set({ ownerId: myId });
-    //   admin.doc(postPath).set(theirPost);
-    //   admin.doc(`${categoryPath}/subscriberIds/${myId}`).set({ exists: true });
-    //   admin.doc(commentPath).set(theirComment);
-    //   await firebase.assertSucceeds(db.doc(commentPath).delete());
-    // });
-    // it('should not allow users banned category of post', async () => {
-    //   admin.doc(categoryPath).set({ ownerId: theirId });
-    //   admin.doc(postPath).set(theirPost);
-    //   admin.doc(`${categoryPath}/subscriberIds/${myId}`).set({ exists: true });
-    //   admin.doc(commentPath).set(comment);
-    //   admin.doc(`${categoryPath}/bannedIds/${myId}`).set({ exists: true });
-    //   await firebase.assertFails(db.doc(commentPath).delete());
-    // });
-    // it('should not allow !author, or !moderator/owner of category of post', async () => {
-    //   admin.doc(categoryPath).set({ ownerId: theirId });
-    //   admin.doc(postPath).set(theirPost);
-    //   admin.doc(`${categoryPath}/subscriberIds/${myId}`).set({ exists: true });
-    //   admin.doc(commentPath).set(theirComment);
-    //   await firebase.assertFails(db.doc(commentPath).delete());
-    // });
-    // it('should not allow unverified users', async () => {
-    //   admin.doc(categoryPath).set({ ownerId: theirId });
-    //   admin.doc(postPath).set(theirPost);
-    //   admin.doc(`${categoryPath}/subscriberIds/${myId}`).set({ exists: true });
-    //   const db = getFirestore(myUnverifiedAuth);
-    //   await firebase.assertFails(db.doc(commentPath).delete());
-    // });
+    it('should allow author', async () => {
+      admin.doc(categoryPath).set({ ownerId: theirId });
+      admin.doc(postPath).set(theirPost);
+      admin.doc(`${categoryPath}/subscriberIds/${myId}`).set({ exists: true });
+      admin.doc(commentPath).set(myComment);
+      await firebase.assertSucceeds(db.doc(commentPath).delete());
+    });
+    it('should allow moderators of category of post', async () => {
+      admin.doc(categoryPath).set({ ownerId: theirId });
+      admin.doc(postPath).set(theirPost);
+      admin.doc(commentPath).set(theirComment);
+      admin.doc(`${categoryPath}/moderatorIds/${myId}`).set({ exists: true });
+      await firebase.assertSucceeds(db.doc(commentPath).delete());
+    });
+    it('should allow owner of category of post', async () => {
+      admin.doc(categoryPath).set({ ownerId: myId });
+      admin.doc(postPath).set(theirPost);
+      admin.doc(`${categoryPath}/subscriberIds/${myId}`).set({ exists: true });
+      admin.doc(commentPath).set(theirComment);
+      await firebase.assertSucceeds(db.doc(commentPath).delete());
+    });
+    it('should not allow users banned category of post', async () => {
+      admin.doc(categoryPath).set({ ownerId: theirId });
+      admin.doc(postPath).set(theirPost);
+      admin.doc(`${categoryPath}/subscriberIds/${myId}`).set({ exists: true });
+      admin.doc(commentPath).set(myComment);
+      admin.doc(`${categoryPath}/bannedIds/${myId}`).set({ exists: true });
+      await firebase.assertFails(db.doc(commentPath).delete());
+    });
+    it('should not allow !author, or !moderator/owner of category of post', async () => {
+      admin.doc(categoryPath).set({ ownerId: theirId });
+      admin.doc(postPath).set(theirPost);
+      admin.doc(`${categoryPath}/subscriberIds/${myId}`).set({ exists: true });
+      admin.doc(commentPath).set(theirComment);
+      await firebase.assertFails(db.doc(commentPath).delete());
+    });
+    it('should not allow unverified users', async () => {
+      admin.doc(categoryPath).set({ ownerId: theirId });
+      admin.doc(postPath).set(theirPost);
+      admin.doc(`${categoryPath}/subscriberIds/${myId}`).set({ exists: true });
+      const db = getFirestore(myUnverifiedAuth);
+      await firebase.assertFails(db.doc(commentPath).delete());
+    });
   });
 });
