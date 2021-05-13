@@ -1,5 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { RouteComponentProps } from 'react-router';
 import { auth, db } from '../services/firebase';
+import { subscribeToCategory } from './subscribedCategoriesSlice';
 
 interface CreateCategoryState {
   isCreateCategoryDialogOpen: boolean;
@@ -17,12 +19,13 @@ const initialState: CreateCategoryState = {
 
 interface CreateCategoryData {
   categoryName: string;
+  history: RouteComponentProps['history'];
 }
 
 export const createCategory = createAsyncThunk(
   'createCategory/createCategory',
   async (
-    { categoryName }: CreateCategoryData,
+    { categoryName, history }: CreateCategoryData,
     { rejectWithValue, dispatch }
   ) => {
     const uid = auth.currentUser?.uid;
@@ -31,12 +34,9 @@ export const createCategory = createAsyncThunk(
     const snap = await ref.get();
     if (snap.exists) return rejectWithValue('');
     await ref.set({ ownerId: uid });
-    await ref.collection('subscriberIds').doc(uid).set({
-      uid,
-      categoryId,
-    });
+    await dispatch(subscribeToCategory(categoryId));
     dispatch(hideCreateCategoryDialog());
-    dispatch(displayCreateCategorySuccessToast());
+    history.push(`/categories/${categoryId}`);
   }
 );
 
