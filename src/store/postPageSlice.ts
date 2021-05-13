@@ -85,7 +85,6 @@ export const getMoreComments = createAsyncThunk(
       .limit(commentsPageLength)
       .startAfter(lastComment)
       .get();
-
     lastComment = snap.docs[snap.docs.length - 1];
     return snap.docs.map((doc) => {
       const data = doc.data() as DBComment;
@@ -157,6 +156,8 @@ export const postPageSlice = createSlice({
         state.comments = action.payload;
         state.commentsLoading = false;
         state.commentsError = '';
+        if (action.payload.length < commentsPageLength)
+          state.moreCommentsExhausted = true;
       })
       .addCase(getComments.rejected, (state, action) => {
         state.comments = [];
