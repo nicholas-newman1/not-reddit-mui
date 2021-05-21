@@ -8,7 +8,7 @@ import CategoryMetaContainer from '../../containers/CategoryMetaContainer';
 import { useAppDispatch } from '../../hooks/useAppDispatch';
 import { useAppSelector } from '../../hooks/useAppSelector';
 import { useIsFirstRender } from '../../hooks/useIsFirstRender';
-import useRatingStatus from '../../hooks/useRatingStatus';
+import usePostRatingStatus from '../../hooks/usePostRatingStatus';
 import {
   getMorePosts,
   getPostList,
@@ -34,7 +34,7 @@ const Category: React.FC<Props> = ({ match }) => {
     morePostsExhausted,
   } = useAppSelector((state) => state.categoryPage);
 
-  const { postsWithRating } = useRatingStatus(postList);
+  const { postsWithRating } = usePostRatingStatus(postList);
 
   const posts = postsWithRating.map((post) => ({
     ...post,

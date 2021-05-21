@@ -19,7 +19,7 @@ import { displayCreateCategoryDialog } from '../../store/createCategorySlice';
 import { Link } from 'react-router-dom';
 import PostOrder from '../../components/PostOrder';
 import { useIsFirstRender } from '../../hooks/useIsFirstRender';
-import useRatingStatus from '../../hooks/useRatingStatus';
+import usePostRatingStatus from '../../hooks/usePostRatingStatus';
 
 const Home = () => {
   const dispatch = useAppDispatch();
@@ -42,7 +42,7 @@ const Home = () => {
     subscribed,
   } = useSubscribedCategoryIds();
 
-  const { postsWithRating } = useRatingStatus(postList);
+  const { postsWithRating } = usePostRatingStatus(postList);
 
   const posts = postsWithRating.map((post) => ({
     ...post,

@@ -126,10 +126,6 @@ service cloud.firestore {
         return existingData().authorId == request.auth.uid
       }
 
-      function getPostTitle() {
-        return get(/databases/$(database)/documents/posts/$(postId)).data.title
-      }
-
       allow read;
 
       allow create: if isVerified() 
@@ -170,11 +166,10 @@ service cloud.firestore {
         allow read;
 
         allow create: if isVerified()
-          && documentFieldsCheckOut(['uid', 'title', 'postId'], [])
+          && documentFieldsCheckOut(['uid', 'postId'], [])
           && incomingData().uid == upVoteId
           && incomingData().postId == postId
           && request.auth.uid == upVoteId
-          && incomingData().title == getPostTitle()
 
         allow delete: if isVerified()
           && request.auth.uid == upVoteId
@@ -184,11 +179,10 @@ service cloud.firestore {
         allow read;
         
         allow create: if isVerified()
-          && documentFieldsCheckOut(['uid', 'title', 'postId'], [])
+          && documentFieldsCheckOut(['uid', 'postId'], [])
           && incomingData().uid == downVoteId
           && incomingData().postId == postId
           && request.auth.uid == downVoteId
-          && incomingData().title == getPostTitle()
 
         allow delete: if isVerified()
           && request.auth.uid == downVoteId
@@ -238,6 +232,32 @@ service cloud.firestore {
           )
           && !isBannedFromCategory(request.auth.uid, getCategory(postId));
       }
+    }
+
+    match /posts/{postId}/{path=**}/comments/{commentId}/upVoteIds/{upVoteId} {
+      allow read;         
+
+      allow create: if isVerified()
+        && documentFieldsCheckOut(['uid', 'commentId'], [])
+        && incomingData().uid == upVoteId
+        && incomingData().commentId == commentId
+        && request.auth.uid == upVoteId
+
+      allow delete: if isVerified()
+        && request.auth.uid == upVoteId      
+    }
+
+    match /posts/{postId}/{path=**}/comments/{commentId}/downVoteIds/{downVoteId} {
+      allow read;
+
+      allow create: if isVerified()
+        && documentFieldsCheckOut(['uid', 'commentId'], [])
+        && incomingData().uid == downVoteId
+        && incomingData().commentId == commentId
+        && request.auth.uid == downVoteId
+
+      allow delete: if isVerified()
+        && request.auth.uid == downVoteId
     }
 
     // collection group queries

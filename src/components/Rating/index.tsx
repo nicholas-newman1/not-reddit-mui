@@ -1,6 +1,6 @@
 import { Grid, IconButton, makeStyles, Typography } from '@material-ui/core';
 import { ExpandLess, ExpandMore } from '@material-ui/icons';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 interface Props {
   rating: number;
@@ -28,6 +28,10 @@ const useStyles = makeStyles({
 const Rating: React.FC<Props> = (props) => {
   const classes = useStyles();
   const [rating, setRating] = useState(props.rating);
+
+  useEffect(() => {
+    setRating(props.rating);
+  }, [props.rating]);
 
   return (
     <Grid data-testid='wrapper' className={classes.root}>

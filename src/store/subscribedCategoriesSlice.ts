@@ -95,7 +95,6 @@ export const subscribedCategoriesSlice = createSlice({
         );
       })
       .addCase(subscribeToCategory.rejected, (state, action) => {
-        console.log(action);
         state.error = 'An error occurred';
         state.loadingIds = state.loadingIds.filter(
           (id) => id !== action.payload

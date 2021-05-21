@@ -11,7 +11,7 @@ import {
   getMoreComments,
   getPost,
 } from '../../store/postPageSlice';
-import useRatingStatus from '../../hooks/useRatingStatus';
+import usePostRatingStatus from '../../hooks/usePostRatingStatus';
 import CommentList from '../../components/CommentList';
 import CreateCommentDialogContainer from '../../containers/CreateCommentDialogContainer';
 import CommentListLoading from '../../components/CommentList/Loading';
@@ -34,8 +34,8 @@ const PostPage: React.FC<Props> = ({ match }) => {
     moreCommentsLoading,
     moreCommentsExhausted,
   } = useAppSelector((state) => state.postPage);
-  const posts = useMemo(() => (post ? [post] : []), [post]); // useRatingStatus requires a Post[]
-  const { postsWithRating } = useRatingStatus(posts);
+  const posts = useMemo(() => (post ? [post] : []), [post]); // usePostRatingStatus requires a Post[]
+  const { postsWithRating } = usePostRatingStatus(posts);
 
   useEffect(() => {
     if (!loadingUser) {

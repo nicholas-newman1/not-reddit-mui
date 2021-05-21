@@ -29,4 +29,5 @@ export interface Comment {
   categoryId: string;
   isAuthor: boolean;
   deleted: boolean;
+  commentId: string;
 }

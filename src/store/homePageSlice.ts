@@ -191,7 +191,6 @@ export const homePageSlice = createSlice({
         state.postList = [];
         state.postListLoading = false;
         state.postListError = 'An error occurred';
-        console.log(action.error);
       })
       .addCase(getMorePosts.pending, (state) => {
         state.morePostsLoading = true;

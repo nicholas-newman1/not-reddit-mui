@@ -29,30 +29,26 @@ export const getVotePostIds = createAsyncThunk(
       .where('postId', 'in', postIds)
       .where('uid', '==', auth.currentUser?.uid)
       .get();
-    const upVotePostIds = upVoteSnap.docs.map((doc) => doc.data().postId);
+    const upVoteItemIds = upVoteSnap.docs.map((doc) => doc.data().postId);
 
     const downVoteSnap = await db
       .collectionGroup('downVoteIds')
       .where('postId', 'in', postIds)
       .where('uid', '==', auth.currentUser?.uid)
       .get();
-    const downVotePostIds = downVoteSnap.docs.map((doc) => doc.data().postId);
+    const downVoteItemIds = downVoteSnap.docs.map((doc) => doc.data().postId);
 
-    return { upVotePostIds, downVotePostIds };
+    return { upVoteItemIds, downVoteItemIds };
   }
 );
 
 export const upVote = createAsyncThunk(
   'ratingStatus/upVote',
-  async ({ postId, title }: { postId: string; title: string }) => {
+  async (postId: string) => {
     const uid = auth.currentUser?.uid;
     return db
       .doc(`posts/${postId}/upVoteIds/${uid}`)
-      .set({
-        postId,
-        title,
-        uid,
-      })
+      .set({ postId, uid })
       .then(() => postId);
   }
 );
@@ -70,15 +66,11 @@ export const removeUpVote = createAsyncThunk(
 
 export const downVote = createAsyncThunk(
   'ratingStatus/downVote',
-  async ({ postId, title }: { postId: string; title: string }) => {
+  async (postId: string) => {
     const uid = auth.currentUser?.uid;
     return db
       .doc(`posts/${postId}/downVoteIds/${uid}`)
-      .set({
-        postId,
-        title,
-        uid,
-      })
+      .set({ postId, uid })
       .then(() => postId);
   }
 );
@@ -119,8 +111,8 @@ export const ratingStatusSlice = createSlice({
         state.error = '';
       })
       .addCase(getVotePostIds.fulfilled, (state, action) => {
-        state.upVotePostIds = action.payload?.upVotePostIds;
-        state.downVotePostIds = action.payload?.downVotePostIds;
+        state.upVotePostIds = action.payload?.upVoteItemIds;
+        state.downVotePostIds = action.payload?.downVoteItemIds;
         state.loading = false;
       })
       .addCase(getVotePostIds.rejected, (state, action) => {
@@ -128,7 +120,7 @@ export const ratingStatusSlice = createSlice({
         state.error = 'An error occurred';
       })
       .addCase(upVote.pending, (state, action) => {
-        state.loadingUpVotePostIds.push(action.meta.arg.postId);
+        state.loadingUpVotePostIds.push(action.meta.arg);
         state.error = '';
       })
       .addCase(upVote.fulfilled, (state, action) => {
@@ -162,7 +154,7 @@ export const ratingStatusSlice = createSlice({
         );
       })
       .addCase(downVote.pending, (state, action) => {
-        state.loadingDownVotePostIds.push(action.meta.arg.postId);
+        state.loadingDownVotePostIds.push(action.meta.arg);
         state.error = '';
       })
       .addCase(downVote.fulfilled, (state, action) => {

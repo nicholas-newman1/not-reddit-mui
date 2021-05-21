@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Comment from '../../components/Comment';
 import { db } from '../../services/firebase';
 import { DBComment } from '../../types/db';
@@ -27,8 +27,117 @@ const CommentContainer: React.FC<Props> = ({ comment, isReply }) => {
   const [deleted, setDeleted] = useState(comment.deleted);
   const [error, setError] =
     useState<undefined | { type?: string; message?: string }>();
-
+  const [ratingStatus, setRatingStatus] = useState<'up' | 'down' | undefined>();
+  const [loadingRatingStatus, setLoadingRatingStatus] = useState(true);
   const { subscribed, loading } = useSubscribedCategoryIds();
+  const [onUpVote, setOnUpVote] = useState<() => void>(() => {});
+  const [onDownVote, setOnDownVote] = useState<() => void>(() => {});
+  const [rating, setRating] = useState(comment.rating);
+
+  const getRatingStatus = async () => {
+    setLoadingRatingStatus(true);
+    const upVoteSnap = await db
+      .collectionGroup('upVoteIds')
+      .where('commentId', '==', comment.commentId)
+      .where('uid', '==', user?.uid)
+      .get();
+
+    const downVoteSnap = await db
+      .collectionGroup('downVoteIds')
+      .where('commentId', '==', comment.commentId)
+      .where('uid', '==', user?.uid)
+      .get();
+
+    if (upVoteSnap.docs.length) setRatingStatus('up');
+    if (downVoteSnap.docs.length) setRatingStatus('down');
+    setLoadingRatingStatus(false);
+  };
+
+  const upVote = () => {
+    if (!user) return dispatch(displaySignInDialog());
+    db.doc(`${comment.path}/upVoteIds/${user.uid}`).set({
+      commentId: comment.commentId,
+      uid: user.uid,
+    });
+  };
+
+  const removeUpVote = () => {
+    if (!user) return dispatch(displaySignInDialog());
+    db.doc(`${comment.path}/upVoteIds/${user.uid}`).delete();
+  };
+
+  const downVote = () => {
+    if (!user) return dispatch(displaySignInDialog());
+    db.doc(`${comment.path}/downVoteIds/${user.uid}`).set({
+      commentId: comment.commentId,
+      uid: user.uid,
+    });
+  };
+
+  const removeDownVote = () => {
+    if (!user) return dispatch(displaySignInDialog());
+    db.doc(`${comment.path}/downVoteIds/${user.uid}`).delete();
+  };
+
+  useEffect(() => {
+    getRatingStatus();
+    //eslint-disable-next-line
+  }, []);
+
+  useEffect(() => {
+    if (!user) {
+      setOnUpVote(() => () => dispatch(displaySignInDialog()));
+      setOnDownVote(() => () => dispatch(displaySignInDialog()));
+      return;
+    }
+
+    if (ratingStatus === 'up') {
+      setOnUpVote(() => () => {
+        removeUpVote();
+        setRatingStatus(undefined);
+        setRating((prev) => prev - 1);
+      });
+
+      setOnDownVote(() => () => {
+        removeUpVote();
+        downVote();
+        setRatingStatus('down');
+        setRating((prev) => prev - 2);
+      });
+
+      return;
+    }
+
+    if (ratingStatus === 'down') {
+      setOnUpVote(() => () => {
+        removeDownVote();
+        upVote();
+        setRatingStatus('up');
+        setRating((prev) => prev + 2);
+      });
+
+      setOnDownVote(() => () => {
+        removeDownVote();
+        setRatingStatus(undefined);
+        setRating((prev) => prev + 1);
+      });
+
+      return;
+    }
+
+    setOnUpVote(() => () => {
+      upVote();
+      setRatingStatus('up');
+      setRating((prev) => prev + 1);
+    });
+
+    setOnDownVote(() => () => {
+      downVote();
+      setRatingStatus('down');
+      setRating((prev) => prev - 1);
+    });
+    //eslint-disable-next-line
+  }, [ratingStatus, user]);
 
   const getReplies = async () => {
     setLoadingReplies(true);
@@ -45,6 +154,7 @@ const CommentContainer: React.FC<Props> = ({ comment, isReply }) => {
         path: doc.ref.path,
         authorProfileHref: `/profiles/${data.authorId}`,
         isAuthor: user?.uid === data.authorId,
+        commentId: doc.id,
       };
     });
     setReplies(comments);
@@ -71,11 +181,12 @@ const CommentContainer: React.FC<Props> = ({ comment, isReply }) => {
       setReplies((prev) => [
         {
           ...data,
-          timestamp: data.timestamp.seconds,
+          timestamp: Date.now() / 1000,
           replies: [] as CommentType[],
           path: doc.ref.path,
-          authorProfileHref: `/profiles/${data.authorId}`,
+          authorProfileHref: `/profiles/${user.uid}`,
           isAuthor: true,
+          commentId: doc.id,
         },
         ...prev,
       ]);
@@ -118,13 +229,15 @@ const CommentContainer: React.FC<Props> = ({ comment, isReply }) => {
       replying={replying}
       setReplying={setReplying}
       replies={replies}
-      onUpVote={() => {}}
-      onDownVote={() => {}}
+      ratingStatus={ratingStatus}
+      rating={rating}
+      onUpVote={onUpVote}
+      onDownVote={onDownVote}
       onReplies={() => (gotReplies ? hideReplies() : getReplies())}
       onReport={() => {}}
       onReply={onReply}
       onDelete={onDelete}
-      loadingRating={false}
+      loadingRating={loadingRatingStatus}
       loadingReply={loadingReply}
       loadingReplies={loadingReplies}
       loadingDelete={loadingDelete}

@@ -6,6 +6,7 @@ import categoryPage from './categoryPageSlice';
 import homePage from './homePageSlice';
 import subscribedCategories from './subscribedCategoriesSlice';
 import ratingStatus from './ratingStatusSlice';
+import commentRatingStatus from './commentRatingStatusSlice';
 import categoryMeta from './categoryMetaSlice';
 import postPage from './postPageSlice';
 
@@ -18,6 +19,7 @@ const store = configureStore({
     homePage,
     subscribedCategories,
     ratingStatus,
+    commentRatingStatus,
     categoryMeta,
     postPage,
   },

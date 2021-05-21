@@ -71,6 +71,7 @@ export const getComments = createAsyncThunk(
         path: doc.ref.path,
         authorProfileHref: `/profiles/${data.authorId}`,
         isAuthor: auth.currentUser?.uid === data.authorId,
+        commentId: doc.id,
       };
     });
   }
@@ -95,6 +96,7 @@ export const getMoreComments = createAsyncThunk(
         path: doc.ref.path,
         authorProfileHref: `/profiles/${data.authorId}`,
         isAuthor: auth.currentUser?.uid === data.authorId,
+        commentId: doc.id,
       };
     });
   }
@@ -107,14 +109,16 @@ export const createComment = createAsyncThunk(
       .collection(`posts/${postId}/comments`)
       .add({ body, authorId: auth.currentUser?.uid });
     const doc = await db.doc(`posts/${postId}/comments/${ref.id}`).get();
+
     const data = doc.data() as DBComment;
     return {
       ...data,
-      timestamp: data.timestamp.seconds,
+      timestamp: Date.now() / 1000,
       replies: [] as Comment[],
       path: doc.ref.path,
-      authorProfileHref: `/profiles/${data.authorId}`,
+      authorProfileHref: `/profiles/${auth.currentUser?.uid}`,
       isAuthor: true,
+      commentId: ref.id,
     };
   }
 );
