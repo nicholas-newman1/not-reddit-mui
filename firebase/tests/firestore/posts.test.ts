@@ -47,7 +47,7 @@ describe('posts', () => {
 
   describe('create', () => {
     it('should allow subscribers of given category', async () => {
-      admin.doc(categoryPath).set({ ownerId: theirId });
+      await admin.doc(categoryPath).set({ ownerId: theirId });
       admin
         .doc(`${categoryPath}/subscriberIds/${myId}`)
         .set({ uid: myId, categoryId });
@@ -55,7 +55,7 @@ describe('posts', () => {
     });
 
     it('should allow moderators of given category', async () => {
-      admin.doc(categoryPath).set({ ownerId: theirId });
+      await admin.doc(categoryPath).set({ ownerId: theirId });
       admin
         .doc(`${categoryPath}/moderatorIds/${myId}`)
         .set({ uid: myId, categoryId });
@@ -63,12 +63,12 @@ describe('posts', () => {
     });
 
     it('should allow owner of given category', async () => {
-      admin.doc(categoryPath).set({ ownerId: myId });
+      await admin.doc(categoryPath).set({ ownerId: myId });
       await firebase.assertSucceeds(db.doc(postPath).set(post));
     });
 
     it('should not allow users banned from given category', async () => {
-      admin.doc(categoryPath).set({ ownerId: theirId });
+      await admin.doc(categoryPath).set({ ownerId: theirId });
       admin
         .doc(`${categoryPath}/subscriberIds/${myId}`)
         .set({ uid: myId, categoryId });
@@ -87,13 +87,13 @@ describe('posts', () => {
     });
 
     it('should not allow a user who is not a subscriber, moderator, or owner of given category', async () => {
-      admin.doc(categoryPath).set({ ownerId: theirId });
+      await admin.doc(categoryPath).set({ ownerId: theirId });
       await firebase.assertFails(db.doc(postPath).set(post));
     });
 
     it('should not allow unverified users', async () => {
       const db = getFirestore(myUnverifiedAuth);
-      admin.doc(categoryPath).set({ ownerId: theirId });
+      await admin.doc(categoryPath).set({ ownerId: theirId });
       admin
         .doc(`${categoryPath}/subscriberIds/${myId}`)
         .set({ uid: myId, categoryId });
@@ -105,7 +105,7 @@ describe('posts', () => {
       const { body, ...missingBody } = post;
       const { authorId, ...missingAuthorId } = post;
       const { categoryId, ...missingCategoryId } = post;
-      admin.doc(categoryPath).set({ ownerId: theirId });
+      await admin.doc(categoryPath).set({ ownerId: theirId });
       admin
         .doc(`${categoryPath}/subscriberIds/${myId}`)
         .set({ uid: myId, categoryId });
@@ -117,7 +117,7 @@ describe('posts', () => {
 
     it('should not allow extra fields', async () => {
       // allowed fields: title, body, authorId, categoryId
-      admin.doc(categoryPath).set({ ownerId: theirId });
+      await admin.doc(categoryPath).set({ ownerId: theirId });
       admin
         .doc(`${categoryPath}/subscriberIds/${myId}`)
         .set({ uid: myId, categoryId });
@@ -126,7 +126,7 @@ describe('posts', () => {
     });
 
     it('should only allow title to be a string', async () => {
-      admin.doc(categoryPath).set({ ownerId: theirId });
+      await admin.doc(categoryPath).set({ ownerId: theirId });
       admin
         .doc(`${categoryPath}/subscriberIds/${myId}`)
         .set({ uid: myId, categoryId });
@@ -135,7 +135,7 @@ describe('posts', () => {
     });
 
     it('should only allow title to have a length > 3', async () => {
-      admin.doc(categoryPath).set({ ownerId: theirId });
+      await admin.doc(categoryPath).set({ ownerId: theirId });
       admin
         .doc(`${categoryPath}/subscriberIds/${myId}`)
         .set({ uid: myId, categoryId });
@@ -144,7 +144,7 @@ describe('posts', () => {
     });
 
     it('should only allow body to be a string', async () => {
-      admin.doc(categoryPath).set({ ownerId: theirId });
+      await admin.doc(categoryPath).set({ ownerId: theirId });
       admin
         .doc(`${categoryPath}/subscriberIds/${myId}`)
         .set({ uid: myId, categoryId });
@@ -153,7 +153,7 @@ describe('posts', () => {
     });
 
     it('should only allow authorId to be userId', async () => {
-      admin.doc(categoryPath).set({ ownerId: theirId });
+      await admin.doc(categoryPath).set({ ownerId: theirId });
       admin
         .doc(`${categoryPath}/subscriberIds/${myId}`)
         .set({ uid: myId, categoryId });
@@ -164,32 +164,32 @@ describe('posts', () => {
 
   describe('update', () => {
     it('should allow the author of the post', async () => {
-      admin.doc(categoryPath).set({ ownerId: theirId });
-      admin.doc(postPath).set(post);
+      await admin.doc(categoryPath).set({ ownerId: theirId });
+      await admin.doc(postPath).set(post);
       const updatedPost = { ...post, body: post.body + '123' };
       await firebase.assertSucceeds(db.doc(postPath).set(updatedPost));
     });
 
     it('should allow the moderators of the category', async () => {
-      admin.doc(categoryPath).set({ ownerId: thirdId });
+      await admin.doc(categoryPath).set({ ownerId: thirdId });
       admin
         .doc(`${categoryPath}/moderatorIds/${myId}`)
         .set({ uid: myId, categoryId });
-      admin.doc(postPath).set(theirPost);
+      await admin.doc(postPath).set(theirPost);
       const theirUpdatedPost = { ...theirPost, body: post.body + '123' };
       await firebase.assertSucceeds(db.doc(postPath).set(theirUpdatedPost));
     });
 
     it('should allow the owner of the category', async () => {
-      admin.doc(categoryPath).set({ ownerId: myId });
-      admin.doc(postPath).set(theirPost);
+      await admin.doc(categoryPath).set({ ownerId: myId });
+      await admin.doc(postPath).set(theirPost);
       const theirUpdatedPost = { ...theirPost, body: post.body + '123' };
       await firebase.assertSucceeds(db.doc(postPath).set(theirUpdatedPost));
     });
 
     it('should not allow users banned from given category', async () => {
-      admin.doc(categoryPath).set({ ownerId: theirId });
-      admin.doc(postPath).set(post);
+      await admin.doc(categoryPath).set({ ownerId: theirId });
+      await admin.doc(postPath).set(post);
       admin
         .doc(`${categoryPath}/bannedIds/${myId}`)
         .set({ uid: myId, categoryId });
@@ -198,75 +198,75 @@ describe('posts', () => {
     });
 
     it('should not allow any other subscriber/user', async () => {
-      admin.doc(categoryPath).set({ ownerId: thirdId });
+      await admin.doc(categoryPath).set({ ownerId: thirdId });
       admin
         .doc(`${categoryPath}/subscriberIds/${myId}`)
         .set({ uid: myId, categoryId });
-      admin.doc(postPath).set(theirPost);
+      await admin.doc(postPath).set(theirPost);
       const theirUpdatedPost = { ...theirPost, body: theirPost.body + '123' };
       await firebase.assertFails(db.doc(postPath).set(theirUpdatedPost));
     });
 
     it('should not allow unverified users', async () => {
       const db = getFirestore(myUnverifiedAuth);
-      admin.doc(categoryPath).set({ ownerId: theirId });
-      admin.doc(postPath).set(post);
+      await admin.doc(categoryPath).set({ ownerId: theirId });
+      await admin.doc(postPath).set(post);
       const updatedPost = { ...post, body: post.body + '123' };
       await firebase.assertFails(db.doc(postPath).set(updatedPost));
     });
 
     it('should allow the title to be changed', async () => {
-      admin.doc(categoryPath).set({ ownerId: theirId });
-      admin.doc(postPath).set(post);
+      await admin.doc(categoryPath).set({ ownerId: theirId });
+      await admin.doc(postPath).set(post);
       const updatedTitle = { ...post, title: post.title + '123' };
       await firebase.assertSucceeds(db.doc(postPath).set(updatedTitle));
     });
 
     it('should only allow the title to be a string', async () => {
-      admin.doc(categoryPath).set({ ownerId: theirId });
-      admin.doc(postPath).set(post);
+      await admin.doc(categoryPath).set({ ownerId: theirId });
+      await admin.doc(postPath).set(post);
       const invalidTitle = { ...post, title: false };
       await firebase.assertFails(db.doc(postPath).set(invalidTitle));
     });
 
     it('should only allow a title of length > 3', async () => {
-      admin.doc(categoryPath).set({ ownerId: theirId });
-      admin.doc(postPath).set(post);
+      await admin.doc(categoryPath).set({ ownerId: theirId });
+      await admin.doc(postPath).set(post);
       const shortTitle = { ...post, title: 'ab' };
       await firebase.assertFails(db.doc(postPath).set(shortTitle));
     });
 
     it('should allow the body to be changed', async () => {
-      admin.doc(categoryPath).set({ ownerId: theirId });
-      admin.doc(postPath).set(post);
+      await admin.doc(categoryPath).set({ ownerId: theirId });
+      await admin.doc(postPath).set(post);
       const updatedBody = { ...post, title: post.title + '123' };
       await firebase.assertSucceeds(db.doc(postPath).set(updatedBody));
     });
 
     it('should only allow the body to be a string', async () => {
-      admin.doc(categoryPath).set({ ownerId: theirId });
-      admin.doc(postPath).set(post);
+      await admin.doc(categoryPath).set({ ownerId: theirId });
+      await admin.doc(postPath).set(post);
       const invalidBody = { ...post, body: true };
       await firebase.assertFails(db.doc(postPath).set(invalidBody));
     });
 
     it('should not allow the authorId to be changed', async () => {
-      admin.doc(categoryPath).set({ ownerId: theirId });
-      admin.doc(postPath).set(post);
+      await admin.doc(categoryPath).set({ ownerId: theirId });
+      await admin.doc(postPath).set(post);
       const updatedAuthor = { ...post, authorId: theirId };
       await firebase.assertFails(db.doc(postPath).set(updatedAuthor));
     });
 
     it('should not allow the categoryId to be changed', async () => {
-      admin.doc(categoryPath).set({ ownerId: theirId });
-      admin.doc(postPath).set(post);
+      await admin.doc(categoryPath).set({ ownerId: theirId });
+      await admin.doc(postPath).set(post);
       const updatedCategory = { ...post, categoryId: categoryId + '123' };
       await firebase.assertFails(db.doc(postPath).set(updatedCategory));
     });
 
     it('should not allow extra fields to be added', async () => {
-      admin.doc(categoryPath).set({ ownerId: theirId });
-      admin.doc(postPath).set(post);
+      await admin.doc(categoryPath).set({ ownerId: theirId });
+      await admin.doc(postPath).set(post);
       const extraField = { ...post, extraField: 'nope' };
       await firebase.assertFails(db.doc(postPath).set(extraField));
     });
@@ -274,29 +274,29 @@ describe('posts', () => {
 
   describe('delete', () => {
     it('should allow the author of post', async () => {
-      admin.doc(categoryPath).set({ ownerId: theirId });
-      admin.doc(postPath).set(post);
+      await admin.doc(categoryPath).set({ ownerId: theirId });
+      await admin.doc(postPath).set(post);
       await firebase.assertSucceeds(db.doc(postPath).delete());
     });
 
     it('should allow the moderators of the category', async () => {
-      admin.doc(categoryPath).set({ ownerId: theirId });
+      await admin.doc(categoryPath).set({ ownerId: theirId });
       admin
         .doc(`${categoryPath}/moderatorIds/${myId}`)
         .set({ uid: myId, categoryId });
-      admin.doc(postPath).set(theirPost);
+      await admin.doc(postPath).set(theirPost);
       await firebase.assertSucceeds(db.doc(postPath).delete());
     });
 
     it('should allow the owner of the category', async () => {
-      admin.doc(categoryPath).set({ ownerId: myId });
-      admin.doc(postPath).set(theirPost);
+      await admin.doc(categoryPath).set({ ownerId: myId });
+      await admin.doc(postPath).set(theirPost);
       await firebase.assertSucceeds(db.doc(postPath).delete());
     });
 
     it('should not allow users banned from given category', async () => {
-      admin.doc(categoryPath).set({ ownerId: theirId });
-      admin.doc(postPath).set(post);
+      await admin.doc(categoryPath).set({ ownerId: theirId });
+      await admin.doc(postPath).set(post);
       admin
         .doc(`${categoryPath}/bannedIds/${myId}`)
         .set({ uid: myId, categoryId });
@@ -304,8 +304,8 @@ describe('posts', () => {
     });
 
     it('should not allow any other subscriber/user', async () => {
-      admin.doc(categoryPath).set({ ownerId: theirId });
-      admin.doc(postPath).set(theirPost);
+      await admin.doc(categoryPath).set({ ownerId: theirId });
+      await admin.doc(postPath).set(theirPost);
       admin
         .doc(`${categoryPath}/subscriberIds/${myId}`)
         .set({ uid: myId, categoryId });
@@ -314,8 +314,8 @@ describe('posts', () => {
 
     it('should not allow unverified users', async () => {
       const db = getFirestore(myUnverifiedAuth);
-      admin.doc(categoryPath).set({ ownerId: theirId });
-      admin.doc(postPath).set(post);
+      await admin.doc(categoryPath).set({ ownerId: theirId });
+      await admin.doc(postPath).set(post);
       await firebase.assertFails(db.doc(postPath).delete());
     });
   });
@@ -336,8 +336,8 @@ describe('posts/upVoteIds', () => {
 
   describe('create', () => {
     it('should allow verified users', async () => {
-      admin.doc(categoryPath).set({ ownerId: theirId });
-      admin.doc(postPath).set(theirPost);
+      await admin.doc(categoryPath).set({ ownerId: theirId });
+      await admin.doc(postPath).set(theirPost);
       await firebase.assertSucceeds(
         db.doc(upVotePath).set({ uid: myId, postId })
       );
@@ -345,50 +345,50 @@ describe('posts/upVoteIds', () => {
 
     it('should not allow unverified users', async () => {
       const db = getFirestore(myUnverifiedAuth);
-      admin.doc(categoryPath).set({ ownerId: theirId });
-      admin.doc(postPath).set(theirPost);
+      await admin.doc(categoryPath).set({ ownerId: theirId });
+      await admin.doc(postPath).set(theirPost);
       await firebase.assertFails(db.doc(upVotePath).set({ uid: myId, postId }));
     });
 
     it('should not allow document id to be different from user id', async () => {
-      admin.doc(categoryPath).set({ ownerId: theirId });
-      admin.doc(postPath).set(theirPost);
+      await admin.doc(categoryPath).set({ ownerId: theirId });
+      await admin.doc(postPath).set(theirPost);
       await firebase.assertFails(
         db.doc(theirUpVotePath).set({ uid: myId, postId })
       );
     });
 
     it('should not allow documents without uid', async () => {
-      admin.doc(categoryPath).set({ ownerId: theirId });
-      admin.doc(postPath).set(theirPost);
+      await admin.doc(categoryPath).set({ ownerId: theirId });
+      await admin.doc(postPath).set(theirPost);
       await firebase.assertFails(db.doc(upVotePath).set({ postId }));
     });
 
     it('should not allow documents without postId', async () => {
-      admin.doc(categoryPath).set({ ownerId: theirId });
-      admin.doc(postPath).set(theirPost);
+      await admin.doc(categoryPath).set({ ownerId: theirId });
+      await admin.doc(postPath).set(theirPost);
       await firebase.assertFails(db.doc(upVotePath).set({ uid: myId }));
     });
 
     it('should not allow uid to be different from doc Id', async () => {
-      admin.doc(categoryPath).set({ ownerId: theirId });
-      admin.doc(postPath).set(theirPost);
+      await admin.doc(categoryPath).set({ ownerId: theirId });
+      await admin.doc(postPath).set(theirPost);
       await firebase.assertFails(
         db.doc(upVotePath).set({ uid: theirId, postId })
       );
     });
 
     it('should not allow postId to be different', async () => {
-      admin.doc(categoryPath).set({ ownerId: theirId });
-      admin.doc(postPath).set(theirPost);
+      await admin.doc(categoryPath).set({ ownerId: theirId });
+      await admin.doc(postPath).set(theirPost);
       await firebase.assertFails(
         db.doc(upVotePath).set({ uid: myId, postId: postId + '123' })
       );
     });
 
     it('should not allow extra fields', async () => {
-      admin.doc(categoryPath).set({ ownerId: theirId });
-      admin.doc(postPath).set(theirPost);
+      await admin.doc(categoryPath).set({ ownerId: theirId });
+      await admin.doc(postPath).set(theirPost);
       await firebase.assertFails(
         db.doc(upVotePath).set({ uid: myId, postId, noob: true })
       );
@@ -397,24 +397,24 @@ describe('posts/upVoteIds', () => {
 
   describe('delete', () => {
     it('should allow verified users', async () => {
-      admin.doc(categoryPath).set({ ownerId: theirId });
-      admin.doc(postPath).set(theirPost);
-      admin.doc(upVotePath).set({ uid: myId, categoryId });
+      await admin.doc(categoryPath).set({ ownerId: theirId });
+      await admin.doc(postPath).set(theirPost);
+      await admin.doc(upVotePath).set({ uid: myId, categoryId });
       await firebase.assertSucceeds(db.doc(upVotePath).delete());
     });
 
     it('should not allow unverified users', async () => {
       const db = getFirestore(myUnverifiedAuth);
-      admin.doc(categoryPath).set({ ownerId: theirId });
-      admin.doc(postPath).set(theirPost);
-      admin.doc(upVotePath).set({ uid: myId, categoryId });
+      await admin.doc(categoryPath).set({ ownerId: theirId });
+      await admin.doc(postPath).set(theirPost);
+      await admin.doc(upVotePath).set({ uid: myId, categoryId });
       await firebase.assertFails(db.doc(upVotePath).delete());
     });
 
     it('should not allow document id to be different from user id', async () => {
-      admin.doc(categoryPath).set({ ownerId: theirId });
-      admin.doc(postPath).set(theirPost);
-      admin.doc(theirUpVotePath).set({ uid: theirId, categoryId });
+      await admin.doc(categoryPath).set({ ownerId: theirId });
+      await admin.doc(postPath).set(theirPost);
+      await admin.doc(theirUpVotePath).set({ uid: theirId, categoryId });
       await firebase.assertFails(db.doc(theirUpVotePath).delete());
     });
   });
@@ -435,8 +435,8 @@ describe('posts/downVoteIds', () => {
 
   describe('create', () => {
     it('should allow verified users', async () => {
-      admin.doc(categoryPath).set({ ownerId: theirId });
-      admin.doc(postPath).set(theirPost);
+      await admin.doc(categoryPath).set({ ownerId: theirId });
+      await admin.doc(postPath).set(theirPost);
       await firebase.assertSucceeds(
         db.doc(downVotePath).set({ uid: myId, postId })
       );
@@ -444,52 +444,52 @@ describe('posts/downVoteIds', () => {
 
     it('should not allow unverified users', async () => {
       const db = getFirestore(myUnverifiedAuth);
-      admin.doc(categoryPath).set({ ownerId: theirId });
-      admin.doc(postPath).set(theirPost);
+      await admin.doc(categoryPath).set({ ownerId: theirId });
+      await admin.doc(postPath).set(theirPost);
       await firebase.assertFails(
         db.doc(downVotePath).set({ uid: myId, postId })
       );
     });
 
     it('should not allow document id to be different from user id', async () => {
-      admin.doc(categoryPath).set({ ownerId: theirId });
-      admin.doc(postPath).set(theirPost);
+      await admin.doc(categoryPath).set({ ownerId: theirId });
+      await admin.doc(postPath).set(theirPost);
       await firebase.assertFails(
         db.doc(theirDownVotePath).set({ uid: myId, postId })
       );
     });
 
     it('should not allow documents without uid', async () => {
-      admin.doc(categoryPath).set({ ownerId: theirId });
-      admin.doc(postPath).set(theirPost);
+      await admin.doc(categoryPath).set({ ownerId: theirId });
+      await admin.doc(postPath).set(theirPost);
       await firebase.assertFails(db.doc(downVotePath).set({ postId }));
     });
 
     it('should not allow documents without postId', async () => {
-      admin.doc(categoryPath).set({ ownerId: theirId });
-      admin.doc(postPath).set(theirPost);
+      await admin.doc(categoryPath).set({ ownerId: theirId });
+      await admin.doc(postPath).set(theirPost);
       await firebase.assertFails(db.doc(downVotePath).set({ uid: myId }));
     });
 
     it('should not allow uid to be different from doc Id', async () => {
-      admin.doc(categoryPath).set({ ownerId: theirId });
-      admin.doc(postPath).set(theirPost);
+      await admin.doc(categoryPath).set({ ownerId: theirId });
+      await admin.doc(postPath).set(theirPost);
       await firebase.assertFails(
         db.doc(downVotePath).set({ uid: theirId, postId })
       );
     });
 
     it('should not allow postId to be different', async () => {
-      admin.doc(categoryPath).set({ ownerId: theirId });
-      admin.doc(postPath).set(theirPost);
+      await admin.doc(categoryPath).set({ ownerId: theirId });
+      await admin.doc(postPath).set(theirPost);
       await firebase.assertFails(
         db.doc(downVotePath).set({ uid: myId, postId: postId + '123' })
       );
     });
 
     it('should not allow extra fields', async () => {
-      admin.doc(categoryPath).set({ ownerId: theirId });
-      admin.doc(postPath).set(theirPost);
+      await admin.doc(categoryPath).set({ ownerId: theirId });
+      await admin.doc(postPath).set(theirPost);
       await firebase.assertFails(
         db.doc(downVotePath).set({ uid: myId, postId, noob: true })
       );
@@ -498,24 +498,24 @@ describe('posts/downVoteIds', () => {
 
   describe('delete', () => {
     it('should allow verified users', async () => {
-      admin.doc(categoryPath).set({ ownerId: theirId });
-      admin.doc(postPath).set(theirPost);
-      admin.doc(downVotePath).set({ uid: myId, categoryId });
+      await admin.doc(categoryPath).set({ ownerId: theirId });
+      await admin.doc(postPath).set(theirPost);
+      await admin.doc(downVotePath).set({ uid: myId, categoryId });
       await firebase.assertSucceeds(db.doc(downVotePath).delete());
     });
 
     it('should not allow unverified users', async () => {
       const db = getFirestore(myUnverifiedAuth);
-      admin.doc(categoryPath).set({ ownerId: theirId });
-      admin.doc(postPath).set(theirPost);
-      admin.doc(downVotePath).set({ uid: myId, categoryId });
+      await admin.doc(categoryPath).set({ ownerId: theirId });
+      await admin.doc(postPath).set(theirPost);
+      await admin.doc(downVotePath).set({ uid: myId, categoryId });
       await firebase.assertFails(db.doc(downVotePath).delete());
     });
 
     it('should not allow document id to be different from user id', async () => {
-      admin.doc(categoryPath).set({ ownerId: theirId });
-      admin.doc(postPath).set(theirPost);
-      admin.doc(theirDownVotePath).set({ uid: theirId, categoryId });
+      await admin.doc(categoryPath).set({ ownerId: theirId });
+      await admin.doc(postPath).set(theirPost);
+      await admin.doc(theirDownVotePath).set({ uid: theirId, categoryId });
       await firebase.assertFails(db.doc(theirDownVotePath).delete());
     });
   });
