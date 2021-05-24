@@ -2,7 +2,7 @@ import { Button, Grid, makeStyles, Typography } from '@material-ui/core';
 import clsx from 'clsx';
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { getTimeAgoString } from '../../utils';
+import { getTimeAgoString } from '../../utils/utils';
 
 interface Props {
   authorUsername: string;

@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { db } from '../services/firebase';
 import { DocumentSnapshot, DBPost, DBCategory } from '../types/db';
-import { daysSinceEpoch } from '../utils';
+import { daysSinceEpoch } from '../utils/utils';
 import { Post } from '../types/client';
 
 interface Category {
