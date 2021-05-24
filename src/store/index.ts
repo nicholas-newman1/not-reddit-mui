@@ -1,4 +1,4 @@
-import { configureStore } from '@reduxjs/toolkit';
+import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import auth, { verifyAuth } from './authSlice';
 import createCategory from './createCategorySlice';
 import createPost from './createPostSlice';
@@ -10,20 +10,20 @@ import commentRatingStatus from './commentRatingStatusSlice';
 import categoryMeta from './categoryMetaSlice';
 import postPage from './postPageSlice';
 
-const store = configureStore({
-  reducer: {
-    auth,
-    createCategory,
-    createPost,
-    categoryPage,
-    homePage,
-    subscribedCategories,
-    ratingStatus,
-    commentRatingStatus,
-    categoryMeta,
-    postPage,
-  },
+export const reducer = combineReducers({
+  auth,
+  createCategory,
+  createPost,
+  categoryPage,
+  homePage,
+  subscribedCategories,
+  ratingStatus,
+  commentRatingStatus,
+  categoryMeta,
+  postPage,
 });
+
+const store = configureStore({ reducer });
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;

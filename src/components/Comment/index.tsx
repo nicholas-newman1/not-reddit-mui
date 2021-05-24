@@ -165,7 +165,7 @@ const Comment: React.FC<CommentProps> = (props) => {
             </>
           )}
 
-          {props.replies && (
+          {props.replies.length && (
             <div className={classes.replies}>
               {props.replies.map((comment, i) => (
                 <CommentContainer key={i} comment={comment} isReply />
