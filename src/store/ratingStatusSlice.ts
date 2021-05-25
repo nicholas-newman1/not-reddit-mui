@@ -44,45 +44,49 @@ export const getVotePostIds = createAsyncThunk(
 
 export const upVote = createAsyncThunk(
   'ratingStatus/upVote',
-  async (postId: string) => {
+  async (postId: string, { rejectWithValue }) => {
     const uid = auth.currentUser?.uid;
     return db
       .doc(`posts/${postId}/upVoteIds/${uid}`)
       .set({ postId, uid })
-      .then(() => postId);
+      .then(() => postId)
+      .catch((err) => rejectWithValue(postId));
   }
 );
 
 export const removeUpVote = createAsyncThunk(
   'ratingStatus/removeUpVote',
-  async (postId: string) => {
+  async (postId: string, { rejectWithValue }) => {
     const uid = auth.currentUser?.uid;
     return db
       .doc(`posts/${postId}/upVoteIds/${uid}`)
       .delete()
-      .then(() => postId);
+      .then(() => postId)
+      .catch((err) => rejectWithValue(postId));
   }
 );
 
 export const downVote = createAsyncThunk(
   'ratingStatus/downVote',
-  async (postId: string) => {
+  async (postId: string, { rejectWithValue }) => {
     const uid = auth.currentUser?.uid;
     return db
       .doc(`posts/${postId}/downVoteIds/${uid}`)
       .set({ postId, uid })
-      .then(() => postId);
+      .then(() => postId)
+      .catch((err) => rejectWithValue(postId));
   }
 );
 
 export const removeDownVote = createAsyncThunk(
   'ratingStatus/removeDownVote',
-  async (postId: string) => {
+  async (postId: string, { rejectWithValue }) => {
     const uid = auth.currentUser?.uid;
     return db
       .doc(`posts/${postId}/downVoteIds/${uid}`)
       .delete()
-      .then(() => postId);
+      .then(() => postId)
+      .catch((err) => rejectWithValue(postId));
   }
 );
 
