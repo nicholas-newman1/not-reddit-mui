@@ -151,7 +151,7 @@ describe('<PostListing />', () => {
     );
     const comments = getByText(/comments/i);
     fireEvent.click(comments);
-    expect(history.push).toBeCalledWith('/posts/3131fnu91h1e#comments');
+    expect(history.push).toBeCalledWith('/posts/3131fnu91h1e');
   });
 
   it('should call onUpVote after clicking up arrow', () => {

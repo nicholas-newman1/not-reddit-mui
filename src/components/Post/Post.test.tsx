@@ -158,19 +158,6 @@ describe('<Post />', () => {
     expect(history.push).toBeCalledWith('/categories/meditation');
   });
 
-  it('should go to comments route', () => {
-    const history = createMemoryHistory();
-    history.push = jest.fn();
-    const { getByText } = render(
-      <Router history={history}>
-        <Post loading={false} post={post} />
-      </Router>
-    );
-    const comments = getByText(/comments/i);
-    fireEvent.click(comments);
-    expect(history.push).toBeCalledWith('#comments');
-  });
-
   it('should call onUpVote after clicking up arrow', () => {
     const onUpVote = jest.fn();
     const { getByTestId } = render(
