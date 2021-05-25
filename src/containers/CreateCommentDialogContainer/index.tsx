@@ -56,6 +56,7 @@ const CreateCommentDialogContainer: React.FC<Props> = ({
         loading={createCommentLoading}
         loadingSubscribe={loading(categoryId)}
         error={error}
+        onCancel={() => dispatch(hideCreateCommentDialog())}
       />
     </CustomDialog>
   );

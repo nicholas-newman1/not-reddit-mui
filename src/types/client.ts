@@ -31,3 +31,10 @@ export interface Comment {
   deleted: boolean;
   commentId: string;
 }
+
+export type Error =
+  | {
+      type?: string;
+      message?: string;
+    }
+  | undefined;

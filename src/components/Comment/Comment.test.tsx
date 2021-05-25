@@ -5,37 +5,41 @@ import Comment from '.';
 import { render as reduxRender } from '../../utils/testUtils';
 
 const props = {
-  onUpVote: () => {},
+  authorId: '111',
+  authorProfileHref: '/profiles/111',
+  authorUsername: 'name',
+  body: 'body of text',
+  categoryId: 'category111',
+  commentId: 'comment111',
+  deleted: false,
+  edited: false,
+  editing: false,
+  gotReplies: true,
+  isAuthor: false,
+  loadingDelete: false,
+  loadingEdit: false,
+  loadingRating: false,
+  loadingReplies: false,
+  loadingReply: false,
+  loadingSubscribe: false,
+  numOfComments: 4,
+  onDelete: () => {},
   onDownVote: () => {},
+  onEdit: () => {},
   onReport: () => {},
   onReplies: () => {},
   onReply: () => {},
-  replying: false,
-  setReplying: () => {},
   onSignIn: () => {},
   onSubscribe: () => {},
-  onDelete: () => {},
-  gotReplies: true,
-  loadingReplies: false,
-  loadingReply: false,
-  loadingRating: false,
-  loadingSubscribe: false,
-  loadingDelete: false,
-  authorId: '111',
-  authorUsername: 'name',
-  body: 'body of text',
-  edited: false,
-  rating: 2,
-  timestamp: Date.now() / 1000,
-  replies: [],
+  onUpVote: () => {},
   path: 'posts/post111/comments/comment111',
-  authorProfileHref: '/profiles/111',
-  numOfComments: 4,
   postId: 'post111',
-  categoryId: 'category111',
-  isAuthor: false,
-  deleted: false,
-  commentId: 'comment111',
+  rating: 2,
+  replies: [],
+  replying: false,
+  setEditing: () => {},
+  setReplying: () => {},
+  timestamp: Date.now() / 1000,
 };
 
 interface KeyValueObject {
@@ -79,6 +83,23 @@ describe('<Comment />', () => {
   it('should render time ago string', () => {
     const { getByText } = render(comment());
     getByText(/ago/i);
+  });
+
+  it('should not render edit comment form if props.editing is false', () => {
+    const { queryByRole } = render(comment());
+    const textbox = queryByRole('textbox');
+    expect(textbox).not.toBeInTheDocument();
+  });
+
+  it('should render edit comment form if props.editing is true', () => {
+    const { getByRole } = render(comment({ editing: true }));
+    getByRole('textbox');
+  });
+
+  it('should render edit comment form with default value set to current body', () => {
+    const { getByRole } = render(comment({ editing: true }));
+    const input = getByRole('textbox') as HTMLInputElement;
+    expect(input.value).toBe(props.body);
   });
 
   it('should render a show replies button', () => {

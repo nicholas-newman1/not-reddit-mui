@@ -51,4 +51,13 @@ describe('<CommentMeta />', () => {
     fireEvent.click(getByText(/ovechking899/i));
     expect(history.push).toHaveBeenCalledWith(props.authorProfileHref);
   });
+
+  it('should render edited tag', () => {
+    const { getByText } = render(
+      <MemoryRouter>
+        <CommentMeta {...props} edited />
+      </MemoryRouter>
+    );
+    getByText(/edited/i);
+  });
 });

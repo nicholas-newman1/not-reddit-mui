@@ -7,7 +7,7 @@ import { useAppSelector } from '../../hooks/useAppSelector';
 import useSubscribedCategoryIds from '../../hooks/useSubscribedCategoryIds';
 import { displaySignInDialog } from '../../store/authSlice';
 import { subscribeToCategory } from '../../store/subscribedCategoriesSlice';
-import { Comment as CommentType } from '../../types/client';
+import { Comment as CommentType, Error } from '../../types/client';
 
 interface Props {
   comment: CommentType;
@@ -15,24 +15,126 @@ interface Props {
 }
 
 const CommentContainer: React.FC<Props> = ({ comment, isReply }) => {
-  const dispatch = useAppDispatch();
-  const user = useAppSelector((state) => state.auth.user);
-  const [replying, setReplying] = useState(false);
-  const [replies, setReplies] = useState<CommentType[]>(comment.replies);
+  const [body, setBody] = useState(comment.body);
+  const [deleted, setDeleted] = useState(comment.deleted);
+  const [edited, setEdited] = useState(comment.edited);
+  const [editing, setEditing] = useState(false);
+  const [error, setError] = useState<Error>();
   const [gotReplies, setGotReplies] = useState(false);
+  const [loadingDelete, setLoadingDelete] = useState(false);
+  const [loadingEdit, setLoadingEdit] = useState(false);
+  const [loadingRatingStatus, setLoadingRatingStatus] = useState(true);
   const [loadingReplies, setLoadingReplies] = useState(false);
   const [loadingReply, setLoadingReply] = useState(false);
   const [numOfComments, setNumOfComments] = useState(comment.numOfComments);
-  const [loadingDelete, setLoadingDelete] = useState(false);
-  const [deleted, setDeleted] = useState(comment.deleted);
-  const [error, setError] =
-    useState<undefined | { type?: string; message?: string }>();
-  const [ratingStatus, setRatingStatus] = useState<'up' | 'down' | undefined>();
-  const [loadingRatingStatus, setLoadingRatingStatus] = useState(true);
-  const { subscribed, loading } = useSubscribedCategoryIds();
-  const [onUpVote, setOnUpVote] = useState<() => void>(() => {});
   const [onDownVote, setOnDownVote] = useState<() => void>(() => {});
+  const [onUpVote, setOnUpVote] = useState<() => void>(() => {});
   const [rating, setRating] = useState(comment.rating);
+  const [ratingStatus, setRatingStatus] = useState<'up' | 'down' | undefined>();
+  const [replies, setReplies] = useState<CommentType[]>(comment.replies);
+  const [replying, setReplying] = useState(false);
+
+  const dispatch = useAppDispatch();
+  const user = useAppSelector((state) => state.auth.user);
+  const { subscribed, loading } = useSubscribedCategoryIds();
+
+  const getReplies = async () => {
+    setLoadingReplies(true);
+    const snap = await db
+      .collection(`${comment.path}/comments`)
+      .orderBy('timestamp', 'desc')
+      .get();
+    const comments = snap.docs.map((doc) => {
+      const data = doc.data() as DBComment;
+      return {
+        ...data,
+        timestamp: data.timestamp.seconds,
+        replies: [] as CommentType[],
+        path: doc.ref.path,
+        authorProfileHref: `/profiles/${data.authorId}`,
+        isAuthor: user?.uid === data.authorId,
+        commentId: doc.id,
+      };
+    });
+    setReplies(comments);
+    setGotReplies(true);
+    setLoadingReplies(false);
+  };
+
+  const hideReplies = () => {
+    setReplies([]);
+    setGotReplies(false);
+  };
+
+  const onReply = async (body: string) => {
+    if (!user) return setError({ type: 'auth' });
+    if (!subscribed(comment.categoryId)) return setError({ type: 'subscribe' });
+
+    setLoadingReply(true);
+    try {
+      const ref = await db
+        .collection(`${comment.path}/comments`)
+        .add({ body, authorId: user.uid });
+      const doc = await db.doc(`${comment.path}/comments/${ref.id}`).get();
+      const data = doc.data() as DBComment;
+      setReplies((prev) => [
+        {
+          ...data,
+          timestamp: Date.now() / 1000,
+          replies: [] as CommentType[],
+          path: doc.ref.path,
+          authorProfileHref: `/profiles/${user.uid}`,
+          isAuthor: true,
+          commentId: doc.id,
+        },
+        ...prev,
+      ]);
+      setNumOfComments((prev) => prev + 1);
+      setReplying(false);
+    } finally {
+      setLoadingReply(false);
+    }
+  };
+
+  const onEdit = async (body: string) => {
+    if (!user) return setError({ type: 'auth' });
+    if (!subscribed(comment.categoryId)) return setError({ type: 'subscribe' });
+
+    setLoadingEdit(true);
+    try {
+      await db.doc(comment.path).update({ body });
+      setBody(body);
+      setEdited(true);
+      setEditing(false);
+    } finally {
+      setLoadingEdit(false);
+    }
+  };
+
+  const onDelete = () => {
+    setLoadingDelete(true);
+    comment.numOfComments
+      ? db
+          .doc(comment.path)
+          .update({ deleted: true })
+          .then(() => {
+            setLoadingDelete(false);
+            setDeleted(true);
+          })
+          .catch((err) => {
+            setLoadingDelete(false);
+          })
+      : db
+          .doc(comment.path)
+          .delete()
+          .then(() => {
+            setLoadingDelete(false);
+            setDeleted(true);
+          })
+          .catch((err) => {
+            setLoadingDelete(false);
+          });
+  };
 
   const getRatingStatus = async () => {
     setLoadingRatingStatus(true);
@@ -139,119 +241,42 @@ const CommentContainer: React.FC<Props> = ({ comment, isReply }) => {
     //eslint-disable-next-line
   }, [ratingStatus, user]);
 
-  const getReplies = async () => {
-    setLoadingReplies(true);
-    const snap = await db
-      .collection(`${comment.path}/comments`)
-      .orderBy('timestamp', 'desc')
-      .get();
-    const comments = snap.docs.map((doc) => {
-      const data = doc.data() as DBComment;
-      return {
-        ...data,
-        timestamp: data.timestamp.seconds,
-        replies: [] as CommentType[],
-        path: doc.ref.path,
-        authorProfileHref: `/profiles/${data.authorId}`,
-        isAuthor: user?.uid === data.authorId,
-        commentId: doc.id,
-      };
-    });
-    setReplies(comments);
-    setGotReplies(true);
-    setLoadingReplies(false);
-  };
-
-  const hideReplies = () => {
-    setReplies([]);
-    setGotReplies(false);
-  };
-
-  const onReply = async (body: string) => {
-    if (!user) return setError({ type: 'auth' });
-    if (!subscribed(comment.categoryId)) return setError({ type: 'subscribe' });
-
-    setLoadingReply(true);
-    try {
-      const ref = await db
-        .collection(`${comment.path}/comments`)
-        .add({ body, authorId: user.uid });
-      const doc = await db.doc(`${comment.path}/comments/${ref.id}`).get();
-      const data = doc.data() as DBComment;
-      setReplies((prev) => [
-        {
-          ...data,
-          timestamp: Date.now() / 1000,
-          replies: [] as CommentType[],
-          path: doc.ref.path,
-          authorProfileHref: `/profiles/${user.uid}`,
-          isAuthor: true,
-          commentId: doc.id,
-        },
-        ...prev,
-      ]);
-      setNumOfComments((prev) => prev + 1);
-      setReplying(false);
-    } finally {
-      setLoadingReply(false);
-    }
-  };
-
-  const onDelete = () => {
-    setLoadingDelete(true);
-    comment.numOfComments
-      ? db
-          .doc(comment.path)
-          .update({ deleted: true })
-          .then(() => {
-            setLoadingDelete(false);
-            setDeleted(true);
-          })
-          .catch((err) => {
-            setLoadingDelete(false);
-          })
-      : db
-          .doc(comment.path)
-          .delete()
-          .then(() => {
-            setLoadingDelete(false);
-            setDeleted(true);
-          })
-          .catch((err) => {
-            setLoadingDelete(false);
-          });
-  };
-
   return (
     <Comment
       {...comment}
-      numOfComments={numOfComments}
-      replying={replying}
-      setReplying={setReplying}
-      replies={replies}
-      ratingStatus={ratingStatus}
-      rating={rating}
-      onUpVote={onUpVote}
-      onDownVote={onDownVote}
-      onReplies={() => (gotReplies ? hideReplies() : getReplies())}
-      onReport={() => {}}
-      onReply={onReply}
-      onDelete={onDelete}
-      loadingRating={loadingRatingStatus}
-      loadingReply={loadingReply}
-      loadingReplies={loadingReplies}
-      loadingDelete={loadingDelete}
+      body={body}
+      deleted={deleted}
+      edited={edited}
+      editing={editing}
+      error={error}
       gotReplies={gotReplies}
       isReply={isReply}
+      loadingDelete={loadingDelete}
+      loadingEdit={loadingEdit}
+      loadingReplies={loadingReplies}
+      loadingReply={loadingReply}
+      loadingRating={loadingRatingStatus}
+      loadingSubscribe={loading(comment.categoryId)}
+      numOfComments={numOfComments}
+      onDelete={onDelete}
+      onDownVote={onDownVote}
+      onEdit={onEdit}
+      onReplies={() => (gotReplies ? hideReplies() : getReplies())}
+      onReply={onReply}
+      onReport={() => {}}
       onSignIn={() => dispatch(displaySignInDialog())}
       onSubscribe={(clearErrors: () => void) =>
         dispatch(subscribeToCategory(comment.categoryId)).then(() =>
           clearErrors()
         )
       }
-      loadingSubscribe={loading(comment.categoryId)}
-      error={error}
-      deleted={deleted}
+      onUpVote={onUpVote}
+      rating={rating}
+      ratingStatus={ratingStatus}
+      replies={replies}
+      replying={replying}
+      setEditing={setEditing}
+      setReplying={setReplying}
     />
   );
 };

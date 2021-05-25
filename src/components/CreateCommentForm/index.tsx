@@ -8,13 +8,9 @@ import {
 } from '@material-ui/core';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
+import { Error } from '../../types/client';
 
 const useStyles = makeStyles((theme) => ({
-  card: {
-    width: '100%',
-    padding: theme.spacing(3),
-    margin: '0 auto',
-  },
   form: {
     width: '100%',
     marginTop: '0.5rem',
@@ -34,28 +30,29 @@ interface FormDetails {
 }
 
 interface Props {
-  onReply: (body: string) => void;
-  loading: boolean;
+  defaultValue?: string;
+  error?: Error;
+  isEdit?: boolean;
   isReply?: boolean;
+  loading: boolean;
+  loadingSubscribe: boolean;
+  onCancel: () => void;
+  onReply: (body: string) => void;
   onSignIn: () => void;
   onSubscribe: (clearErrors: () => void) => void;
-  loadingSubscribe: boolean;
-  error?:
-    | {
-        type?: string;
-        message?: string;
-      }
-    | undefined;
 }
 
 const CreateCommentForm: React.FC<Props> = ({
-  onReply,
-  loading,
+  defaultValue = '',
+  error,
+  isEdit,
   isReply,
+  loading,
+  loadingSubscribe,
+  onCancel,
+  onReply,
   onSignIn,
   onSubscribe,
-  loadingSubscribe,
-  error,
 }) => {
   const classes = useStyles();
   const { register, handleSubmit, errors, setError, clearErrors } = useForm();
@@ -86,6 +83,7 @@ const CreateCommentForm: React.FC<Props> = ({
             fullWidth
             name='body'
             aria-invalid={errors.comment ? 'true' : 'false'}
+            defaultValue={defaultValue}
           />
         </Grid>
 
@@ -139,15 +137,25 @@ const CreateCommentForm: React.FC<Props> = ({
           </Grid>
         )}
 
-        <Grid item container>
-          <Button
-            disabled={loading}
-            variant='contained'
-            color='primary'
-            type='submit'
-          >
-            {isReply ? 'Reply' : 'Comment'}
-          </Button>
+        <Grid item>
+          <Grid container direction='row' spacing={2}>
+            <Grid item>
+              <Button
+                disabled={loading}
+                variant='contained'
+                color='primary'
+                type='submit'
+              >
+                {isReply ? 'Reply' : isEdit ? 'Edit' : 'Comment'}
+              </Button>
+            </Grid>
+
+            <Grid item>
+              <Button variant='contained' onClick={onCancel}>
+                Cancel
+              </Button>
+            </Grid>
+          </Grid>
         </Grid>
       </Grid>
     </form>

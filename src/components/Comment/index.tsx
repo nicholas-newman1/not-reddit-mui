@@ -19,10 +19,14 @@ export interface CommentProps extends CommentType {
   onSignIn: () => void;
   onSubscribe: (clearErrors: () => void) => void;
   onDelete: () => void;
+  onEdit: (body: string) => void;
+  editing: boolean;
+  setEditing: React.Dispatch<React.SetStateAction<boolean>>;
   isReply?: boolean;
   gotReplies: boolean;
   loadingReplies: boolean;
   loadingReply: boolean;
+  loadingEdit: boolean;
   loadingRating: boolean;
   loadingSubscribe: boolean;
   loadingDelete: boolean;
@@ -55,6 +59,9 @@ const useStyles = makeStyles((theme) => {
     },
     report: {
       color: theme.palette.error.light,
+    },
+    edit: {
+      color: theme.palette.warning.main,
     },
     spinner: {
       marginTop: '1rem',
@@ -93,9 +100,11 @@ const Comment: React.FC<CommentProps> = (props) => {
           {props.deleted ? (
             <div className={classes.deleted}>
               <CommentMeta timestamp={props.timestamp} />
+
               <Typography component='p' variant='subtitle2'>
                 Deleted comment
               </Typography>
+
               <Grid container className={classes.buttonGroup}>
                 {props.numOfComments > 0 && (
                   <Button
@@ -116,11 +125,26 @@ const Comment: React.FC<CommentProps> = (props) => {
                 timestamp={props.timestamp}
                 authorProfileHref={props.authorProfileHref}
                 authorUsername={props.authorUsername}
+                edited={props.edited}
               />
 
-              <Typography component='p' variant='body1'>
-                {props.body}
-              </Typography>
+              {props.editing ? (
+                <CreateCommentForm
+                  defaultValue={props.body}
+                  error={props.error}
+                  isEdit={true}
+                  loading={props.loadingEdit}
+                  loadingSubscribe={props.loadingSubscribe}
+                  onCancel={() => props.setEditing(false)}
+                  onReply={props.onEdit}
+                  onSignIn={props.onSignIn}
+                  onSubscribe={props.onSubscribe}
+                />
+              ) : (
+                <Typography component='p' variant='body1'>
+                  {props.body}
+                </Typography>
+              )}
 
               <Grid container className={classes.buttonGroup}>
                 {props.numOfComments > 0 && (
@@ -142,30 +166,49 @@ const Comment: React.FC<CommentProps> = (props) => {
                   Reply
                 </Button>
 
-                <Button
-                  className={clsx(classes.button, classes.report)}
-                  onClick={props.isAuthor ? props.onDelete : props.onReport}
-                  disabled={props.isAuthor && props.loadingDelete}
-                >
-                  {props.isAuthor ? 'Delete' : 'Report'}
-                </Button>
+                {props.isAuthor ? (
+                  <>
+                    <Button
+                      className={clsx(classes.button, classes.edit)}
+                      onClick={() => props.setEditing((prev) => !prev)}
+                    >
+                      Edit
+                    </Button>
+
+                    <Button
+                      className={clsx(classes.button, classes.report)}
+                      onClick={props.onDelete}
+                      disabled={props.loadingDelete}
+                    >
+                      Delete
+                    </Button>
+                  </>
+                ) : (
+                  <Button
+                    className={clsx(classes.button, classes.report)}
+                    onClick={props.onReport}
+                  >
+                    Report
+                  </Button>
+                )}
               </Grid>
 
               {props.replying && (
                 <CreateCommentForm
-                  onReply={props.onReply}
-                  loading={props.loadingReply}
+                  error={props.error}
                   isReply={true}
+                  loading={props.loadingReply}
+                  loadingSubscribe={props.loadingSubscribe}
+                  onCancel={() => props.setReplying(false)}
+                  onReply={props.onReply}
                   onSignIn={props.onSignIn}
                   onSubscribe={props.onSubscribe}
-                  loadingSubscribe={props.loadingSubscribe}
-                  error={props.error}
                 />
               )}
             </>
           )}
 
-          {props.replies.length && (
+          {props.replies.length > 0 && (
             <div className={classes.replies}>
               {props.replies.map((comment, i) => (
                 <CommentContainer key={i} comment={comment} isReply />

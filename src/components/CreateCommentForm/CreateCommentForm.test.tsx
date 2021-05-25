@@ -4,6 +4,7 @@ import CreateCommentForm from '.';
 
 const props = {
   onReply: () => {},
+  onCancel: () => {},
   loading: false,
   onSignIn: () => {},
   onSubscribe: () => {},
@@ -20,9 +21,9 @@ describe('<CreateCommentForm />', () => {
     getByRole('textbox');
   });
 
-  it('has a button', () => {
+  it('should render a submit a button', () => {
     const { getByRole } = render(<CreateCommentForm {...props} />);
-    getByRole('button');
+    getByRole('button', { name: /comment/i });
   });
 
   it("should change text input's value", () => {
@@ -30,6 +31,23 @@ describe('<CreateCommentForm />', () => {
     const input = getByRole('textbox') as HTMLInputElement;
     fireEvent.change(input, { target: { value: 'a' } });
     expect(input.value).toBe('a');
+  });
+
+  it('should render a cancel button', () => {
+    const { getByRole } = render(<CreateCommentForm {...props} />);
+    getByRole('button', { name: /cancel/i });
+  });
+
+  it('should call onCancel', async () => {
+    const fn = jest.fn();
+    const { getByRole } = render(
+      <CreateCommentForm {...props} onCancel={fn} />
+    );
+    const button = getByRole('button', { name: /cancel/i });
+    await act(async () => {
+      fireEvent.click(button);
+    });
+    expect(fn).toBeCalled();
   });
 
   it('should call onReply on submit', async () => {
@@ -129,7 +147,9 @@ describe('<CreateCommentForm />', () => {
     const { getByRole } = render(
       <CreateCommentForm {...props} loading={true} />
     );
-    const button = getByRole('button') as HTMLButtonElement;
+    const button = getByRole('button', {
+      name: /comment/i,
+    }) as HTMLButtonElement;
     expect(button.disabled).toBe(true);
   });
 
@@ -138,5 +158,16 @@ describe('<CreateCommentForm />', () => {
       <CreateCommentForm {...props} error={{ message: 'invalid body' }} />
     );
     getByText(/invalid body/i);
+  });
+
+  it('should set default value', async () => {
+    const fn = jest.fn();
+    const { getByRole } = render(
+      <CreateCommentForm {...props} onReply={fn} defaultValue='test value' />
+    );
+    await act(async () => {
+      fireEvent.submit(getByRole('form'));
+    });
+    expect(fn).toHaveBeenCalledWith('test value');
   });
 });

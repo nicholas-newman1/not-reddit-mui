@@ -8,6 +8,7 @@ interface Props {
   authorUsername?: string;
   authorProfileHref?: string;
   timestamp: number;
+  edited?: boolean;
 }
 
 const useStyles = makeStyles((theme) => {
@@ -31,8 +32,9 @@ const useStyles = makeStyles((theme) => {
     timeString: {
       color: theme.palette.text.secondary,
     },
-    category: {
+    edited: {
       color: theme.palette.text.secondary,
+      fontStyle: 'italic',
     },
   };
 });
@@ -57,6 +59,12 @@ const CommentMeta: React.FC<Props> = (props) => {
           className={clsx(classes.timeString, classes.item)}
         >
           {getTimeAgoString(props.timestamp)}
+        </Typography>
+      )}
+
+      {props.edited && (
+        <Typography className={clsx(classes.item, classes.edited)}>
+          Edited
         </Typography>
       )}
     </Grid>
