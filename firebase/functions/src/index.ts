@@ -1,8 +1,10 @@
-import * as firebase from 'firebase-admin';
+import * as admin from 'firebase-admin';
 import * as functions from 'firebase-functions';
 import { DBPost, DBUser } from '../../../src/types/db';
-const admin = firebase.initializeApp();
+admin.initializeApp();
 const db = admin.firestore();
+const increment = admin.firestore.FieldValue.increment(1);
+const decrement = admin.firestore.FieldValue.increment(-1);
 
 const updateNumOfSubscribers = async (
   snap: functions.firestore.QueryDocumentSnapshot,
@@ -10,14 +12,10 @@ const updateNumOfSubscribers = async (
 ) => {
   const category = snap.ref.parent.parent;
   const id = category?.id;
-  const data = (await category?.get())?.data();
-
-  if (id && data) {
-    const numOfSubscribers = decrease
-      ? data.numOfSubscribers - 1
-      : data.numOfSubscribers + 1;
-    db.doc(`categories/${id}`).update({ numOfSubscribers });
-  }
+  if (!id) return;
+  db.doc(`categories/${id}`).update({
+    numOfSubscribers: decrease ? decrement : increment,
+  });
 };
 
 const updateNumOfModerators = async (
@@ -26,13 +24,10 @@ const updateNumOfModerators = async (
 ) => {
   const category = snap.ref.parent.parent;
   const id = category?.id;
-  const data = (await category?.get())?.data();
-  if (id && data) {
-    const numOfModerators = decrease
-      ? data.numOfModerators - 1
-      : data.numOfModerators + 1;
-    db.doc(`categories/${id}`).update({ numOfModerators });
-  }
+  if (!id) return;
+  db.doc(`categories/${id}`).update({
+    numOfModerators: decrease ? decrement : increment,
+  });
 };
 
 const updatePostRating = async (
@@ -41,11 +36,8 @@ const updatePostRating = async (
 ) => {
   const post = snap.ref.parent.parent;
   const id = post?.id;
-  const data = (await post?.get())?.data();
-  if (id && data) {
-    const rating = decrease ? data.rating - 1 : data.rating + 1;
-    db.doc(`posts/${id}`).update({ rating });
-  }
+  if (!id) return;
+  db.doc(`posts/${id}`).update({ rating: decrease ? decrement : increment });
 };
 
 const updateCommentRating = async (
@@ -53,11 +45,8 @@ const updateCommentRating = async (
   decrease = false
 ) => {
   const comment = snap.ref.parent.parent;
-  const data = (await comment?.get())?.data();
-  if (comment && data) {
-    const rating = decrease ? data.rating - 1 : data.rating + 1;
-    db.doc(comment.path).update({ rating });
-  }
+  if (!comment) return;
+  db.doc(comment.path).update({ rating: decrease ? decrement : increment });
 };
 
 const daysWhenPostIsLessThanWeekOld = (timestamp: number = Date.now()) => {
@@ -77,12 +66,7 @@ const updateNumOfComments = async (
   const parentDocRef = snap.ref.parent.parent;
   if (!parentDocRef) return;
   const path = parentDocRef.path;
-  const data = (await parentDocRef.get()).data();
-  if (!data) return;
-  const numOfComments = decrease
-    ? data.numOfComments - 1
-    : data.numOfComments + 1;
-  db.doc(path).update({ numOfComments });
+  db.doc(path).update({ numOfComments: decrease ? decrement : increment });
 };
 
 exports.categoryCreated = functions.firestore
@@ -145,7 +129,7 @@ exports.postUpdated = functions.firestore
 
     /* if db admin changes timestamp, update daysWhenPostIsLessThanWeekOld */
     if (before.timestamp != after.timestamp && before.rating == after.rating) {
-      const firebaseTimestamp = after.timestamp as firebase.firestore.Timestamp;
+      const firebaseTimestamp = after.timestamp as admin.firestore.Timestamp;
       const timestamp = firebaseTimestamp.toMillis();
       db.doc(`posts/${id}`).update({
         daysWhenPostIsLessThanWeekOld: daysWhenPostIsLessThanWeekOld(timestamp),
