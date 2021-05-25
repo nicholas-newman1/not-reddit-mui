@@ -40,7 +40,7 @@ interface Props {
   onSignIn: () => void;
   onSubscribe: (clearErrors: () => void) => void;
   loadingSubscribe: boolean;
-  error:
+  error?:
     | {
         type?: string;
         message?: string;
