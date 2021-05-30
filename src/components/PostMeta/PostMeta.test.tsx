@@ -50,6 +50,16 @@ describe('<PostMeta />', () => {
     getByText(/meditation/i);
   });
 
+  it('should render edited tag if edited', () => {
+    const { getByText } = render(
+      <MemoryRouter>
+        <PostMeta {...props} edited />
+      </MemoryRouter>
+    );
+
+    getByText(/edited/i);
+  });
+
   it('username link goes to correct route', async () => {
     const history = createMemoryHistory();
     history.push = jest.fn();

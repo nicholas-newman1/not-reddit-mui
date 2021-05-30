@@ -8,6 +8,7 @@ import {
   getMoreCategories,
   getMorePosts,
   setPostOrder,
+  deletePost,
 } from '../../store/homePageSlice';
 import CategoryList from '../../components/CategoryList';
 import PostList from '../../components/PostList';
@@ -16,12 +17,14 @@ import CategoryListLoading from '../../components/CategoryList/Loading';
 import useSubscribedCategoryIds from '../../hooks/useSubscribedCategoryIds';
 import { displayCreatePostDialog } from '../../store/createPostSlice';
 import { displayCreateCategoryDialog } from '../../store/createCategorySlice';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import PostOrder from '../../components/PostOrder';
 import { useIsFirstRender } from '../../hooks/useIsFirstRender';
 import usePostRatingStatus from '../../hooks/usePostRatingStatus';
+import { toggleEditing } from '../../store/postPageSlice';
 
 const Home = () => {
+  const history = useHistory();
   const dispatch = useAppDispatch();
   const loadingUser = useAppSelector((state) => state.auth.loading);
   const {
@@ -46,9 +49,16 @@ const Home = () => {
 
   const posts = postsWithRating.map((post) => ({
     ...post,
+    loadingDelete: false,
+    onDelete: () => dispatch(deletePost(post.postId)),
+    onEdit: () => {
+      history.push(post.postHref);
+      dispatch(toggleEditing());
+    },
+    onReport: () => {},
     onSave: () => {},
     onShare: () => {},
-    onReport: () => {},
+    onToggleEditing: () => {},
   }));
 
   const categories = categoryList.map((category) => ({
@@ -59,12 +69,11 @@ const Home = () => {
     loading: loadingToggleSubscribe(category.categoryId),
   }));
 
-  /* only load posts/categories if auth has been verified and there are
-  not already posts/categories loaded */
+  /* only load posts/categories if auth has been verified */
   useEffect(() => {
     if (!loadingUser) {
-      !postList.length && dispatch(getPostList(postOrder));
-      !categoryList.length && dispatch(getCategoryList());
+      dispatch(getPostList(postOrder));
+      dispatch(getCategoryList());
     }
 
     // eslint-disable-next-line

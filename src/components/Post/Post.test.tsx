@@ -25,6 +25,14 @@ const post = {
   onShare: () => {},
   onReport: () => {},
   ratingStatus: 'up' as 'up',
+
+  isEditing: false,
+  loadingDelete: false,
+  loadingEdit: false,
+  onDelete: () => {},
+  onEdit: () => {},
+  onToggleEditing: () => {},
+  isAuthor: false,
 };
 
 describe('<Post />', () => {
@@ -96,6 +104,33 @@ describe('<Post />', () => {
     getByText(/lorem ipsum/i);
   });
 
+  it('should render title input if isEditing is true', () => {
+    const { getByLabelText } = render(
+      <MemoryRouter>
+        <Post loading={false} post={{ ...post, isEditing: true }} />
+      </MemoryRouter>
+    );
+    getByLabelText(/title/i);
+  });
+
+  it('should render body input if isEditing is true', () => {
+    const { getByLabelText } = render(
+      <MemoryRouter>
+        <Post loading={false} post={{ ...post, isEditing: true }} />
+      </MemoryRouter>
+    );
+    getByLabelText(/body/i);
+  });
+
+  it('should render edited tag if edited', () => {
+    const { getByText } = render(
+      <MemoryRouter>
+        <Post loading={false} post={{ ...post, edited: true }} />
+      </MemoryRouter>
+    );
+    getByText(/edited/i);
+  });
+
   it('should render comments link with correct number of comments', () => {
     const { getByText } = render(
       <MemoryRouter>
@@ -129,7 +164,35 @@ describe('<Post />', () => {
         <Post loading={false} post={post} />
       </MemoryRouter>
     );
-    getByText(/save/i);
+    getByText(/report/i);
+  });
+
+  it('should not render report button if isAuthor', () => {
+    const { queryByText } = render(
+      <MemoryRouter>
+        <Post loading={false} post={{ ...post, isAuthor: true }} />
+      </MemoryRouter>
+    );
+    const button = queryByText(/report/i);
+    expect(button).not.toBeInTheDocument();
+  });
+
+  it('should render delete button if isAuthor', () => {
+    const { getByText } = render(
+      <MemoryRouter>
+        <Post loading={false} post={{ ...post, isAuthor: true }} />
+      </MemoryRouter>
+    );
+    getByText(/delete/i);
+  });
+
+  it('should render edit button if isAuthor', () => {
+    const { getByText } = render(
+      <MemoryRouter>
+        <Post loading={false} post={{ ...post, isAuthor: true }} />
+      </MemoryRouter>
+    );
+    getByText(/^edit/i);
   });
 
   it('should go to profile route', () => {
@@ -241,5 +304,34 @@ describe('<Post />', () => {
     expect(onReport).not.toHaveBeenCalled();
     fireEvent.click(reportBtn);
     expect(onReport).toHaveBeenCalledTimes(1);
+  });
+
+  it('should call onToggleEditing after clicking edit button', () => {
+    const onToggleEditing = jest.fn();
+    const { getByText } = render(
+      <MemoryRouter>
+        <Post
+          loading={false}
+          post={{ ...post, onToggleEditing, isAuthor: true }}
+        />
+      </MemoryRouter>
+    );
+    const btn = getByText(/^edit/i);
+    expect(onToggleEditing).not.toHaveBeenCalled();
+    fireEvent.click(btn);
+    expect(onToggleEditing).toHaveBeenCalledTimes(1);
+  });
+
+  it('should call onDelete after clicking delete button', () => {
+    const onDelete = jest.fn();
+    const { getByText } = render(
+      <MemoryRouter>
+        <Post loading={false} post={{ ...post, onDelete, isAuthor: true }} />
+      </MemoryRouter>
+    );
+    const btn = getByText(/delete/i);
+    expect(onDelete).not.toHaveBeenCalled();
+    fireEvent.click(btn);
+    expect(onDelete).toHaveBeenCalledTimes(1);
   });
 });

@@ -8,27 +8,22 @@ import {
 } from '@material-ui/core';
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { Post } from '../../types/client';
 import PostMeta from '../PostMeta';
 import Rating from '../Rating';
+import clsx from 'clsx';
 
-interface Props {
-  onUpVote: (setRating: (a: number) => void) => void;
+interface Props extends Post {
+  loadingDelete: boolean;
+  loadingRating: boolean;
+  onDelete: () => void;
   onDownVote: (setRating: (a: number) => void) => void;
+  onEdit: () => void;
   onSave: () => void;
   onShare: () => void;
   onReport: () => void;
-  postHref: string;
-  postId: string;
-  authorProfileHref: string;
-  categoryHref: string;
-  title: string;
-  authorUsername: string;
-  timestamp: number;
-  categoryId: string;
-  numOfComments: number;
-  rating: number;
+  onUpVote: (setRating: (a: number) => void) => void;
   ratingStatus?: 'up' | 'down';
-  loadingRating: boolean;
 }
 
 const useStyles = makeStyles((theme) => {
@@ -57,6 +52,12 @@ const useStyles = makeStyles((theme) => {
       minWidth: 0,
       fontSize: '0.7rem',
       fontWeight: theme.typography.fontWeightBold,
+    },
+    report: {
+      color: theme.palette.error.light,
+    },
+    edit: {
+      color: theme.palette.warning.main,
     },
   };
 });
@@ -89,6 +90,7 @@ const PostListing: React.FC<Props> = (props) => {
             timestamp={props.timestamp}
             authorProfileHref={props.authorProfileHref}
             authorUsername={props.authorUsername}
+            edited={props.edited}
           />
 
           <Typography component='h2' variant='body1'>
@@ -110,15 +112,40 @@ const PostListing: React.FC<Props> = (props) => {
             >
               comments ({props.numOfComments})
             </Button>
+
             <Button className={classes.button} onClick={props.onSave}>
               Save
             </Button>
+
             <Button className={classes.button} onClick={props.onShare}>
               Share
             </Button>
-            <Button className={classes.button} onClick={props.onReport}>
-              Report
-            </Button>
+
+            {props.isAuthor ? (
+              <>
+                <Button
+                  className={clsx(classes.button, classes.edit)}
+                  onClick={props.onEdit}
+                >
+                  Edit
+                </Button>
+
+                <Button
+                  className={clsx(classes.button, classes.report)}
+                  onClick={props.onDelete}
+                  disabled={props.loadingDelete}
+                >
+                  Delete
+                </Button>
+              </>
+            ) : (
+              <Button
+                className={clsx(classes.button, classes.report)}
+                onClick={props.onReport}
+              >
+                Report
+              </Button>
+            )}
           </Grid>
         </Grid>
       </Grid>

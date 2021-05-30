@@ -24,6 +24,14 @@ describe('<PostListing />', () => {
     categoryId: 'meditation',
     categoryHref: '/categories/meditation',
     loadingRating: false,
+
+    loadingDelete: false,
+    onDelete: () => {},
+    onEdit: () => {},
+    authorId: 'nvrebvpwvbe',
+    body: '123',
+    edited: false,
+    isAuthor: false,
   };
 
   it('should render without crashing', () => {
@@ -113,6 +121,43 @@ describe('<PostListing />', () => {
       </MemoryRouter>
     );
     getByText(/save/i);
+  });
+
+  it('should not render report button if isAuthor', () => {
+    const { queryByText } = render(
+      <MemoryRouter>
+        <PostListing {...props} isAuthor />
+      </MemoryRouter>
+    );
+    const button = queryByText(/report/i);
+    expect(button).not.toBeInTheDocument();
+  });
+
+  it('should render delete button if isAuthor', () => {
+    const { getByText } = render(
+      <MemoryRouter>
+        <PostListing {...props} isAuthor />
+      </MemoryRouter>
+    );
+    getByText(/delete/i);
+  });
+
+  it('should render edit button if isAuthor', () => {
+    const { getByText } = render(
+      <MemoryRouter>
+        <PostListing {...props} isAuthor />
+      </MemoryRouter>
+    );
+    getByText(/^edit/i);
+  });
+
+  it('should render edited tag if edited', () => {
+    const { getByText } = render(
+      <MemoryRouter>
+        <PostListing {...props} edited />
+      </MemoryRouter>
+    );
+    getByText(/edited/i);
   });
 
   it('should go to profile route', () => {
@@ -237,5 +282,31 @@ describe('<PostListing />', () => {
     expect(onReport).not.toHaveBeenCalled();
     fireEvent.click(reportBtn);
     expect(onReport).toHaveBeenCalledTimes(1);
+  });
+
+  it('should call onEdit after clicking edit button', () => {
+    const fn = jest.fn();
+    const { getByText } = render(
+      <MemoryRouter>
+        <PostListing {...props} onEdit={fn} isAuthor />
+      </MemoryRouter>
+    );
+    const button = getByText(/^edit?/i);
+    expect(fn).not.toHaveBeenCalled();
+    fireEvent.click(button);
+    expect(fn).toHaveBeenCalledTimes(1);
+  });
+
+  it('should call onDelete after clicking delete button', () => {
+    const fn = jest.fn();
+    const { getByText } = render(
+      <MemoryRouter>
+        <PostListing {...props} onDelete={fn} isAuthor />
+      </MemoryRouter>
+    );
+    const button = getByText(/delete/i);
+    expect(fn).not.toHaveBeenCalled();
+    fireEvent.click(button);
+    expect(fn).toHaveBeenCalledTimes(1);
   });
 });

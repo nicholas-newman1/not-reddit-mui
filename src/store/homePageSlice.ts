@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { db } from '../services/firebase';
+import { auth, db } from '../services/firebase';
 import { DocumentSnapshot, DBPost, DBCategory } from '../types/db';
 import { daysSinceEpoch } from '../utils/utils';
 import { Post } from '../types/client';
@@ -14,35 +14,37 @@ interface Category {
 type PostOrder = 'new' | 'hot' | 'top';
 
 interface HomePageState {
-  postList: Post[];
-  postListLoading: boolean;
-  postListError: string;
-  postOrder: PostOrder;
-  morePostsLoading: boolean;
-  morePostsError: string;
-  morePostsExhausted: boolean;
   categoryList: Category[];
-  categoryListLoading: boolean;
   categoryListError: string;
-  moreCategoriesLoading: boolean;
+  categoryListLoading: boolean;
+  deletePostLoading: string[];
   moreCategoriesError: string;
   moreCategoriesExhausted: boolean;
+  moreCategoriesLoading: boolean;
+  morePostsError: string;
+  morePostsExhausted: boolean;
+  morePostsLoading: boolean;
+  postList: Post[];
+  postListError: string;
+  postListLoading: boolean;
+  postOrder: PostOrder;
 }
 
 const initialState: HomePageState = {
-  postList: [],
-  postListLoading: true,
-  postListError: '',
-  postOrder: 'new',
-  morePostsLoading: false,
-  morePostsError: '',
-  morePostsExhausted: false,
   categoryList: [],
-  categoryListLoading: true,
   categoryListError: '',
-  moreCategoriesLoading: false,
+  categoryListLoading: true,
+  deletePostLoading: [],
   moreCategoriesError: '',
   moreCategoriesExhausted: false,
+  moreCategoriesLoading: false,
+  morePostsError: '',
+  morePostsExhausted: false,
+  morePostsLoading: false,
+  postList: [],
+  postListError: '',
+  postListLoading: true,
+  postOrder: 'new',
 };
 
 const postsPageLength = 10;
@@ -72,11 +74,12 @@ export const getPostList = createAsyncThunk(
       const data = snap.data() as DBPost;
       return {
         ...data,
-        postId: snap.id,
-        timestamp: data.timestamp.seconds,
-        postHref: `/categories/${data.categoryId}/${snap.id}`,
         authorProfileHref: `/users/${data.authorId}`,
         categoryHref: `/categories/${data.categoryId}`,
+        isAuthor: auth.currentUser?.uid === data.authorId,
+        postHref: `/categories/${data.categoryId}/${snap.id}`,
+        postId: snap.id,
+        timestamp: data.timestamp.seconds,
       };
     }) as Post[];
 
@@ -108,11 +111,12 @@ export const getMorePosts = createAsyncThunk(
       const data = snap.data() as DBPost;
       return {
         ...data,
-        postId: snap.id,
-        timestamp: data.timestamp.seconds,
-        postHref: `/categories/${data.categoryId}/${snap.id}`,
         authorProfileHref: `/users/${data.authorId}`,
         categoryHref: `/categories/${data.categoryId}`,
+        isAuthor: auth.currentUser?.uid === data.authorId,
+        postHref: `/categories/${data.categoryId}/${snap.id}`,
+        postId: snap.id,
+        timestamp: data.timestamp.seconds,
       };
     }) as Post[];
 
@@ -162,6 +166,11 @@ export const getMoreCategories = createAsyncThunk(
         }) as Category[];
       });
   }
+);
+
+export const deletePost = createAsyncThunk(
+  'homePage/deletePost',
+  (postId: string) => db.doc(`posts/${postId}`).delete()
 );
 
 export const homePageSlice = createSlice({
@@ -237,6 +246,22 @@ export const homePageSlice = createSlice({
       .addCase(getMoreCategories.rejected, (state) => {
         state.moreCategoriesLoading = false;
         state.moreCategoriesError = 'An error occurred';
+      })
+      .addCase(deletePost.pending, (state, action) => {
+        state.deletePostLoading.push(action.meta.arg);
+      })
+      .addCase(deletePost.fulfilled, (state, action) => {
+        state.deletePostLoading = state.deletePostLoading.filter(
+          (id) => id !== action.meta.arg
+        );
+        state.postList = state.postList.filter(
+          (post) => post.postId !== action.meta.arg
+        );
+      })
+      .addCase(deletePost.rejected, (state, action) => {
+        state.deletePostLoading = state.deletePostLoading.filter(
+          (id) => id !== action.meta.arg
+        );
       });
   },
 });

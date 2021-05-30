@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { db } from '../services/firebase';
+import { auth, db } from '../services/firebase';
 import { DocumentSnapshot, DBPost } from '../types/db';
 import { daysSinceEpoch } from '../utils/utils';
 import { Post } from '../types/client';
@@ -7,23 +7,25 @@ import { Post } from '../types/client';
 type PostOrder = 'new' | 'hot' | 'top';
 
 interface CategoryPageState {
-  postList: Post[];
-  postListLoading: boolean;
-  postListError: string;
-  postOrder: PostOrder;
-  morePostsLoading: boolean;
+  deletePostLoading: string[];
   morePostsError: string;
   morePostsExhausted: boolean;
+  morePostsLoading: boolean;
+  postList: Post[];
+  postListError: string;
+  postListLoading: boolean;
+  postOrder: PostOrder;
 }
 
 const initialState: CategoryPageState = {
-  postList: [],
-  postListLoading: true,
-  postListError: '',
-  postOrder: 'new',
-  morePostsLoading: false,
+  deletePostLoading: [],
   morePostsError: '',
   morePostsExhausted: false,
+  morePostsLoading: false,
+  postList: [],
+  postListError: '',
+  postListLoading: true,
+  postOrder: 'new',
 };
 
 const postsPageLength = 10;
@@ -63,11 +65,12 @@ export const getPostList = createAsyncThunk(
           const data = snap.data() as DBPost;
           return {
             ...data,
-            postId: snap.id,
-            timestamp: data.timestamp.seconds,
-            postHref: `/categories/${data.categoryId}/${snap.id}`,
             authorProfileHref: `/users/${data.authorId}`,
             categoryHref: `/categories/${data.categoryId}`,
+            isAuthor: auth.currentUser?.uid === data.authorId,
+            postHref: `/categories/${data.categoryId}/${snap.id}`,
+            postId: snap.id,
+            timestamp: data.timestamp.seconds,
           };
         }) as Post[];
       });
@@ -103,15 +106,21 @@ export const getMorePosts = createAsyncThunk(
           const data = snap.data() as DBPost;
           return {
             ...data,
-            postId: snap.id,
-            timestamp: data.timestamp.seconds,
-            postHref: `/categories/${data.categoryId}/${snap.id}`,
             authorProfileHref: `/users/${data.authorId}`,
             categoryHref: `/categories/${data.categoryId}`,
+            isAuthor: auth.currentUser?.uid === data.authorId,
+            postHref: `/categories/${data.categoryId}/${snap.id}`,
+            postId: snap.id,
+            timestamp: data.timestamp.seconds,
           };
         }) as Post[];
       });
   }
+);
+
+export const deletePost = createAsyncThunk(
+  'homePage/deletePost',
+  (postId: string) => db.doc(`posts/${postId}`).delete()
 );
 
 export const categoryPageSlice = createSlice({
@@ -155,6 +164,22 @@ export const categoryPageSlice = createSlice({
       .addCase(getMorePosts.rejected, (state) => {
         state.morePostsLoading = false;
         state.morePostsError = 'An error occurred';
+      })
+      .addCase(deletePost.pending, (state, action) => {
+        state.deletePostLoading.push(action.meta.arg);
+      })
+      .addCase(deletePost.fulfilled, (state, action) => {
+        state.deletePostLoading = state.deletePostLoading.filter(
+          (id) => id !== action.meta.arg
+        );
+        state.postList = state.postList.filter(
+          (post) => post.postId !== action.meta.arg
+        );
+      })
+      .addCase(deletePost.rejected, (state, action) => {
+        state.deletePostLoading = state.deletePostLoading.filter(
+          (id) => id !== action.meta.arg
+        );
       });
   },
 });

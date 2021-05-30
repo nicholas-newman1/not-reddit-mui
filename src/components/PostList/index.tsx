@@ -1,4 +1,5 @@
 import { List, ListItem, Typography, makeStyles } from '@material-ui/core';
+import { Post } from '../../types/client';
 import PostListing from '../PostListing';
 import PostListLoading from './Loading';
 
@@ -12,26 +13,22 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+interface PostWithActions extends Post {
+  loadingDelete: boolean;
+  loadingRating: boolean;
+  onDelete: () => void;
+  onDownVote: (setRating: (a: number) => void) => void;
+  onEdit: () => void;
+  onSave: () => void;
+  onShare: () => void;
+  onReport: () => void;
+  onToggleEditing: () => void;
+  onUpVote: (setRating: (a: number) => void) => void;
+  ratingStatus?: 'up' | 'down';
+}
+
 interface Props {
-  posts: {
-    onUpVote: (setRating: (a: number) => void) => void;
-    onDownVote: (setRating: (a: number) => void) => void;
-    onSave: () => void;
-    onShare: () => void;
-    onReport: () => void;
-    postHref: string;
-    postId: string;
-    authorProfileHref: string;
-    categoryHref: string;
-    title: string;
-    authorUsername: string;
-    timestamp: number;
-    categoryId: string;
-    numOfComments: number;
-    rating: number;
-    ratingStatus?: 'up' | 'down';
-    loadingRating: boolean;
-  }[];
+  posts: PostWithActions[];
   loading: boolean;
 }
 

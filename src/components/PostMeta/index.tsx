@@ -10,6 +10,7 @@ interface Props {
   timestamp: number;
   categoryId: string;
   categoryHref: string;
+  edited?: boolean;
 }
 
 const useStyles = makeStyles((theme) => {
@@ -35,6 +36,10 @@ const useStyles = makeStyles((theme) => {
     },
     category: {
       color: theme.palette.text.secondary,
+    },
+    edited: {
+      color: theme.palette.text.secondary,
+      fontStyle: 'italic',
     },
   };
 });
@@ -65,6 +70,12 @@ const PostMeta: React.FC<Props> = (props) => {
       >
         {props.categoryId}
       </Button>
+
+      {props.edited && (
+        <Typography className={clsx(classes.item, classes.edited)}>
+          Edited
+        </Typography>
+      )}
     </Grid>
   );
 };

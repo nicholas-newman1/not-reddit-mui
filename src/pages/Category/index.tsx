@@ -1,6 +1,6 @@
 import { Button, Container, Grid } from '@material-ui/core';
 import { useEffect } from 'react';
-import { RouteComponentProps } from 'react-router';
+import { RouteComponentProps, useHistory } from 'react-router';
 import PostList from '../../components/PostList';
 import PostListLoading from '../../components/PostList/Loading';
 import PostOrder from '../../components/PostOrder';
@@ -10,11 +10,13 @@ import { useAppSelector } from '../../hooks/useAppSelector';
 import { useIsFirstRender } from '../../hooks/useIsFirstRender';
 import usePostRatingStatus from '../../hooks/usePostRatingStatus';
 import {
+  deletePost,
   getMorePosts,
   getPostList,
   setPostOrder,
 } from '../../store/categoryPageSlice';
 import { displayCreatePostDialog } from '../../store/createPostSlice';
+import { toggleEditing } from '../../store/postPageSlice';
 
 interface MatchProps {
   categoryId: string;
@@ -24,6 +26,7 @@ interface Props extends RouteComponentProps<MatchProps> {}
 
 const Category: React.FC<Props> = ({ match }) => {
   const categoryId = match.params.categoryId;
+  const history = useHistory();
   const dispatch = useAppDispatch();
   const loadingUser = useAppSelector((state) => state.auth.loading);
   const {
@@ -32,23 +35,30 @@ const Category: React.FC<Props> = ({ match }) => {
     postOrder,
     morePostsLoading,
     morePostsExhausted,
+    deletePostLoading,
   } = useAppSelector((state) => state.categoryPage);
 
   const { postsWithRating } = usePostRatingStatus(postList);
 
   const posts = postsWithRating.map((post) => ({
     ...post,
+    loadingDelete: deletePostLoading.includes(post.postId),
+    onDelete: () => dispatch(deletePost(post.postId)),
+    onEdit: () => {
+      history.push(post.postHref);
+      dispatch(toggleEditing());
+    },
+    onReport: () => {},
     onSave: () => {},
     onShare: () => {},
-    onReport: () => {},
+    onToggleEditing: () => {},
   }));
 
   /* only load posts/meta if auth has been verified and there are not already
   posts/meta loaded, or if the category does not match */
   useEffect(() => {
     if (!loadingUser) {
-      (!postList.length || postList[0].categoryId !== categoryId) &&
-        dispatch(getPostList({ categoryId, postOrder }));
+      dispatch(getPostList({ categoryId, postOrder }));
     }
     //eslint-disable-next-line
   }, [categoryId, loadingUser]);

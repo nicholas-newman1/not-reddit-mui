@@ -4,33 +4,43 @@ import { DBComment, DBPost, DocumentSnapshot } from '../types/db';
 import { Comment, Post } from '../types/client';
 
 interface PostPageState {
-  post: Post | null;
-  postLoading: boolean;
-  postError: string;
   comments: Comment[];
-  commentsLoading: boolean;
   commentsError: string;
-  moreCommentsLoading: boolean;
+  commentsLoading: boolean;
+  createCommentError: string;
+  createCommentLoading: boolean;
+  deletePostError: string;
+  deletePostLoading: boolean;
+  editPostError: string;
+  editPostLoading: boolean;
+  isCreateCommentDialogOpen: boolean;
+  isEditing: boolean;
   moreCommentsError: string;
   moreCommentsExhausted: boolean;
-  isCreateCommentDialogOpen: boolean;
-  createCommentLoading: boolean;
-  createCommentError: string;
+  moreCommentsLoading: boolean;
+  post: Post | null;
+  postError: string;
+  postLoading: boolean;
 }
 
 const initialState: PostPageState = {
-  post: null,
-  postLoading: true,
-  postError: '',
   comments: [],
-  commentsLoading: true,
   commentsError: '',
-  moreCommentsLoading: false,
+  commentsLoading: true,
+  createCommentError: '',
+  createCommentLoading: false,
+  deletePostError: '',
+  deletePostLoading: false,
+  editPostError: '',
+  editPostLoading: false,
+  isCreateCommentDialogOpen: false,
+  isEditing: false,
   moreCommentsError: '',
   moreCommentsExhausted: false,
-  isCreateCommentDialogOpen: false,
-  createCommentLoading: false,
-  createCommentError: '',
+  moreCommentsLoading: false,
+  post: null,
+  postError: '',
+  postLoading: true,
 };
 
 const commentsPageLength = 10;
@@ -43,11 +53,12 @@ export const getPost = createAsyncThunk(
     const data = snap.data() as DBPost;
     return {
       ...data,
-      postId: snap.id,
-      timestamp: data.timestamp.seconds,
-      postHref: `/categories/${data.categoryId}/${snap.id}`,
       authorProfileHref: `/users/${data.authorId}`,
       categoryHref: `/categories/${data.categoryId}`,
+      isAuthor: auth.currentUser?.uid === data.authorId,
+      postHref: `/categories/${data.categoryId}/${snap.id}`,
+      postId: snap.id,
+      timestamp: data.timestamp.seconds,
     };
   }
 );
@@ -66,12 +77,12 @@ export const getComments = createAsyncThunk(
       const data = doc.data() as DBComment;
       return {
         ...data,
-        timestamp: data.timestamp.seconds,
-        replies: [] as Comment[],
-        path: doc.ref.path,
         authorProfileHref: `/profiles/${data.authorId}`,
-        isAuthor: auth.currentUser?.uid === data.authorId,
         commentId: doc.id,
+        isAuthor: auth.currentUser?.uid === data.authorId,
+        path: doc.ref.path,
+        replies: [] as Comment[],
+        timestamp: data.timestamp.seconds,
       };
     });
   }
@@ -91,12 +102,12 @@ export const getMoreComments = createAsyncThunk(
       const data = doc.data() as DBComment;
       return {
         ...data,
-        timestamp: data.timestamp.seconds,
-        replies: [] as Comment[],
-        path: doc.ref.path,
         authorProfileHref: `/profiles/${data.authorId}`,
-        isAuthor: auth.currentUser?.uid === data.authorId,
         commentId: doc.id,
+        isAuthor: auth.currentUser?.uid === data.authorId,
+        path: doc.ref.path,
+        replies: [] as Comment[],
+        timestamp: data.timestamp.seconds,
       };
     });
   }
@@ -113,14 +124,38 @@ export const createComment = createAsyncThunk(
     const data = doc.data() as DBComment;
     return {
       ...data,
-      timestamp: Date.now() / 1000,
-      replies: [] as Comment[],
-      path: doc.ref.path,
       authorProfileHref: `/profiles/${auth.currentUser?.uid}`,
-      isAuthor: true,
       commentId: ref.id,
+      isAuthor: true,
+      path: doc.ref.path,
+      replies: [] as Comment[],
+      timestamp: Date.now() / 1000,
     };
   }
+);
+
+export const editPost = createAsyncThunk(
+  'postPage/editPost',
+  async (
+    { title, body, post }: { title: string; body: string; post: Post },
+    { rejectWithValue }
+  ) => {
+    try {
+      await db.doc(`posts/${post.postId}`).update({ title, body });
+      return {
+        ...post,
+        title,
+        body,
+      };
+    } catch (err) {
+      return rejectWithValue(err.message);
+    }
+  }
+);
+
+export const deletePost = createAsyncThunk(
+  'postPage/deletePost',
+  (postId: string) => db.doc(`posts/${postId}`).delete()
 );
 
 export const postPageSlice = createSlice({
@@ -132,6 +167,9 @@ export const postPageSlice = createSlice({
     },
     hideCreateCommentDialog: (state) => {
       state.isCreateCommentDialogOpen = false;
+    },
+    toggleEditing: (state) => {
+      state.isEditing = !state.isEditing;
     },
   },
   extraReducers: (builder) => {
@@ -195,11 +233,39 @@ export const postPageSlice = createSlice({
       .addCase(createComment.rejected, (state, action) => {
         state.createCommentLoading = false;
         state.createCommentError = 'An error occured';
+      })
+      .addCase(deletePost.pending, (state) => {
+        state.deletePostLoading = true;
+        state.deletePostError = '';
+      })
+      .addCase(deletePost.fulfilled, (state) => {
+        state.deletePostLoading = false;
+        state.deletePostError = '';
+      })
+      .addCase(deletePost.rejected, (state, action) => {
+        state.deletePostLoading = false;
+        state.deletePostError = 'An error occured';
+      })
+      .addCase(editPost.pending, (state) => {
+        state.editPostLoading = true;
+        state.editPostError = '';
+      })
+      .addCase(editPost.fulfilled, (state, action) => {
+        state.editPostLoading = false;
+        state.editPostError = '';
+        state.post = action.payload;
+      })
+      .addCase(editPost.rejected, (state, action) => {
+        state.editPostLoading = false;
+        state.editPostError = 'An error occured';
       });
   },
 });
 
-export const { displayCreateCommentDialog, hideCreateCommentDialog } =
-  postPageSlice.actions;
+export const {
+  displayCreateCommentDialog,
+  hideCreateCommentDialog,
+  toggleEditing,
+} = postPageSlice.actions;
 
 export default postPageSlice.reducer;

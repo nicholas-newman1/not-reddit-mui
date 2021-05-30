@@ -1,40 +1,41 @@
 export interface Post {
-  title: string;
-  body: string;
   authorId: string;
+  authorProfileHref: string;
   authorUsername: string;
+  body: string;
+  categoryHref: string;
   categoryId: string;
-  postId: string;
   edited: boolean;
+  isAuthor: boolean;
+  numOfComments: number;
+  postHref: string;
+  postId: string;
   rating: number;
   timestamp: number;
-  postHref: string;
-  authorProfileHref: string;
-  categoryHref: string;
-  numOfComments: number;
+  title: string;
 }
 
 export interface Comment {
   authorId: string;
+  authorProfileHref: string;
   authorUsername: string;
   body: string;
-  edited: boolean;
-  rating: number;
-  timestamp: number;
-  replies: Comment[];
-  path: string;
-  authorProfileHref: string;
-  numOfComments: number;
-  postId: string;
   categoryId: string;
-  isAuthor: boolean;
-  deleted: boolean;
   commentId: string;
+  deleted: boolean;
+  edited: boolean;
+  isAuthor: boolean;
+  numOfComments: number;
+  path: string;
+  postId: string;
+  rating: number;
+  replies: Comment[];
+  timestamp: number;
 }
 
 export type Error =
   | {
-      type?: string;
       message?: string;
+      type?: string;
     }
   | undefined;

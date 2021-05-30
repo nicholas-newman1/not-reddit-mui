@@ -1,15 +1,18 @@
 import React, { useEffect, useMemo } from 'react';
 import { Button, Container, Grid, Hidden, Typography } from '@material-ui/core';
-import { RouteComponentProps } from 'react-router';
+import { RouteComponentProps, useHistory } from 'react-router';
 import Post from '../../components/Post';
 import CategoryMetaContainer from '../../containers/CategoryMetaContainer';
 import { useAppDispatch } from '../../hooks/useAppDispatch';
 import { useAppSelector } from '../../hooks/useAppSelector';
 import {
+  deletePost,
   displayCreateCommentDialog,
+  editPost,
   getComments,
   getMoreComments,
   getPost,
+  toggleEditing,
 } from '../../store/postPageSlice';
 import usePostRatingStatus from '../../hooks/usePostRatingStatus';
 import CommentList from '../../components/CommentList';
@@ -24,15 +27,19 @@ interface MatchProps {
 interface Props extends RouteComponentProps<MatchProps> {}
 const PostPage: React.FC<Props> = ({ match }) => {
   const { categoryId, postId } = match.params;
+  const history = useHistory();
   const dispatch = useAppDispatch();
   const loadingUser = useAppSelector((state) => state.auth.loading);
   const {
-    post,
-    postLoading,
     comments,
     commentsLoading,
+    deletePostLoading,
+    editPostLoading,
+    isEditing,
     moreCommentsLoading,
     moreCommentsExhausted,
+    post,
+    postLoading,
   } = useAppSelector((state) => state.postPage);
   const posts = useMemo(() => (post ? [post] : []), [post]); // usePostRatingStatus requires a Post[]
   const { postsWithRating } = usePostRatingStatus(posts);
@@ -58,9 +65,21 @@ const PostPage: React.FC<Props> = ({ match }) => {
               <Post
                 post={{
                   ...postsWithRating[0],
+                  isEditing,
+                  loadingDelete: deletePostLoading,
+                  loadingEdit: editPostLoading,
+                  onDelete: () => {
+                    dispatch(deletePost(postId)).then(() => history.goBack());
+                  },
+                  onEdit: (title: string, body: string) => {
+                    dispatch(
+                      editPost({ title, body, post: postsWithRating[0] })
+                    ).then(() => dispatch(toggleEditing()));
+                  },
+                  onReport: () => {},
                   onSave: () => {},
                   onShare: () => {},
-                  onReport: () => {},
+                  onToggleEditing: () => dispatch(toggleEditing()),
                 }}
                 /* WHY DOES THIS NEED TO BE DONE ? */
                 loading={postLoading || postsWithRating[0] === undefined}
