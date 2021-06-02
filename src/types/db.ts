@@ -19,10 +19,11 @@ export interface DBPost {
   authorId: string;
   authorUsername: string;
   categoryId: string;
+  daysWhenPostIsLessThanWeekOld: string[];
   edited: boolean;
+  ownerOfCategory: string;
   rating: number;
   timestamp: Timestamp;
-  daysWhenPostIsLessThanWeekOld: string[];
   numOfComments: number;
 }
 
@@ -43,4 +44,5 @@ export interface DBComment {
   postId: string;
   categoryId: string;
   deleted: boolean;
+  ownerOfCategory: string;
 }

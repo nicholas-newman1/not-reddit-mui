@@ -4,35 +4,36 @@ import { createMemoryHistory } from 'history';
 import Post from '.';
 
 const post = {
-  title: 'Hello if i looked at the sun I would see how beautiful it is',
-  body: 'Lorem ipsum, dolor sit amet consectetur adipisicing elit.',
   authorId: 'ovechking899',
+  authorProfileHref: '/profiles/ovechking899',
   authorUsername: 'ovechking899',
+  body: 'Lorem ipsum, dolor sit amet consectetur adipisicing elit.',
+  categoryHref: '/categories/meditation',
   categoryId: 'meditation',
   commentsHref: '/posts/3131fnu91h1e#comments',
-  postId: '3131fnu91h1e',
   edited: false,
-  rating: 143,
-  timestamp: 1614429965,
-  postHref: '/posts/3131fnu91h1e',
-  authorProfileHref: '/profiles/ovechking899',
-  categoryHref: '/categories/meditation',
-  numOfComments: 12,
+  isAuthor: false,
+  isEditing: false,
+  isOwnerOfCategory: false,
+  loadingEdit: false,
+  loadingDelete: false,
   loadingRating: false,
-  onUpVote: () => {},
+  numOfComments: 12,
+  onDelete: () => {},
   onDownVote: () => {},
+  onEdit: () => {},
+  onReport: () => {},
   onSave: () => {},
   onShare: () => {},
-  onReport: () => {},
-  ratingStatus: 'up' as 'up',
-
-  isEditing: false,
-  loadingDelete: false,
-  loadingEdit: false,
-  onDelete: () => {},
-  onEdit: () => {},
   onToggleEditing: () => {},
-  isAuthor: false,
+  onUpVote: () => {},
+  ownerOfCategory: '12321',
+  postHref: '/posts/3131fnu91h1e',
+  postId: '3131fnu91h1e',
+  rating: 143,
+  ratingStatus: 'up' as 'up',
+  timestamp: 1614429965,
+  title: 'Hello if i looked at the sun I would see how beautiful it is',
 };
 
 describe('<Post />', () => {
@@ -186,6 +187,15 @@ describe('<Post />', () => {
     getByText(/delete/i);
   });
 
+  it('should render delete button if isOwnerOfCategory', () => {
+    const { getByText } = render(
+      <MemoryRouter>
+        <Post loading={false} post={{ ...post, isOwnerOfCategory: true }} />
+      </MemoryRouter>
+    );
+    getByText(/delete/i);
+  });
+
   it('should render edit button if isAuthor', () => {
     const { getByText } = render(
       <MemoryRouter>
@@ -193,6 +203,16 @@ describe('<Post />', () => {
       </MemoryRouter>
     );
     getByText(/^edit/i);
+  });
+
+  it('should not render edit button if !isAuthor', () => {
+    const { queryByText } = render(
+      <MemoryRouter>
+        <Post loading={false} post={{ ...post, isOwnerOfCategory: true }} />
+      </MemoryRouter>
+    );
+    const button = queryByText(/^edit/i);
+    expect(button).not.toBeInTheDocument();
   });
 
   it('should go to profile route', () => {

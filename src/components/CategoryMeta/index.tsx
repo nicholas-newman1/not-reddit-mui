@@ -27,6 +27,7 @@ const useStyles = makeStyles((theme) => ({
 interface Props {
   categoryName: string;
   categoryHref: string;
+  isOwner: boolean;
   owner: {
     username: string;
     uid: string;
@@ -42,6 +43,7 @@ interface Props {
 const CategoryMeta: React.FC<Props> = ({
   categoryName,
   categoryHref,
+  isOwner,
   owner,
   numOfModerators,
   numOfSubscribers,
@@ -74,7 +76,7 @@ const CategoryMeta: React.FC<Props> = ({
           </Typography>
           <Typography variant='body2'>
             <StyledLink
-              color='textPrimary'
+              color={isOwner ? 'secondary' : 'textPrimary'}
               component={Link}
               to={`/profile/${owner.uid}`}
             >

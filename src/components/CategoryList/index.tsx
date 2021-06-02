@@ -20,6 +20,7 @@ interface Props {
     onToggleSubscribe: () => void;
     categoryHref: string;
     subscribed: boolean;
+    isOwner: boolean;
     loading: boolean;
   }[];
   loading: boolean;

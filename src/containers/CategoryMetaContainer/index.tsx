@@ -12,6 +12,7 @@ interface Props {
 const CategoryMetaContainer: React.FC<Props> = ({ categoryId }) => {
   const dispatch = useAppDispatch();
   const loadingUser = useAppSelector((state) => state.auth.loading);
+  const uid = useAppSelector((state) => state.auth.user?.uid);
   const { categoryMeta, categoryMetaLoading } = useAppSelector(
     (state) => state.categoryMeta
   );
@@ -34,6 +35,7 @@ const CategoryMetaContainer: React.FC<Props> = ({ categoryId }) => {
     <CategoryMeta
       categoryHref={`/categories/${categoryMeta.categoryId}`}
       categoryName={categoryMeta.categoryId}
+      isOwner={categoryMeta.owner.uid === uid}
       owner={categoryMeta.owner}
       numOfModerators={categoryMeta.numOfModerators}
       numOfSubscribers={categoryMeta.numOfSubscribers}

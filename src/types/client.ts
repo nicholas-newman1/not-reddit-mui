@@ -7,6 +7,8 @@ export interface Post {
   categoryId: string;
   edited: boolean;
   isAuthor: boolean;
+  isOwnerOfCategory: boolean;
+  ownerOfCategory: string;
   numOfComments: number;
   postHref: string;
   postId: string;
@@ -25,6 +27,8 @@ export interface Comment {
   deleted: boolean;
   edited: boolean;
   isAuthor: boolean;
+  isOwnerOfCategory: boolean;
+  ownerOfCategory: string;
   numOfComments: number;
   path: string;
   postId: string;

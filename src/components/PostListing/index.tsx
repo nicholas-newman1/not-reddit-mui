@@ -91,6 +91,7 @@ const PostListing: React.FC<Props> = (props) => {
             authorProfileHref={props.authorProfileHref}
             authorUsername={props.authorUsername}
             edited={props.edited}
+            isOwnerOfCategory={props.isOwnerOfCategory}
           />
 
           <Typography component='h2' variant='body1'>
@@ -121,14 +122,16 @@ const PostListing: React.FC<Props> = (props) => {
               Share
             </Button>
 
-            {props.isAuthor ? (
+            {props.isAuthor || props.isOwnerOfCategory ? (
               <>
-                <Button
-                  className={clsx(classes.button, classes.edit)}
-                  onClick={props.onEdit}
-                >
-                  Edit
-                </Button>
+                {!props.isAuthor && (
+                  <Button
+                    className={clsx(classes.button, classes.edit)}
+                    onClick={props.onEdit}
+                  >
+                    Edit
+                  </Button>
+                )}
 
                 <Button
                   className={clsx(classes.button, classes.report)}

@@ -49,16 +49,17 @@ let lastComment: DocumentSnapshot | null = null;
 export const getPost = createAsyncThunk(
   'postPage/getPost',
   async (postId: string) => {
-    const snap = await db.doc(`/posts/${postId}`).get();
-    const data = snap.data() as DBPost;
+    const postDoc = await db.doc(`/posts/${postId}`).get();
+    const post = postDoc.data() as DBPost;
     return {
-      ...data,
-      authorProfileHref: `/users/${data.authorId}`,
-      categoryHref: `/categories/${data.categoryId}`,
-      isAuthor: auth.currentUser?.uid === data.authorId,
-      postHref: `/categories/${data.categoryId}/${snap.id}`,
-      postId: snap.id,
-      timestamp: data.timestamp.seconds,
+      ...post,
+      authorProfileHref: `/users/${post.authorId}`,
+      categoryHref: `/categories/${post.categoryId}`,
+      isAuthor: auth.currentUser?.uid === post.authorId,
+      isOwnerOfCategory: auth.currentUser?.uid === post.ownerOfCategory,
+      postHref: `/categories/${post.categoryId}/${postDoc.id}`,
+      postId: postDoc.id,
+      timestamp: post.timestamp.seconds,
     };
   }
 );
@@ -80,6 +81,7 @@ export const getComments = createAsyncThunk(
         authorProfileHref: `/profiles/${data.authorId}`,
         commentId: doc.id,
         isAuthor: auth.currentUser?.uid === data.authorId,
+        isOwnerOfCategory: auth.currentUser?.uid === data.ownerOfCategory,
         path: doc.ref.path,
         replies: [] as Comment[],
         timestamp: data.timestamp.seconds,
@@ -105,6 +107,7 @@ export const getMoreComments = createAsyncThunk(
         authorProfileHref: `/profiles/${data.authorId}`,
         commentId: doc.id,
         isAuthor: auth.currentUser?.uid === data.authorId,
+        isOwnerOfCategory: auth.currentUser?.uid === data.ownerOfCategory,
         path: doc.ref.path,
         replies: [] as Comment[],
         timestamp: data.timestamp.seconds,
@@ -127,6 +130,7 @@ export const createComment = createAsyncThunk(
       authorProfileHref: `/profiles/${auth.currentUser?.uid}`,
       commentId: ref.id,
       isAuthor: true,
+      isOwnerOfCategory: auth.currentUser?.uid === data.ownerOfCategory,
       path: doc.ref.path,
       replies: [] as Comment[],
       timestamp: Date.now() / 1000,

@@ -45,6 +45,7 @@ const useStyles = makeStyles((theme) => {
 
 interface PostType extends ClientPost {
   isEditing: boolean;
+  isOwnerOfCategory: boolean;
   loadingDelete: boolean;
   loadingEdit: boolean;
   loadingRating: boolean;
@@ -96,6 +97,7 @@ const Post: React.FC<Props> = ({ loading, post }) => {
                   <PostMeta
                     categoryId={post.categoryId}
                     categoryHref={post.categoryHref}
+                    isOwnerOfCategory={post.isOwnerOfCategory}
                     timestamp={post.timestamp}
                     authorProfileHref={post.authorProfileHref}
                     authorUsername={post.authorUsername}
@@ -145,14 +147,16 @@ const Post: React.FC<Props> = ({ loading, post }) => {
                     Share
                   </Button>
 
-                  {post.isAuthor ? (
+                  {post.isAuthor || post.isOwnerOfCategory ? (
                     <>
-                      <Button
-                        className={clsx(classes.button, classes.edit)}
-                        onClick={post.onToggleEditing}
-                      >
-                        Edit
-                      </Button>
+                      {!post.isOwnerOfCategory && (
+                        <Button
+                          className={clsx(classes.button, classes.edit)}
+                          onClick={post.onToggleEditing}
+                        >
+                          Edit
+                        </Button>
+                      )}
 
                       <Button
                         className={clsx(classes.button, classes.report)}

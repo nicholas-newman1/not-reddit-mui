@@ -105,6 +105,8 @@ exports.postCreated = functions.firestore
     const data = snap.data();
     const authorDoc = await db.doc(`users/${data.authorId}`).get();
     const authorUsername = authorDoc.data()?.username;
+    const categoryDoc = await db.doc(`categories/${data.categoryId}`).get();
+    const ownerOfCategory = categoryDoc.data()?.ownerId;
     db.doc(snap.ref.path).update({
       rating: 0,
       edited: false,
@@ -112,6 +114,7 @@ exports.postCreated = functions.firestore
       timestamp: snap.createTime,
       daysWhenPostIsLessThanWeekOld: daysWhenPostIsLessThanWeekOld(),
       authorUsername: authorUsername || '',
+      ownerOfCategory,
     });
   });
 
@@ -176,6 +179,8 @@ exports.commentCreated = functions.firestore
     const user = (await db.doc(`users/${uid}`).get()).data() as DBUser;
     const postId = snap.ref.path.split('/')[1];
     const post = (await db.doc(`posts/${postId}`).get()).data() as DBPost;
+    const categoryDoc = await db.doc(`categories/${post.categoryId}`).get();
+    const ownerOfCategory = categoryDoc.data()?.ownerId;
 
     db.doc(snap.ref.path).update({
       authorId: uid,
@@ -187,6 +192,7 @@ exports.commentCreated = functions.firestore
       numOfComments: 0,
       timestamp: snap.createTime,
       deleted: false,
+      ownerOfCategory,
     });
   });
 

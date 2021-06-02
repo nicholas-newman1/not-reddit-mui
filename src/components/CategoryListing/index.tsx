@@ -25,6 +25,7 @@ interface Props {
   onToggleSubscribe: () => void;
   categoryHref: string;
   subscribed: boolean;
+  isOwner: boolean;
   loading: boolean;
 }
 
@@ -34,6 +35,7 @@ const CategoryListing: React.FC<Props> = ({
   onToggleSubscribe,
   categoryHref,
   subscribed,
+  isOwner,
   loading,
 }) => {
   const classes = useStyles();
@@ -46,7 +48,7 @@ const CategoryListing: React.FC<Props> = ({
             <StyledLink
               component={Link}
               to={categoryHref}
-              color='textPrimary'
+              color={isOwner ? 'secondary' : 'textPrimary'}
               className={classes.categoryId}
             >
               {categoryId}

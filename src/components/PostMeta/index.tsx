@@ -7,6 +7,7 @@ import { getTimeAgoString } from '../../utils/utils';
 interface Props {
   authorUsername: string;
   authorProfileHref: string;
+  isOwnerOfCategory: boolean;
   timestamp: number;
   categoryId: string;
   categoryHref: string;
@@ -35,7 +36,10 @@ const useStyles = makeStyles((theme) => {
       color: theme.palette.text.secondary,
     },
     category: {
-      color: theme.palette.text.secondary,
+      color: (props: Props) =>
+        props.isOwnerOfCategory
+          ? theme.palette.secondary.main
+          : theme.palette.text.secondary,
     },
     edited: {
       color: theme.palette.text.secondary,
@@ -45,7 +49,7 @@ const useStyles = makeStyles((theme) => {
 });
 
 const PostMeta: React.FC<Props> = (props) => {
-  const classes = useStyles();
+  const classes = useStyles(props);
   return (
     <Grid container alignItems='center' className={classes.root}>
       <Button

@@ -5,33 +5,34 @@ import PostListing from '.';
 
 describe('<PostListing />', () => {
   const props = {
+    authorId: 'nvrebvpwvbe',
+    authorProfileHref: '/profiles/ovechking899',
+    authorUsername: 'ovechking899',
+    body: '123',
+    categoryHref: '/categories/meditation',
+    categoryId: 'meditation',
     commentsHref: '/posts/3131fnu91h1e#comments',
-    numOfComments: 12,
+    edited: false,
+    isAuthor: false,
+    isOwnerOfCategory: false,
+    loadingDelete: false,
+    loadingRating: false,
+    onDelete: () => {},
     onDownVote: () => {},
+    onEdit: () => {},
+    onReport: () => {},
     onSave: () => {},
     onShare: () => {},
-    onReport: () => {},
     onUpVote: () => {},
+    ownerOfCategory: '414n9f2f238',
+    numOfComments: 12,
     postHref: '/posts/3131fnu91h1e',
     postId: '3131fnu91h1e',
     rating: 143,
     ratingStatus: 'up' as 'up',
+    timestamp: 1614429965,
     title:
       'Hello if i looked at the sun I would see how beautiful it is, and then go blind',
-    authorUsername: 'ovechking899',
-    authorProfileHref: '/profiles/ovechking899',
-    timestamp: 1614429965,
-    categoryId: 'meditation',
-    categoryHref: '/categories/meditation',
-    loadingRating: false,
-
-    loadingDelete: false,
-    onDelete: () => {},
-    onEdit: () => {},
-    authorId: 'nvrebvpwvbe',
-    body: '123',
-    edited: false,
-    isAuthor: false,
   };
 
   it('should render without crashing', () => {
@@ -133,10 +134,29 @@ describe('<PostListing />', () => {
     expect(button).not.toBeInTheDocument();
   });
 
+  it('should not render report button if isOwnerOfCategory', () => {
+    const { queryByText } = render(
+      <MemoryRouter>
+        <PostListing {...props} isOwnerOfCategory />
+      </MemoryRouter>
+    );
+    const button = queryByText(/report/i);
+    expect(button).not.toBeInTheDocument();
+  });
+
   it('should render delete button if isAuthor', () => {
     const { getByText } = render(
       <MemoryRouter>
         <PostListing {...props} isAuthor />
+      </MemoryRouter>
+    );
+    getByText(/delete/i);
+  });
+
+  it('should render delete button if isOwnerOfCategory', () => {
+    const { getByText } = render(
+      <MemoryRouter>
+        <PostListing {...props} isOwnerOfCategory />
       </MemoryRouter>
     );
     getByText(/delete/i);
@@ -149,6 +169,15 @@ describe('<PostListing />', () => {
       </MemoryRouter>
     );
     getByText(/^edit/i);
+  });
+
+  it('should not render edit button if !isAuthor', () => {
+    const { queryByText } = render(
+      <MemoryRouter>
+        <PostListing {...props} isOwnerOfCategory />
+      </MemoryRouter>
+    );
+    expect(queryByText(/^edit/i)).not.toBeInTheDocument();
   });
 
   it('should render edited tag if edited', () => {

@@ -5,6 +5,8 @@ import CategoryMeta from '.';
 
 const props = {
   categoryName: 'hellokitty',
+  categoryHref: '/categories/hellokitty',
+  isOwner: false,
   owner: { username: 'bigboss', uid: 'id101' },
   numOfModerators: 3,
   numOfSubscribers: 867,

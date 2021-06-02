@@ -6,6 +6,7 @@ const categories = [
   {
     categoryHref: '/categories/meditation',
     categoryId: 'meditation',
+    isOwner: false,
     numOfSubscribers: 123,
     onToggleSubscribe: () => {},
     subscribed: false,
@@ -14,6 +15,7 @@ const categories = [
   {
     categoryHref: '/categories/hockey',
     categoryId: 'hockey',
+    isOwner: false,
     numOfSubscribers: 321,
     onToggleSubscribe: () => {},
     subscribed: false,
@@ -22,6 +24,7 @@ const categories = [
   {
     categoryHref: '/categories/running',
     categoryId: 'running',
+    isOwner: false,
     numOfSubscribers: 8673,
     onToggleSubscribe: () => {},
     subscribed: false,

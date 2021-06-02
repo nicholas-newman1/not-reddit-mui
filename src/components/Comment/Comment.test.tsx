@@ -16,6 +16,7 @@ const props = {
   editing: false,
   gotReplies: true,
   isAuthor: false,
+  isOwnerOfCategory: false,
   loadingDelete: false,
   loadingEdit: false,
   loadingRating: false,
@@ -32,6 +33,7 @@ const props = {
   onSignIn: () => {},
   onSubscribe: () => {},
   onUpVote: () => {},
+  ownerOfCategory: 'randomowner',
   path: 'posts/post111/comments/comment111',
   postId: 'post111',
   rating: 2,
@@ -157,7 +159,7 @@ describe('<Comment />', () => {
     expect(fn).toBeCalled();
   });
 
-  it('should not render delete button if props.isAuthor is false', () => {
+  it('should not render delete button if props.isAuthor and props.isOwnerOfCategory is false', () => {
     const { queryByRole } = render(comment());
     const button = queryByRole('button', {
       name: /delete/i,
@@ -167,6 +169,13 @@ describe('<Comment />', () => {
 
   it('should render delete button if props.isAuthor is true', () => {
     const { getByRole } = render(comment({ isAuthor: true }));
+    getByRole('button', {
+      name: /delete/i,
+    });
+  });
+
+  it('should render delete button if props.isOwnerOfCategory is true', () => {
+    const { getByRole } = render(comment({ isOwnerOfCategory: true }));
     getByRole('button', {
       name: /delete/i,
     });
@@ -182,7 +191,32 @@ describe('<Comment />', () => {
     expect(fn).toBeCalled();
   });
 
-  it('should not render report button if props.isAuthor is true', () => {
+  it('should not render edit button if !props.isAuthor', () => {
+    const { queryByRole } = render(comment({ isOwnerOfCategory: true }));
+    const button = queryByRole('button', {
+      name: /^edit/i,
+    });
+    expect(button).not.toBeInTheDocument();
+  });
+
+  it('should render edit button if props.isAuthor is true', () => {
+    const { getByRole } = render(comment({ isAuthor: true }));
+    getByRole('button', {
+      name: /^edit/i,
+    });
+  });
+
+  it('should call props.setEditing upon clicking edit button', () => {
+    const fn = jest.fn();
+    const { getByRole } = render(comment({ setEditing: fn, isAuthor: true }));
+    const button = getByRole('button', {
+      name: /^edit/i,
+    });
+    fireEvent.click(button);
+    expect(fn).toBeCalled();
+  });
+
+  it('should not render report button if props.isAuthor or props.isOwnerOfCategory is true', () => {
     const { queryByRole } = render(comment({ isAuthor: true }));
     const button = queryByRole('button', {
       name: /report/i,
@@ -190,7 +224,7 @@ describe('<Comment />', () => {
     expect(button).not.toBeInTheDocument();
   });
 
-  it('should render report button if props.isAuthor is false', () => {
+  it('should render report button if props.isAuthor and props.isOwnerOfCategory is false', () => {
     const { getByRole } = render(comment());
     getByRole('button', {
       name: /report/i,

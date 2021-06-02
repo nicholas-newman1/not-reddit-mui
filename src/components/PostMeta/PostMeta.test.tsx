@@ -6,6 +6,7 @@ import PostMeta from '.';
 const props = {
   authorUsername: 'ovechking899',
   authorProfileHref: '/profiles/ovechking899',
+  isOwnerOfCategory: false,
   timestamp: 1614429965,
   categoryId: 'meditation',
   categoryHref: '/categories/meditation',

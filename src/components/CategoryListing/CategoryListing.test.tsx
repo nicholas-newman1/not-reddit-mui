@@ -6,6 +6,7 @@ import CategoryListing from '.';
 const props = {
   categoryHref: '/categories/meditation',
   categoryId: 'meditation',
+  isOwner: false,
   numOfSubscribers: 123,
   onToggleSubscribe: () => {},
   subscribed: false,

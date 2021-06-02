@@ -27,6 +27,7 @@ const Home = () => {
   const history = useHistory();
   const dispatch = useAppDispatch();
   const loadingUser = useAppSelector((state) => state.auth.loading);
+  const uid = useAppSelector((state) => state.auth.user?.uid);
   const {
     postList,
     postListLoading,
@@ -67,6 +68,7 @@ const Home = () => {
     onToggleSubscribe: () => onToggleSubscribe(category.categoryId),
     categoryHref: `/categories/${category.categoryId}`,
     loading: loadingToggleSubscribe(category.categoryId),
+    isOwner: category.ownerId === uid,
   }));
 
   /* only load posts/categories if auth has been verified */

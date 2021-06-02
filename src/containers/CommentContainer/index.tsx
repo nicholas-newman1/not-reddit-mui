@@ -53,6 +53,7 @@ const CommentContainer: React.FC<Props> = ({ comment, isReply }) => {
         path: doc.ref.path,
         authorProfileHref: `/profiles/${data.authorId}`,
         isAuthor: user?.uid === data.authorId,
+        isOwnerOfCategory: user?.uid === data.ownerOfCategory,
         commentId: doc.id,
       };
     });
@@ -83,6 +84,7 @@ const CommentContainer: React.FC<Props> = ({ comment, isReply }) => {
           timestamp: Date.now() / 1000,
           replies: [] as CommentType[],
           path: doc.ref.path,
+          isOwnerOfCategory: user?.uid === data.ownerOfCategory,
           authorProfileHref: `/profiles/${user.uid}`,
           isAuthor: true,
           commentId: doc.id,
@@ -138,20 +140,22 @@ const CommentContainer: React.FC<Props> = ({ comment, isReply }) => {
 
   const getRatingStatus = async () => {
     setLoadingRatingStatus(true);
-    const upVoteSnap = await db
-      .collectionGroup('upVoteIds')
-      .where('commentId', '==', comment.commentId)
-      .where('uid', '==', user?.uid)
-      .get();
+    if (user) {
+      const upVoteSnap = await db
+        .collectionGroup('upVoteIds')
+        .where('commentId', '==', comment.commentId)
+        .where('uid', '==', user?.uid)
+        .get();
 
-    const downVoteSnap = await db
-      .collectionGroup('downVoteIds')
-      .where('commentId', '==', comment.commentId)
-      .where('uid', '==', user?.uid)
-      .get();
+      const downVoteSnap = await db
+        .collectionGroup('downVoteIds')
+        .where('commentId', '==', comment.commentId)
+        .where('uid', '==', user?.uid)
+        .get();
 
-    if (upVoteSnap.docs.length) setRatingStatus('up');
-    if (downVoteSnap.docs.length) setRatingStatus('down');
+      if (upVoteSnap.docs.length) setRatingStatus('up');
+      if (downVoteSnap.docs.length) setRatingStatus('down');
+    }
     setLoadingRatingStatus(false);
   };
 

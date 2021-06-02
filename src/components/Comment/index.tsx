@@ -9,29 +9,30 @@ import Rating from '../Rating';
 import Spinner from '../Spinner';
 
 export interface CommentProps extends CommentType {
-  onUpVote: (setRating: (a: number) => void) => void;
-  onDownVote: (setRating: (a: number) => void) => void;
-  onReport: () => void;
-  onReplies: () => void;
-  onReply: (body: string) => void;
-  replying: boolean;
-  setReplying: React.Dispatch<React.SetStateAction<boolean>>;
-  onSignIn: () => void;
-  onSubscribe: (clearErrors: () => void) => void;
-  onDelete: () => void;
-  onEdit: (body: string) => void;
   editing: boolean;
-  setEditing: React.Dispatch<React.SetStateAction<boolean>>;
-  isReply?: boolean;
+  error?: { type?: string; message?: string };
   gotReplies: boolean;
-  loadingReplies: boolean;
-  loadingReply: boolean;
+  isReply?: boolean;
+  isOwnerOfCategory: boolean;
+  loadingDelete: boolean;
   loadingEdit: boolean;
   loadingRating: boolean;
+  loadingReplies: boolean;
+  loadingReply: boolean;
   loadingSubscribe: boolean;
-  loadingDelete: boolean;
+  onDelete: () => void;
+  onDownVote: (setRating: (a: number) => void) => void;
+  onEdit: (body: string) => void;
+  onReplies: () => void;
+  onReply: (body: string) => void;
+  onReport: () => void;
+  onSignIn: () => void;
+  onSubscribe: (clearErrors: () => void) => void;
+  onUpVote: (setRating: (a: number) => void) => void;
   ratingStatus?: 'up' | 'down';
-  error?: { type?: string; message?: string };
+  replying: boolean;
+  setEditing: React.Dispatch<React.SetStateAction<boolean>>;
+  setReplying: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const useStyles = makeStyles((theme) => {
@@ -166,14 +167,16 @@ const Comment: React.FC<CommentProps> = (props) => {
                   Reply
                 </Button>
 
-                {props.isAuthor ? (
+                {props.isAuthor || props.isOwnerOfCategory ? (
                   <>
-                    <Button
-                      className={clsx(classes.button, classes.edit)}
-                      onClick={() => props.setEditing((prev) => !prev)}
-                    >
-                      Edit
-                    </Button>
+                    {props.isAuthor && (
+                      <Button
+                        className={clsx(classes.button, classes.edit)}
+                        onClick={() => props.setEditing((prev) => !prev)}
+                      >
+                        Edit
+                      </Button>
+                    )}
 
                     <Button
                       className={clsx(classes.button, classes.report)}
