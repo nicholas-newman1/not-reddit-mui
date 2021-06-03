@@ -15,9 +15,9 @@ let config: any = {
 
 const app = firebase.initializeApp(config);
 
-export const auth = firebase.auth();
+export const auth = firebase.auth(app);
 export const db = firebase.firestore(app);
-export const functions = firebase.functions();
+export const functions = firebase.functions(app);
 
 if (process.env.NODE_ENV === 'development') {
   auth.useEmulator('http://localhost:9099');

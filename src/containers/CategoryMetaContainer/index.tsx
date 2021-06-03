@@ -37,8 +37,8 @@ const CategoryMetaContainer: React.FC<Props> = ({ categoryId }) => {
       categoryName={categoryMeta.categoryId}
       isOwner={categoryMeta.owner.uid === uid}
       owner={categoryMeta.owner}
-      numOfModerators={categoryMeta.numOfModerators}
-      numOfSubscribers={categoryMeta.numOfSubscribers}
+      numOfModerators={categoryMeta.numOfModerators || 0}
+      numOfSubscribers={categoryMeta.numOfSubscribers || 0}
       onToggleSubscribe={() => onToggleSubscribe(categoryId)}
       loadingToggleSubscribe={loadingToggleSubscribe(categoryId)}
       loading={categoryMetaLoading}
