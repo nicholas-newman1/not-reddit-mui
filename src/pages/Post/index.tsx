@@ -25,7 +25,7 @@ interface MatchProps {
 }
 
 interface Props extends RouteComponentProps<MatchProps> {}
-const PostPage: React.FC<Props> = ({ match }) => {
+const PostPage: React.FC<Props> = ({ match, location }) => {
   const { categoryId, postId } = match.params;
   const history = useHistory();
   const dispatch = useAppDispatch();
@@ -45,15 +45,24 @@ const PostPage: React.FC<Props> = ({ match }) => {
   const { postsWithRating } = usePostRatingStatus(posts);
 
   useEffect(() => {
-    if (!loadingUser) {
+    const state = location.state;
+    if (!loadingUser && !state) {
       dispatch(getPost(postId));
       dispatch(getComments(postId));
+      return;
     }
 
     // eslint-disable-next-line
   }, [loadingUser]);
 
-  // console.log({ postLoading, post: postsWithRating[0] });
+  useEffect(() => {
+    if (!postLoading && (!post || !post.title)) {
+      history.push('/');
+    }
+    // eslint-disable-next-line
+  }, [postLoading]);
+
+  console.log({ postLoading, post: postsWithRating[0] });
 
   return (
     <Container>
@@ -81,8 +90,7 @@ const PostPage: React.FC<Props> = ({ match }) => {
                   onShare: () => {},
                   onToggleEditing: () => dispatch(toggleEditing()),
                 }}
-                /* WHY DOES THIS NEED TO BE DONE ? */
-                loading={postLoading || postsWithRating[0] === undefined}
+                loading={postLoading}
               />
             </Grid>
 

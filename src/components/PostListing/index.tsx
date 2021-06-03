@@ -124,7 +124,7 @@ const PostListing: React.FC<Props> = (props) => {
 
             {props.isAuthor || props.isOwnerOfCategory ? (
               <>
-                {!props.isAuthor && (
+                {props.isAuthor && (
                   <Button
                     className={clsx(classes.button, classes.edit)}
                     onClick={props.onEdit}

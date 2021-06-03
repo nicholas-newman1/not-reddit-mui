@@ -1,6 +1,9 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { RouteComponentProps } from 'react-router';
+import { RootState } from '.';
 import { auth, db } from '../services/firebase';
+import { DBCategory } from '../types/db';
+import { setPost } from './postPageSlice';
 
 interface CreatePostState {
   isCreatePostDialogOpen: boolean;
@@ -29,18 +32,50 @@ interface CreatePostData {
 
 export const createPost = createAsyncThunk(
   'createPost/createPost',
-  async ({ title, category, body, history }: CreatePostData) =>
-    db
-      .collection('posts')
-      .add({
+  async (
+    { title, category, body, history }: CreatePostData,
+    { dispatch, getState, rejectWithValue }
+  ) => {
+    try {
+      const ref = await db.collection('posts').add({
         title,
         categoryId: category.toLowerCase(),
         authorId: auth.currentUser?.uid,
         body,
-      })
-      .then((ref) => {
-        history.push(`/categories/${category}/${ref.id}`);
-      })
+      });
+      const state = getState() as RootState;
+      const authorId = auth.currentUser?.uid || '';
+      const categoryDoc = await db.doc(`categories/${category}`).get();
+      const categoryData = categoryDoc.data() as DBCategory;
+
+      dispatch(
+        setPost({
+          title,
+          categoryId: category.toLowerCase(),
+          authorId,
+          body,
+          authorProfileHref: `profiles/${authorId}`,
+          authorUsername: state.auth.user?.displayName || '',
+          categoryHref: `categories/${category}`,
+          edited: false,
+          isAuthor: true,
+          isOwnerOfCategory: categoryData.ownerId === authorId,
+          ownerOfCategory: categoryData.ownerId,
+          numOfComments: 0,
+          postHref: `categories/${category}/${ref.id}`,
+          postId: ref.id,
+          rating: 0,
+          timestamp: Date.now() / 1000,
+        })
+      );
+      history.push(
+        `/categories/${category}/${ref.id}`,
+        getState() as RootState
+      );
+    } catch (err) {
+      return rejectWithValue(err);
+    }
+  }
 );
 
 export const createPostSlice = createSlice({
@@ -81,9 +116,7 @@ export const createPostSlice = createSlice({
   },
 });
 
-export const {
-  displayCreatePostDialog,
-  hideCreatePostDialog,
-} = createPostSlice.actions;
+export const { displayCreatePostDialog, hideCreatePostDialog } =
+  createPostSlice.actions;
 
 export default createPostSlice.reducer;

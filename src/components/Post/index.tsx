@@ -79,7 +79,7 @@ const Post: React.FC<Props> = ({ loading, post }) => {
       >
         {loading ? (
           <Spinner />
-        ) : post ? (
+        ) : post && post.title ? (
           <>
             <Grid item>
               <Rating
@@ -149,7 +149,7 @@ const Post: React.FC<Props> = ({ loading, post }) => {
 
                   {post.isAuthor || post.isOwnerOfCategory ? (
                     <>
-                      {!post.isOwnerOfCategory && (
+                      {post.isAuthor && (
                         <Button
                           className={clsx(classes.button, classes.edit)}
                           onClick={post.onToggleEditing}

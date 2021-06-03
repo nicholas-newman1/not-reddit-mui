@@ -175,6 +175,9 @@ export const postPageSlice = createSlice({
     toggleEditing: (state) => {
       state.isEditing = !state.isEditing;
     },
+    setPost: (state, action: { payload: Post }) => {
+      state.post = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -270,6 +273,7 @@ export const {
   displayCreateCommentDialog,
   hideCreateCommentDialog,
   toggleEditing,
+  setPost,
 } = postPageSlice.actions;
 
 export default postPageSlice.reducer;
