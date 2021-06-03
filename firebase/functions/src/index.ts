@@ -331,57 +331,55 @@ exports.commentDeleted8 = functions.firestore
 /* CREATE COMMENT UP VOTE */
 
 exports.commentUpVoteCreated = functions.firestore
-  .document(
-    'posts/{postId}/{path=**}/comments/{commentId}/upVoteIds/{upVoteId}'
-  )
+  .document('posts/{postId}/comments/{commentId}/upVoteIds/{upVoteId}')
   .onCreate((snap) => {
     updateCommentRating(snap);
   });
 exports.commentUpVoteCreated2 = functions.firestore
   .document(
-    'posts/{postId}/{path=**}/comments/{commentId}/comments/{commentId}/upVoteIds/{upVoteId}'
+    'posts/{postId}/comments/{commentId}/comments/{commentId}/upVoteIds/{upVoteId}'
   )
   .onCreate((snap) => {
     updateCommentRating(snap);
   });
 exports.commentUpVoteCreated3 = functions.firestore
   .document(
-    'posts/{postId}/{path=**}/comments/{commentId}/comments/{commentId}/comments/{commentId}/upVoteIds/{upVoteId}'
+    'posts/{postId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/upVoteIds/{upVoteId}'
   )
   .onCreate((snap) => {
     updateCommentRating(snap);
   });
 exports.commentUpVoteCreated4 = functions.firestore
   .document(
-    'posts/{postId}/{path=**}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/upVoteIds/{upVoteId}'
+    'posts/{postId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/upVoteIds/{upVoteId}'
   )
   .onCreate((snap) => {
     updateCommentRating(snap);
   });
 exports.commentUpVoteCreated5 = functions.firestore
   .document(
-    'posts/{postId}/{path=**}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/upVoteIds/{upVoteId}'
+    'posts/{postId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/upVoteIds/{upVoteId}'
   )
   .onCreate((snap) => {
     updateCommentRating(snap);
   });
 exports.commentUpVoteCreated6 = functions.firestore
   .document(
-    'posts/{postId}/{path=**}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/upVoteIds/{upVoteId}'
+    'posts/{postId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/upVoteIds/{upVoteId}'
   )
   .onCreate((snap) => {
     updateCommentRating(snap);
   });
 exports.commentUpVoteCreated7 = functions.firestore
   .document(
-    'posts/{postId}/{path=**}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/upVoteIds/{upVoteId}'
+    'posts/{postId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/upVoteIds/{upVoteId}'
   )
   .onCreate((snap) => {
     updateCommentRating(snap);
   });
 exports.commentUpVoteCreated8 = functions.firestore
   .document(
-    'posts/{postId}/{path=**}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/upVoteIds/{upVoteId}'
+    'posts/{postId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/upVoteIds/{upVoteId}'
   )
   .onCreate((snap) => {
     updateCommentRating(snap);
@@ -390,57 +388,55 @@ exports.commentUpVoteCreated8 = functions.firestore
 /* CREATE COMMENT DOWN VOTE */
 
 exports.commentDownVoteCreated = functions.firestore
-  .document(
-    'posts/{postId}/{path=**}/comments/{commentId}/downVoteIds/{downVoteId}'
-  )
+  .document('posts/{postId}/comments/{commentId}/downVoteIds/{downVoteId}')
   .onCreate((snap) => {
     updateCommentRating(snap, true);
   });
 exports.commentDownVoteCreated2 = functions.firestore
   .document(
-    'posts/{postId}/{path=**}/comments/{commentId}/comments/{commentId}/downVoteIds/{downVoteId}'
+    'posts/{postId}/comments/{commentId}/comments/{commentId}/downVoteIds/{downVoteId}'
   )
   .onCreate((snap) => {
     updateCommentRating(snap, true);
   });
 exports.commentDownVoteCreated3 = functions.firestore
   .document(
-    'posts/{postId}/{path=**}/comments/{commentId}/comments/{commentId}/comments/{commentId}/downVoteIds/{downVoteId}'
+    'posts/{postId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/downVoteIds/{downVoteId}'
   )
   .onCreate((snap) => {
     updateCommentRating(snap, true);
   });
 exports.commentDownVoteCreated4 = functions.firestore
   .document(
-    'posts/{postId}/{path=**}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/downVoteIds/{downVoteId}'
+    'posts/{postId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/downVoteIds/{downVoteId}'
   )
   .onCreate((snap) => {
     updateCommentRating(snap, true);
   });
 exports.commentDownVoteCreated5 = functions.firestore
   .document(
-    'posts/{postId}/{path=**}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/downVoteIds/{downVoteId}'
+    'posts/{postId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/downVoteIds/{downVoteId}'
   )
   .onCreate((snap) => {
     updateCommentRating(snap, true);
   });
 exports.commentDownVoteCreated6 = functions.firestore
   .document(
-    'posts/{postId}/{path=**}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/downVoteIds/{downVoteId}'
+    'posts/{postId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/downVoteIds/{downVoteId}'
   )
   .onCreate((snap) => {
     updateCommentRating(snap, true);
   });
 exports.commentDownVoteCreated7 = functions.firestore
   .document(
-    'posts/{postId}/{path=**}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/downVoteIds/{downVoteId}'
+    'posts/{postId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/downVoteIds/{downVoteId}'
   )
   .onCreate((snap) => {
     updateCommentRating(snap, true);
   });
 exports.commentDownVoteCreated8 = functions.firestore
   .document(
-    'posts/{postId}/{path=**}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/downVoteIds/{downVoteId}'
+    'posts/{postId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/downVoteIds/{downVoteId}'
   )
   .onCreate((snap) => {
     updateCommentRating(snap, true);
@@ -449,57 +445,55 @@ exports.commentDownVoteCreated8 = functions.firestore
 /* DELETE COMMENT UP VOTE */
 
 exports.commentUpVoteDeleted = functions.firestore
-  .document(
-    'posts/{postId}/{path=**}/comments/{commentId}/upVoteIds/{upVoteId}'
-  )
+  .document('posts/{postId}/comments/{commentId}/upVoteIds/{upVoteId}')
   .onDelete((snap) => {
     updateCommentRating(snap, true);
   });
 exports.commentUpVoteDeleted2 = functions.firestore
   .document(
-    'posts/{postId}/{path=**}/comments/{commentId}/comments/{commentId}/upVoteIds/{upVoteId}'
+    'posts/{postId}/comments/{commentId}/comments/{commentId}/upVoteIds/{upVoteId}'
   )
   .onDelete((snap) => {
     updateCommentRating(snap, true);
   });
 exports.commentUpVoteDeleted3 = functions.firestore
   .document(
-    'posts/{postId}/{path=**}/comments/{commentId}/comments/{commentId}/comments/{commentId}/upVoteIds/{upVoteId}'
+    'posts/{postId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/upVoteIds/{upVoteId}'
   )
   .onDelete((snap) => {
     updateCommentRating(snap, true);
   });
 exports.commentUpVoteDeleted4 = functions.firestore
   .document(
-    'posts/{postId}/{path=**}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/upVoteIds/{upVoteId}'
+    'posts/{postId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/upVoteIds/{upVoteId}'
   )
   .onDelete((snap) => {
     updateCommentRating(snap, true);
   });
 exports.commentUpVoteDeleted5 = functions.firestore
   .document(
-    'posts/{postId}/{path=**}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/upVoteIds/{upVoteId}'
+    'posts/{postId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/upVoteIds/{upVoteId}'
   )
   .onDelete((snap) => {
     updateCommentRating(snap, true);
   });
 exports.commentUpVoteDeleted6 = functions.firestore
   .document(
-    'posts/{postId}/{path=**}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/upVoteIds/{upVoteId}'
+    'posts/{postId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/upVoteIds/{upVoteId}'
   )
   .onDelete((snap) => {
     updateCommentRating(snap, true);
   });
 exports.commentUpVoteDeleted7 = functions.firestore
   .document(
-    'posts/{postId}/{path=**}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/upVoteIds/{upVoteId}'
+    'posts/{postId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/upVoteIds/{upVoteId}'
   )
   .onDelete((snap) => {
     updateCommentRating(snap, true);
   });
 exports.commentUpVoteDeleted8 = functions.firestore
   .document(
-    'posts/{postId}/{path=**}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/upVoteIds/{upVoteId}'
+    'posts/{postId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/upVoteIds/{upVoteId}'
   )
   .onDelete((snap) => {
     updateCommentRating(snap, true);
@@ -508,57 +502,55 @@ exports.commentUpVoteDeleted8 = functions.firestore
 /* DELETE COMMENT DOWN VOTE */
 
 exports.commentDownVoteDeleted = functions.firestore
-  .document(
-    'posts/{postId}/{path=**}/comments/{commentId}/downVoteIds/{downVoteId}'
-  )
+  .document('posts/{postId}/comments/{commentId}/downVoteIds/{downVoteId}')
   .onDelete((snap) => {
     updateCommentRating(snap);
   });
 exports.commentDownVoteDeleted2 = functions.firestore
   .document(
-    'posts/{postId}/{path=**}/comments/{commentId}/comments/{commentId}/downVoteIds/{downVoteId}'
+    'posts/{postId}/comments/{commentId}/comments/{commentId}/downVoteIds/{downVoteId}'
   )
   .onDelete((snap) => {
     updateCommentRating(snap);
   });
 exports.commentDownVoteDeleted3 = functions.firestore
   .document(
-    'posts/{postId}/{path=**}/comments/{commentId}/comments/{commentId}/comments/{commentId}/downVoteIds/{downVoteId}'
+    'posts/{postId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/downVoteIds/{downVoteId}'
   )
   .onDelete((snap) => {
     updateCommentRating(snap);
   });
 exports.commentDownVoteDeleted4 = functions.firestore
   .document(
-    'posts/{postId}/{path=**}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/downVoteIds/{downVoteId}'
+    'posts/{postId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/downVoteIds/{downVoteId}'
   )
   .onDelete((snap) => {
     updateCommentRating(snap);
   });
 exports.commentDownVoteDeleted5 = functions.firestore
   .document(
-    'posts/{postId}/{path=**}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/downVoteIds/{downVoteId}'
+    'posts/{postId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/downVoteIds/{downVoteId}'
   )
   .onDelete((snap) => {
     updateCommentRating(snap);
   });
 exports.commentDownVoteDeleted6 = functions.firestore
   .document(
-    'posts/{postId}/{path=**}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/downVoteIds/{downVoteId}'
+    'posts/{postId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/downVoteIds/{downVoteId}'
   )
   .onDelete((snap) => {
     updateCommentRating(snap);
   });
 exports.commentDownVoteDeleted7 = functions.firestore
   .document(
-    'posts/{postId}/{path=**}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/downVoteIds/{downVoteId}'
+    'posts/{postId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/downVoteIds/{downVoteId}'
   )
   .onDelete((snap) => {
     updateCommentRating(snap);
   });
 exports.commentDownVoteDeleted8 = functions.firestore
   .document(
-    'posts/{postId}/{path=**}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/downVoteIds/{downVoteId}'
+    'posts/{postId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/comments/{commentId}/downVoteIds/{downVoteId}'
   )
   .onDelete((snap) => {
     updateCommentRating(snap);
