@@ -69,7 +69,8 @@ const CommentContainer: React.FC<Props> = ({ comment, isReply }) => {
 
   const onReply = async (body: string) => {
     if (!user) return setError({ type: 'auth' });
-    if (!subscribed(comment.categoryId)) return setError({ type: 'subscribe' });
+    const category = window.location.pathname.split('/')[2];
+    if (!subscribed(category)) return setError({ type: 'subscribe' });
 
     setLoadingReply(true);
     try {
