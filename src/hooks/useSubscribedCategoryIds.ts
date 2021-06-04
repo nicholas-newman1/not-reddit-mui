@@ -36,6 +36,7 @@ const useSubscribedCategoryIds = () => {
   /* load subscribedCategoryIds if user signs in/out */
   useEffect(() => {
     if (user) {
+      console.log('dispatch getSubscribedCategoryIds');
       !subscribedCategoryIds.length && dispatch(getSubscribedCategoryIds());
     } else {
       dispatch(clearSubscribedCategoryIds());

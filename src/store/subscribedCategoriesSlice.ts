@@ -77,10 +77,12 @@ export const subscribedCategoriesSlice = createSlice({
         state.error = '';
       })
       .addCase(getSubscribedCategoryIds.fulfilled, (state, action) => {
+        console.log('success: ', action.payload);
         state.subscribedIds = action.payload;
         state.loading = false;
       })
       .addCase(getSubscribedCategoryIds.rejected, (state, action) => {
+        console.log('failed: ', action.payload);
         state.loading = false;
         state.error = 'An error occurred';
       })
