@@ -124,7 +124,6 @@ export const ratingStatusSlice = createSlice({
         state.loading = false;
       })
       .addCase(getVotePostIds.rejected, (state, action) => {
-        console.log(action.payload);
         state.loading = false;
         state.error = 'An error occurred';
       })
