@@ -40,7 +40,7 @@ const initialState: PostPageState = {
   moreCommentsLoading: false,
   post: null,
   postError: '',
-  postLoading: false,
+  postLoading: true,
 };
 
 const commentsPageLength = 10;
@@ -178,6 +178,9 @@ export const postPageSlice = createSlice({
     setPost: (state, action: { payload: Post }) => {
       state.post = action.payload;
     },
+    setPostLoading: (state, action: { payload: boolean }) => {
+      state.postLoading = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -274,6 +277,7 @@ export const {
   hideCreateCommentDialog,
   toggleEditing,
   setPost,
+  setPostLoading,
 } = postPageSlice.actions;
 
 export default postPageSlice.reducer;

@@ -13,6 +13,7 @@ import {
   getMoreComments,
   getPost,
   toggleEditing,
+  setPostLoading,
 } from '../../store/postPageSlice';
 import usePostRatingStatus from '../../hooks/usePostRatingStatus';
 import CommentList from '../../components/CommentList';
@@ -51,7 +52,7 @@ const PostPage: React.FC<Props> = ({ match, location }) => {
       dispatch(getComments(postId));
       return;
     }
-
+    dispatch(setPostLoading(false));
     // eslint-disable-next-line
   }, [loadingUser]);
 
