@@ -24,6 +24,7 @@ const initialState: RatingStatusState = {
 export const getVotePostIds = createAsyncThunk(
   'ratingStatus/getVotePostIds',
   async (postIds: string[], { rejectWithValue }) => {
+    if (!auth.currentUser) return rejectWithValue('no user');
     try {
       const downVoteSnap = await db
         .collectionGroup('downVoteIds')

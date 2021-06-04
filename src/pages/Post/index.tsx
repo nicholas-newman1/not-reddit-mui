@@ -19,6 +19,7 @@ import usePostRatingStatus from '../../hooks/usePostRatingStatus';
 import CommentList from '../../components/CommentList';
 import CreateCommentDialogContainer from '../../containers/CreateCommentDialogContainer';
 import CommentListLoading from '../../components/CommentList/Loading';
+import { useIsFirstRender } from '../../hooks/useIsFirstRender';
 
 interface MatchProps {
   categoryId: string;
@@ -44,20 +45,21 @@ const PostPage: React.FC<Props> = ({ match, location }) => {
   } = useAppSelector((state) => state.postPage);
   const posts = useMemo(() => (post ? [post] : []), [post]); // usePostRatingStatus requires a Post[]
   const { postsWithRating } = usePostRatingStatus(posts);
+  const isFirstRender = useIsFirstRender();
 
   useEffect(() => {
     const state = location.state;
     if (!loadingUser) {
       !state && dispatch(getPost(postId));
+      state && dispatch(setPostLoading(false));
       dispatch(getComments(postId));
-      return;
     }
-    dispatch(setPostLoading(false));
+
     // eslint-disable-next-line
   }, [loadingUser]);
 
   useEffect(() => {
-    if (!postLoading && (!post || !post.title)) {
+    if (!isFirstRender && !postLoading && (!post || !post.title)) {
       history.push('/');
     }
     // eslint-disable-next-line
