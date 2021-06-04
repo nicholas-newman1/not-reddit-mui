@@ -2,10 +2,10 @@ import { Button, Grid, makeStyles, Paper, Typography } from '@material-ui/core';
 import React from 'react';
 import PostMeta from '../PostMeta';
 import Rating from '../Rating';
-import Spinner from '../Spinner';
 import clsx from 'clsx';
 import { Post as ClientPost } from '../../types/client';
 import EditPostForm from '../EditPostForm';
+import PostLoading from './Loading';
 
 const useStyles = makeStyles((theme) => {
   const buttonSpacing = theme.spacing(1);
@@ -68,7 +68,9 @@ interface Props {
 const Post: React.FC<Props> = ({ loading, post }) => {
   const classes = useStyles();
 
-  return (
+  return loading ? (
+    <PostLoading />
+  ) : (
     <Paper className={classes.root}>
       <Grid
         container
@@ -77,9 +79,7 @@ const Post: React.FC<Props> = ({ loading, post }) => {
         wrap='nowrap'
         spacing={2}
       >
-        {loading ? (
-          <Spinner />
-        ) : post && post.title ? (
+        {post && post.title ? (
           <>
             <Grid item>
               <Rating
