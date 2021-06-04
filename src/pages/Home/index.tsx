@@ -146,6 +146,7 @@ const Home = () => {
                 component={Link}
                 to='/categories'
                 variant='outlined'
+                disabled
               >
                 All Categories
               </Button>
