@@ -17,15 +17,14 @@ const initialState: SubscribedCategoriesState = {
 
 export const getSubscribedCategoryIds = createAsyncThunk(
   'subscribedCategories/getSubscribedCategoryIds',
-  async () => {
+  async (x, { rejectWithValue }) => {
     const uid = auth.currentUser?.uid;
     return db
       .collectionGroup('subscriberIds')
       .where('uid', '==', uid || '')
       .get()
-      .then((snap) =>
-        snap.docs.map((snap) => snap.data().categoryId as string)
-      );
+      .then((snap) => snap.docs.map((snap) => snap.data().categoryId as string))
+      .catch((err) => rejectWithValue(err));
   }
 );
 
