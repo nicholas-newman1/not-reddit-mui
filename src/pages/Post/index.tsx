@@ -46,8 +46,8 @@ const PostPage: React.FC<Props> = ({ match, location }) => {
 
   useEffect(() => {
     const state = location.state;
-    if (!loadingUser && !state) {
-      dispatch(getPost(postId));
+    if (!loadingUser) {
+      !state && dispatch(getPost(postId));
       dispatch(getComments(postId));
       return;
     }
@@ -61,8 +61,6 @@ const PostPage: React.FC<Props> = ({ match, location }) => {
     }
     // eslint-disable-next-line
   }, [postLoading]);
-
-  console.log({ postLoading, post: postsWithRating[0] });
 
   return (
     <Container>

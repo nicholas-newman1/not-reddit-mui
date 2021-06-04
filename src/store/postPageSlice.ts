@@ -40,7 +40,7 @@ const initialState: PostPageState = {
   moreCommentsLoading: false,
   post: null,
   postError: '',
-  postLoading: true,
+  postLoading: false,
 };
 
 const commentsPageLength = 10;

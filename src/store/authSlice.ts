@@ -9,29 +9,27 @@ interface SignInParams {
 export const signIn = createAsyncThunk(
   'auth/signIn',
   ({ email, password }: SignInParams, { dispatch }) => {
-    return auth
-      .signInWithEmailAndPassword(email, password)
-      .then((cred): User | null => {
-        if (!cred.user?.emailVerified) {
-          dispatch(sendEmailVerification());
-          dispatch(signOut());
-          dispatch(displayVerifyEmailDialog());
-        }
-        dispatch(hideSignInDialog());
+    return auth.signInWithEmailAndPassword(email, password).then((cred) => {
+      if (!cred.user?.emailVerified) {
+        dispatch(sendEmailVerification());
+        dispatch(signOut());
+        dispatch(displayVerifyEmailDialog());
+      }
+      dispatch(hideSignInDialog());
 
-        return cred.user
-          ? {
-              displayName: cred.user.displayName,
-              email: cred.user.email,
-              emailVerified: cred.user.emailVerified,
-              creationTime: cred.user.metadata.creationTime,
-              lastSignInTime: cred.user.metadata.lastSignInTime,
-              phoneNumber: cred.user.phoneNumber,
-              photoUrl: cred.user.photoURL,
-              uid: cred.user.uid,
-            }
-          : null;
-      });
+      return cred.user
+        ? {
+            displayName: cred.user.displayName,
+            email: cred.user.email,
+            emailVerified: cred.user.emailVerified,
+            creationTime: cred.user.metadata.creationTime,
+            lastSignInTime: cred.user.metadata.lastSignInTime,
+            phoneNumber: cred.user.phoneNumber,
+            photoUrl: cred.user.photoURL,
+            uid: cred.user.uid,
+          }
+        : null;
+    });
   }
 );
 
@@ -44,46 +42,44 @@ interface SignUpData {
 export const signUp = createAsyncThunk(
   'auth/signUp',
   ({ username, email, password }: SignUpData, { dispatch }) => {
-    return auth
-      .createUserWithEmailAndPassword(email, password)
-      .then((cred): User | null => {
-        dispatch(signOut());
-        dispatch(hideSignUpDialog());
+    return auth.createUserWithEmailAndPassword(email, password).then((cred) => {
+      dispatch(signOut());
+      dispatch(hideSignUpDialog());
 
-        if (cred.user) {
-          cred.user.updateProfile({
-            displayName: username,
-          });
+      if (cred.user) {
+        cred.user.updateProfile({
+          displayName: username,
+        });
 
-          dispatch(sendEmailVerification()).then(() =>
-            dispatch(displaySentEmailVerificationDialog())
-          );
+        dispatch(sendEmailVerification()).then(() =>
+          dispatch(displaySentEmailVerificationDialog())
+        );
 
-          db.collection('users').doc(cred.user.uid).set({
-            username,
-          });
+        db.collection('users').doc(cred.user.uid).set({
+          username,
+        });
 
-          return {
-            displayName: cred.user.displayName,
-            email: cred.user.email,
-            emailVerified: cred.user.emailVerified,
-            creationTime: cred.user.metadata.creationTime,
-            lastSignInTime: cred.user.metadata.lastSignInTime,
-            phoneNumber: cred.user.phoneNumber,
-            photoUrl: cred.user.photoURL,
-            uid: cred.user.uid,
-          };
-        }
+        return {
+          displayName: cred.user.displayName,
+          email: cred.user.email,
+          emailVerified: cred.user.emailVerified,
+          creationTime: cred.user.metadata.creationTime,
+          lastSignInTime: cred.user.metadata.lastSignInTime,
+          phoneNumber: cred.user.phoneNumber,
+          photoUrl: cred.user.photoURL,
+          uid: cred.user.uid,
+        };
+      }
 
-        return null;
-      });
+      return null;
+    });
   }
 );
 
 export const signOut = createAsyncThunk('auth/signOut', () => auth.signOut());
 
 export const verifyAuth = createAsyncThunk('auth/verifyAuth', (x, thunkAPI) => {
-  auth.onAuthStateChanged((user) => {
+  auth.onAuthStateChanged(async (user) => {
     thunkAPI.dispatch(
       verifySuccess(
         user

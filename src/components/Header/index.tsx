@@ -53,6 +53,7 @@ const Header = () => {
   const dispatch = useAppDispatch();
   const headerRef = useRef<HTMLElement>(null);
   const user = useAppSelector((state) => state.auth.user);
+  const loading = useAppSelector((state) => state.auth.loading);
   const [openMenu, setOpenMenu] = useState(false);
   const menuIconRef = useRef<HTMLButtonElement>(null);
 
@@ -143,6 +144,7 @@ const Header = () => {
                 onClick={() => dispatch(displaySignInDialog())}
                 variant='outlined'
                 className={classes.login}
+                disabled={loading}
               >
                 Login
               </Button>
@@ -150,6 +152,7 @@ const Header = () => {
                 onClick={() => dispatch(displaySignUpDialog())}
                 color='secondary'
                 variant='contained'
+                disabled={loading}
               >
                 Sign Up
               </Button>
