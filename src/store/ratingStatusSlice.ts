@@ -25,19 +25,19 @@ export const getVotePostIds = createAsyncThunk(
   'ratingStatus/getVotePostIds',
   async (postIds: string[], { rejectWithValue }) => {
     try {
-      const upVoteSnap = await db
-        .collectionGroup('upVoteIds')
-        .where('postId', 'in', postIds)
-        .where('uid', '==', auth.currentUser?.uid)
-        .get();
-      const upVoteItemIds = upVoteSnap.docs.map((doc) => doc.data().postId);
-
       const downVoteSnap = await db
         .collectionGroup('downVoteIds')
         .where('postId', 'in', postIds)
         .where('uid', '==', auth.currentUser?.uid)
         .get();
       const downVoteItemIds = downVoteSnap.docs.map((doc) => doc.data().postId);
+
+      const upVoteSnap = await db
+        .collectionGroup('upVoteIds')
+        .where('postId', 'in', postIds)
+        .where('uid', '==', auth.currentUser?.uid)
+        .get();
+      const upVoteItemIds = upVoteSnap.docs.map((doc) => doc.data().postId);
 
       return { upVoteItemIds, downVoteItemIds };
     } catch (err) {
