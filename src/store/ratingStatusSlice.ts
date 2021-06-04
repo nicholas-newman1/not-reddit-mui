@@ -23,7 +23,7 @@ const initialState: RatingStatusState = {
 
 export const getVotePostIds = createAsyncThunk(
   'ratingStatus/getVotePostIds',
-  async (postIds: string[]) => {
+  async (postIds: string[], { rejectWithValue }) => {
     try {
       const upVoteSnap = await db
         .collectionGroup('upVoteIds')
@@ -41,7 +41,7 @@ export const getVotePostIds = createAsyncThunk(
 
       return { upVoteItemIds, downVoteItemIds };
     } catch (err) {
-      return err;
+      return rejectWithValue(err);
     }
   }
 );
