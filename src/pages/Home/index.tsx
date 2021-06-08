@@ -93,7 +93,7 @@ const Home = () => {
   return (
     <Container>
       <Grid container spacing={2}>
-        <Grid item xs={6} sm={8}>
+        <Grid item xs={12} sm={8}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <Button
@@ -125,34 +125,43 @@ const Home = () => {
                 ]}
               />
             </Grid>
+
+            <Hidden smUp>
+              <Grid item xs={12}>
+                <Button component={Link} to='/categories' variant='outlined'>
+                  Categories
+                </Button>
+              </Grid>
+            </Hidden>
           </Grid>
         </Grid>
 
-        <Grid item xs={6} sm={4}>
-          <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <Button
-                fullWidth
-                variant='contained'
-                onClick={() => dispatch(displayCreateCategoryDialog())}
-              >
-                Create Category
-              </Button>
-            </Grid>
+        <Hidden xsDown>
+          <Grid item xs={6} sm={4}>
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <Button
+                  fullWidth
+                  variant='contained'
+                  onClick={() => dispatch(displayCreateCategoryDialog())}
+                >
+                  Create Category
+                </Button>
+              </Grid>
 
-            <Grid item xs={12}>
-              <Button
-                fullWidth
-                component={Link}
-                to='/categories'
-                variant='outlined'
-                disabled
-              >
-                All Categories
-              </Button>
+              <Grid item xs={12}>
+                <Button
+                  fullWidth
+                  component={Link}
+                  to='/categories'
+                  variant='outlined'
+                >
+                  All Categories
+                </Button>
+              </Grid>
             </Grid>
           </Grid>
-        </Grid>
+        </Hidden>
 
         <Grid item xs={12} sm={8}>
           <Grid container direction='column' spacing={2}>

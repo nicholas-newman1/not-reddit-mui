@@ -9,6 +9,7 @@ import ratingStatus from './ratingStatusSlice';
 import commentRatingStatus from './commentRatingStatusSlice';
 import categoryMeta from './categoryMetaSlice';
 import postPage from './postPageSlice';
+import categoriesPage from './categoriesPageSlice';
 
 export const reducer = combineReducers({
   auth,
@@ -21,6 +22,7 @@ export const reducer = combineReducers({
   commentRatingStatus,
   categoryMeta,
   postPage,
+  categoriesPage,
 });
 
 const store = configureStore({
