@@ -139,13 +139,13 @@ const Post: React.FC<Props> = ({ loading, post }) => {
                     comments ({post.numOfComments})
                   </Button>
 
-                  <Button className={classes.button} onClick={post.onSave}>
+                  {/* <Button className={classes.button} onClick={post.onSave}>
                     Save
                   </Button>
 
                   <Button className={classes.button} onClick={post.onShare}>
                     Share
-                  </Button>
+                  </Button> */}
 
                   {post.isAuthor || post.isOwnerOfCategory ? (
                     <>
@@ -167,12 +167,13 @@ const Post: React.FC<Props> = ({ loading, post }) => {
                       </Button>
                     </>
                   ) : (
-                    <Button
-                      className={clsx(classes.button, classes.report)}
-                      onClick={post.onReport}
-                    >
-                      Report
-                    </Button>
+                    <></>
+                    // <Button
+                    //   className={clsx(classes.button, classes.report)}
+                    //   onClick={post.onReport}
+                    // >
+                    //   Report
+                    // </Button>
                   )}
                 </Grid>
               </Grid>

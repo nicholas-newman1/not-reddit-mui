@@ -114,13 +114,13 @@ const PostListing: React.FC<Props> = (props) => {
               comments ({props.numOfComments})
             </Button>
 
-            <Button className={classes.button} onClick={props.onSave}>
+            {/* <Button className={classes.button} onClick={props.onSave}>
               Save
             </Button>
 
             <Button className={classes.button} onClick={props.onShare}>
               Share
-            </Button>
+            </Button> */}
 
             {props.isAuthor || props.isOwnerOfCategory ? (
               <>
@@ -142,12 +142,13 @@ const PostListing: React.FC<Props> = (props) => {
                 </Button>
               </>
             ) : (
-              <Button
-                className={clsx(classes.button, classes.report)}
-                onClick={props.onReport}
-              >
-                Report
-              </Button>
+              <></>
+              // <Button
+              //   className={clsx(classes.button, classes.report)}
+              //   onClick={props.onReport}
+              // >
+              //   Report
+              // </Button>
             )}
           </Grid>
         </Grid>
